@@ -85,24 +85,35 @@
             line-height: 1.3;
         }
 
-        .hop-chuan-badge {
-            background-color: #ebf8ff;
-            color: #2b6cb0;
+        /* BADGE ĐANG PHÁT TRIỂN CÓ CHẤM NHẤP NHÁY */
+        .dev-badge {
+            background-color: #fffaf0;
+            color: #dd6b20;
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            border: 1px solid #bee3f8;
+            border: 1px solid #feebc8;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             white-space: nowrap;
             flex-shrink: 0;
         }
-        .hop-chuan-badge::before {
-            content: "●";
-            color: #3182ce;
-            font-size: 10px;
+
+        .dev-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background-color: #dd6b20;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink-dot 1s infinite alternate;
+        }
+
+        @keyframes blink-dot {
+            0% { opacity: 0.2; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 6px #dd6b20; }
         }
 
         /* --- CONTAINER --- */
@@ -127,7 +138,6 @@
             font-size: 14px;
         }
 
-        /* Ô CHỨA INPUT VÀ CÁC NÚT MIC BÊN CẠNH */
         .input-with-mic {
             display: flex;
             gap: 8px;
@@ -183,7 +193,7 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); transform: scale(1); }
         }
 
-        /* --- NHÓM BUTTON CHỨC NĂNG --- */
+        /* --- NHÓM BUTTON CHỨC NĂNG 3D --- */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -204,8 +214,20 @@
         }
 
         .btn-action:active { transform: scale(0.97); }
-        #btnRead { background: linear-gradient(135deg, #0288D1, #01579B); }
-        #btnWrite { background: linear-gradient(135deg, #00796B, #004D40); }
+        
+        #btnRead { 
+            background: linear-gradient(135deg, #0288D1, #01579B); 
+        }
+        #btnRead:hover {
+            box-shadow: 0 6px 20px rgba(1, 87, 155, 0.25);
+        }
+
+        #btnWrite { 
+            background: linear-gradient(135deg, #00796B, #004D40); 
+        }
+        #btnWrite:hover {
+            box-shadow: 0 6px 20px rgba(0, 77, 64, 0.25);
+        }
         
         #status {
             margin-top: 20px;
@@ -288,12 +310,11 @@
         <div class="brand-name">VẠN PHÚ KHÁNH</div>
         <div class="brand-subtitle">QUẢN LÝ THẺ NHẬN DẠNG LÁI XE</div>
     </div>
-    <div class="hop-chuan-badge">Hợp chuẩn</div>
+    <div class="dev-badge">Đang phát triển</div>
 </div>
 
 <div class="container">
 
-    <!-- Ô NHẬP GPLX KÈM NÚT MIC RIÊNG -->
     <div class="form-group">
         <label for="gplx">Số GPLX (Yêu cầu đúng 12 số viết liền):</label>
         <div class="input-with-mic">
@@ -302,7 +323,6 @@
         </div>
     </div>
 
-    <!-- Ô NHẬP HỌ TÊN KÈM NÚT MIC RIÊNG -->
     <div class="form-group">
         <label for="hoten">Họ và tên (Tự động chuyển viết hoa không dấu):</label>
         <div class="input-with-mic">
@@ -313,7 +333,7 @@
 
     <div class="btn-group">
         <button id="btnRead" class="btn-action">KIỂM TRA THẺ</button>
-        <button id="btnWrite class="btn-action" id="btnWrite">GHI VÀO THẺ</button>
+        <button id="btnWrite" class="btn-action">GHI VÀO THẺ</button>
     </div>
 
     <div id="status"></div>
@@ -350,7 +370,7 @@
     const resHoTen = document.getElementById('resHoTen');
 
     let recognition = null;
-    let activeTarget = null; // Xác định đang thu âm cho ô 'gplx' hay 'hoten'
+    let activeTarget = null;
 
     function showStatus(text, type) {
         statusDiv.style.display = 'block';
@@ -397,7 +417,6 @@
         return sum & 0xFF;
     }
 
-    // ================= CẤU HÌNH WEB SPEECH API CHUYÊN DỤNG RIÊNG LẺ =================
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
@@ -421,7 +440,6 @@
             let resultText = event.results[0][0].transcript;
 
             if (activeTarget === 'gplx') {
-                // Xử lý riêng cho ô Số GPLX: Ép chữ thành số + gom sạch rác ký tự
                 let processedText = convertWordsToNumbers(resultText);
                 let digitsOnly = processedText.replace(/\D/g, '');
                 
@@ -436,8 +454,7 @@
                 }
 
             } else if (activeTarget === 'hoten') {
-                // Xử lý riêng cho ô Họ tên: Lọc chữ chuẩn hóa viết hoa không dấu
-                let rawName = resultText.replace(/\d/g, ''); // Loại bỏ số nếu người dùng đọc nhầm số vào đây
+                let rawName = resultText.replace(/\d/g, '');
                 rawName = rawName.replace(/(họ tên là|họ tên|tên là|tên|lái xe|tên lái xe)/gi, '');
                 let cleanName = removeVietnameseTones(rawName);
 
@@ -455,9 +472,7 @@
             resetMicButtons();
         };
 
-        recognition.onend = () => {
-            resetMicButtons();
-        };
+        recognition.onend = () => { resetMicButtons(); };
     } else {
         btnMicGplx.style.background = '#90a4ae'; btnMicGplx.innerHTML = '✕';
         btnMicHoTen.style.background = '#90a4ae'; btnMicHoTen.innerHTML = '✕';
@@ -471,7 +486,6 @@
         activeTarget = null;
     }
 
-    // Sự kiện click nút Mic của ô Số GPLX
     btnMicGplx.addEventListener('click', () => {
         if (!recognition) return;
         if (activeTarget === 'gplx') {
@@ -483,7 +497,6 @@
         }
     });
 
-    // Sự kiện click nút Mic của ô Họ tên
     btnMicHoTen.addEventListener('click', () => {
         if (!recognition) return;
         if (activeTarget === 'hoten') {
@@ -495,7 +508,7 @@
         }
     });
 
-    // ================= KIỂM TRA THẺ NDEF =================
+    // ================= KIỂM TRA THÈ NDEF =================
     btnRead.addEventListener('click', async () => {
         if (!('NDEFReader' in window)) {
             showStatus("Thiết bị không hỗ trợ WebNFC. Hãy dùng Chrome trên Android.", "error");
