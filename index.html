@@ -3,106 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Thẻ Lái Xe QCVN</title>
+    <title>Quản Lý Thẻ Lái Xe QCVN - Vạn Phú Khánh</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 550px;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #00796B;
+            --primary-hover: #004D40;
+            --secondary-color: #0288D1;
+            --secondary-hover: #01579B;
+            --text-color: #333;
+            --bg-color: #f0f4f4;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 95vh;
+        }
+
         .container {
             background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 77, 64, 0.08);
+            margin-bottom: 25px;
+            margin-top: 10px;
         }
+
         h2 {
             text-align: center;
-            color: #00796B;
+            color: var(--primary-color);
             margin-bottom: 25px;
-            font-size: 21px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
+
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+            font-size: 14px;
         }
+
         input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px 14px;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
             box-sizing: border-box;
             font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fff;
         }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.15);
+            outline: none;
+        }
+
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 25px;
         }
+
         button {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 12px;
             font-size: 15px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s ease;
+            /* Hiệu ứng đổ bóng cho nút bấm */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
-        #btnWrite { background-color: #00796B; }
-        #btnWrite:hover { background-color: #004D40; }
-        #btnRead { background-color: #0288D1; }
-        #btnRead:hover { background-color: #01579B; }
+
+        button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #btnRead {
+            background: linear-gradient(135deg, #0288D1, #01579B);
+        }
+        #btnRead:hover {
+            background: #01579B;
+            box-shadow: 0 6px 16px rgba(1, 87, 155, 0.3);
+        }
+
+        #btnWrite {
+            background: linear-gradient(135deg, #00796B, #004D40);
+        }
+        #btnWrite:hover {
+            background: #004D40;
+            box-shadow: 0 6px 16px rgba(0, 77, 64, 0.3);
+        }
         
         #status {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 12px;
-            border-radius: 4px;
+            border-radius: 10px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 600;
             display: none;
             font-size: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
+
+        .info { background-color: #E0F7FA; color: #006064; border: 1px solid #B2EBF2; }
+        .success { background-color: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+        .error { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+
         .result-box {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fafafa;
+            margin-top: 22px;
+            padding: 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #fcfcfc;
             display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
+
         .result-title {
-            font-weight: bold;
-            color: #00796B;
-            border-bottom: 2px solid #00796B;
-            padding-bottom: 5px;
-            margin-bottom: 12px;
-        }
-        .result-item {
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid #E0F2F1;
+            padding-bottom: 8px;
+            margin-bottom: 14px;
             font-size: 16px;
         }
+
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
         .final-verdict {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
-            font-weight: bold;
-            border-radius: 4px;
-            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
+            font-size: 15px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
         }
-        
-        .info { background-color: #E0F7FA; color: #006064; }
-        .success { background-color: #E8F5E9; color: #2E7D32; }
-        .error { background-color: #FFEBEE; color: #C62828; }
-        .verdict-pass { background-color: #4CAF50; color: white; }
+
+        /* --- BẢNG THÔNG TIN ĐƠN VỊ CUNG CẤP (FOOTER) --- */
+        .footer-provider {
+            margin-top: auto; /* Đẩy footer luôn nằm dưới cùng */
+            background-color: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+            border-top: 3px solid var(--primary-color);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .footer-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .footer-desc {
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .footer-contact {
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 10px;
+        }
+
+        .contact-item {
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .contact-item a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -122,7 +227,7 @@
 
     <div class="btn-group">
         <button id="btnRead">BẮT ĐẦU ĐỌC THẺ</button>
-        <button id="btnWrite">GHI DỮ LIỆU VÀO THẺ</button>
+        <button id="btnWrite">GHI VÀO THẺ</button>
     </div>
 
     <div id="status"></div>
@@ -132,9 +237,18 @@
         <div class="result-item"><strong>Số GPLX:</strong> <span id="resGplx">---</span></div>
         <div class="result-item"><strong>Họ và tên:</strong> <span id="resHoTen">---</span></div>
         
-        <div id="finalVerdict" class="final-verdict verdict-pass">
+        <div id="finalVerdict" class="final-verdict">
             ✓ Thẻ đạt chuẩn 100% theo quy định của BCA
         </div>
+    </div>
+</div>
+
+<div class="footer-provider">
+    <div class="footer-title">Vạn Phú Khánh</div>
+    <div class="footer-desc">Thẻ lái xe đa năng và dịch vụ toàn diện cho thiết bị giám sát hành trình.</div>
+    <div class="footer-contact">
+        <div class="contact-item">📞 <strong>Mua thẻ lái xe đa năng:</strong> <a href="tel:0588588114">0588.588.114</a></div>
+        <div class="contact-item">⚙️ <strong>Các vấn đề khác:</strong> <a href="tel:0585114114">0585.114.114</a></div>
     </div>
 </div>
 
@@ -153,7 +267,6 @@
         statusDiv.className = `info ${type}`;
     }
 
-    // Thuật toán tính mã kiểm tra: Tổng các byte & 255 lấy byte thấp
     function calculateChecksum(uint8Array) {
         let sum = 0;
         for (let i = 0; i < uint8Array.length; i++) {
@@ -176,26 +289,21 @@
             resultBox.style.display = 'none';
 
             ndef.addEventListener("reading", ({ message }) => {
-                // Biến cờ chạy ngầm để kiểm tra toàn bộ tiêu chuẩn
                 let isHardwareValid = false;
                 let isDataStructureValid = false;
                 let isChecksumValid = false;
 
                 for (const record of message.records) {
-                    // 1. KIỂM TRA NGẦM PHẦN CỨNG: Phải đúng định dạng truyền tải dữ liệu thô (chuẩn ISO 15693 / NfcV trên WebNFC)
                     if (record.recordType === "mime" || record.mediaType === "application/octet-stream") {
                         isHardwareValid = true;
-                        
                         const rawData = new Uint8Array(record.data.buffer);
                         
-                        // 2. KIỂM TRA NGẦM CẤU TRÚC BỘ NHỚ: Đủ tối thiểu 60 byte dữ liệu QCVN
                         if (rawData.length >= 60) {
                             isDataStructureValid = true;
                         } else {
                             break;
                         }
 
-                        // Tách dữ liệu Vùng 1 (GPLX) và Vùng 2 (Họ tên)
                         const gplxPart = rawData.slice(0, 15);
                         const gplxChecksumOnCard = rawData[15];
                         const gplxCalculatedChecksum = calculateChecksum(gplxPart);
@@ -204,12 +312,10 @@
                         const nameChecksumOnCard = rawData[59];
                         const nameCalculatedChecksum = calculateChecksum(namePart);
 
-                        // 3. KIỂM TRA NGẦM THUẬT TOÁN KIỂM TRA (CHECKSUM)
                         if (gplxChecksumOnCard === gplxCalculatedChecksum && nameChecksumOnCard === nameCalculatedChecksum) {
                             isChecksumValid = true;
                         }
 
-                        // Xử lý chuỗi hiển thị ra màn hình
                         let txtGplx = new TextDecoder("ascii").decode(gplxPart).trim();
                         
                         let validNameLength = 0;
@@ -219,7 +325,6 @@
                         }
                         let txtHoTen = new TextDecoder("ascii").decode(namePart.slice(0, validNameLength)).trim();
 
-                        // KIỂM TRA TỔNG HỢP BIẾN CỜ CHẠY NGẦM
                         if (isHardwareValid && isDataStructureValid && isChecksumValid) {
                             resGplx.innerText = txtGplx;
                             resHoTen.innerText = txtHoTen;
@@ -231,7 +336,6 @@
                     }
                 }
 
-                // Nếu có bất kỳ bước kiểm tra ngầm nào thất bại
                 showStatus("Thẻ lỗi hoặc KHÔNG đạt tiêu chuẩn quy định của BCA!", "error");
                 resultBox.style.display = 'none';
             });
@@ -259,7 +363,6 @@
         try {
             showStatus("Đang chuẩn bị dữ liệu...", "info");
 
-            // Khởi tạo vùng đệm đúng quy chuẩn
             const gplxBuffer = new Uint8Array(15);
             for (let i = 0; i < 15; i++) {
                 gplxBuffer[i] = i < gplxInput.length ? gplxInput.charCodeAt(i) : 0x20;
