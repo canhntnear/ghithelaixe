@@ -119,12 +119,33 @@
         /* --- CONTAINER --- */
         .container {
             background-color: white;
-            padding: 28px 24px;
+            padding: 24px 24px 28px 24px;
             border-radius: 20px;
             box-shadow: var(--card-shadow);
             margin-bottom: 20px;
             border: 1px solid rgba(0, 121, 107, 0.05);
         }
+
+        /* NÚT KIỂM TRA TƯƠNG THÍCH ĐIỆN THOẠI */
+        .btn-check-compat {
+            width: 100%;
+            background: linear-gradient(135deg, #78909c, #455a64);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(69, 90, 100, 0.2);
+            transition: all 0.2s ease;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-check-compat:active { transform: scale(0.98); }
 
         .form-group {
             margin-bottom: 20px;
@@ -315,6 +336,10 @@
 
 <div class="container">
 
+    <button type="button" class="btn-check-compat" id="btnCheckCompat">
+        🔍 KIỂM TRA ĐIỆN THOẠI CÓ HỖ TRỢ NFC KHÔNG?
+    </button>
+
     <div class="form-group">
         <label for="gplx">Số GPLX (Yêu cầu đúng 12 số viết liền):</label>
         <div class="input-with-mic">
@@ -360,6 +385,7 @@
     const btnRead = document.getElementById('btnRead');
     const btnMicGplx = document.getElementById('btnMicGplx');
     const btnMicHoTen = document.getElementById('btnMicHoTen');
+    const btnCheckCompat = document.getElementById('btnCheckCompat');
     const statusDiv = document.getElementById('status');
     const resultBox = document.getElementById('resultBox');
     
@@ -377,6 +403,39 @@
         statusDiv.innerText = text;
         statusDiv.className = `info ${type}`;
     }
+
+    // ================= LOGIC KIỂM TRA ĐỘ TƯƠNG THÍCH THIẾT BỊ =================
+    function checkDeviceCompatibility(isManualClick = false) {
+        // 1. Kiểm tra nếu là các dòng máy của Apple (iPhone / iPad)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        
+        if (isIOS) {
+            showStatus("❌ Thiết bị: iPhone (iOS). Hệ điều hành Apple hiện KHÔNG hỗ trợ tính năng WebNFC trên trình duyệt Chrome/Safari. Bạn không thể quét hay ghi thẻ trực tiếp bằng web này.", "error");
+            return false;
+        }
+
+        // 2. Kiểm tra tính năng WebNFC có tồn tại trong Trình duyệt không (Yêu cầu Chrome trên Android)
+        if (!('NDEFReader' in window)) {
+            showStatus("❌ Thiết bị/Trình duyệt không tương thích! WebNFC chỉ chạy trên Google Chrome (Android). Vui lòng copy link này mở bằng ứng dụng Chrome.", "error");
+            return false;
+        }
+
+        // 3. Nếu vượt qua bộ lọc trên thì máy chạy được nền tảng WebNFC
+        if (isManualClick) {
+            showStatus("📱 Thiết bị ĐẠT CHUẨN! Điện thoại Android và trình duyệt của bạn hỗ trợ đầy đủ tính năng quét/ghi thẻ NFC. Hãy bật NFC trong cài đặt máy trước khi quẹt.", "success");
+        }
+        return true;
+    }
+
+    // Tự động kiểm tra ngầm ngay khi người dùng vừa truy cập trang web
+    window.addEventListener('DOMContentLoaded', () => {
+        checkDeviceCompatibility(false);
+    });
+
+    // Xử lý khi người dùng chủ động bấm nút Kiểm tra thiết bị
+    btnCheckCompat.addEventListener('click', () => {
+        checkDeviceCompatibility(true);
+    });
 
     function removeVietnameseTones(str) {
         str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -508,12 +567,9 @@
         }
     });
 
-    // ================= KIỂM TRA THÈ NDEF =================
+    // ================= KIỂM TRA THẺ NDEF =================
     btnRead.addEventListener('click', async () => {
-        if (!('NDEFReader' in window)) {
-            showStatus("Thiết bị không hỗ trợ WebNFC. Hãy dùng Chrome trên Android.", "error");
-            return;
-        }
+        if (!checkDeviceCompatibility(false)) return;
         try {
             const ndef = new NDEFReader();
             await ndef.scan();
@@ -565,10 +621,7 @@
 
     // ================= GHI THẺ NDEF =================
     btnWrite.addEventListener('click', async () => {
-        if (!('NDEFReader' in window)) {
-            showStatus("Thiết bị không hỗ trợ WebNFC.", "error");
-            return;
-        }
+        if (!checkDeviceCompatibility(false)) return;
         const gplxRaw = gplxInput.value.trim();
         const hotenRaw = hotenInput.value.trim();
 
