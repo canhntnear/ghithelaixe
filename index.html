@@ -28,7 +28,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- HEADER CHỨA LOGO VÀ TIÊU ĐỀ THEO YÊU CẦU --- */
+        /* --- HEADER CHỨA LOGO VÀ TIÊU ĐỀ --- */
         .header-brand {
             display: flex;
             flex-direction: column;
@@ -104,7 +104,7 @@
             outline: none;
         }
 
-        /* --- KHU VỰC ĐÚNG STYLE BUTTON ĐỔ BÓNG BO TRÒN --- */
+        /* --- KHU VỰC BUTTON ĐỔ BÓNG BO TRÒN --- */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -203,7 +203,7 @@
             box-shadow: 0 6px 15px rgba(46, 125, 50, 0.2);
         }
 
-        /* --- FOOTER CÔNG TY ĐƠN VỊ CUNG CẤP --- */
+        /* --- FOOTER ĐƠN VỊ CUNG CẤP --- */
         .footer-provider {
             margin-top: auto;
             background-color: white;
@@ -385,8 +385,14 @@
                     }
                 }
 
-                showStatus("Thẻ lỗi hoặc KHÔNG đạt tiêu chuẩn quy định của BCA!", "error");
+                // CẬP NHẬT: Thay đổi chuỗi thông báo lỗi và kích hoạt popup alert
+                showStatus("Thẻ lỗi hoặc KHÔNG đủ thông tin theo quy định của BCA!", "error");
                 resultBox.style.display = 'none';
+                
+                // Hiện popup cảnh báo liên hệ nhà cung cấp
+                setTimeout(() => {
+                    alert("Vui lòng liên hệ nhà cung cấp để xác thực thông tin");
+                }, 100);
             });
 
         } catch (error) {
