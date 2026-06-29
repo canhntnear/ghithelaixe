@@ -3,206 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Thẻ Lái Xe QCVN - Vạn Phú Khánh</title>
+    <title>Vạn Phú Khánh - Quản Lý Thẻ Nhận Dạng Lái Xe</title>
     <style>
         :root {
             --primary-color: #00796B;
             --primary-hover: #004D40;
             --secondary-color: #0288D1;
             --secondary-hover: #01579B;
-            --text-color: #333;
-            --bg-color: #f0f4f4;
+            --text-color: #2c3e50;
+            --bg-color: #f4f7f6;
+            --card-shadow: 0 15px 35px rgba(0, 77, 64, 0.06), 0 5px 15px rgba(0, 0, 0, 0.04);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 550px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 520px;
             margin: 0 auto;
             padding: 15px;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
             flex-direction: column;
-            min-height: 95vh;
+            min-height: 96vh;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* --- HEADER CHỨA LOGO VÀ TIÊU ĐỀ THEO YÊU CẦU --- */
+        .header-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header-brand img {
+            height: 65px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: #546e7a;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* --- CONTAINER PHONG CÁCH VERCEL --- */
         .container {
             background-color: white;
-            padding: 30px 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 77, 64, 0.08);
-            margin-bottom: 25px;
-            margin-top: 10px;
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            padding: 28px 24px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 121, 107, 0.05);
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
-            color: #444;
+            color: #455a64;
             font-size: 14px;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #ced4da;
-            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid #cfd8dc;
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 16px;
-            transition: all 0.3s ease;
-            background-color: #fff;
+            transition: all 0.25s ease;
+            background-color: #fafbfc;
+            color: var(--text-color);
         }
 
         input[type="text"]:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.15);
+            box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.1);
+            background-color: #fff;
             outline: none;
         }
 
+        /* --- KHU VỰC ĐÚNG STYLE BUTTON ĐỔ BÓNG BO TRÒN --- */
         .btn-group {
             display: flex;
             gap: 12px;
-            margin-top: 25px;
+            margin-top: 15px;
         }
 
         button {
             flex: 1;
-            padding: 14px;
+            padding: 15px;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            /* Hiệu ứng đổ bóng cho nút bấm */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         button:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: scale(0.97);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         #btnRead {
             background: linear-gradient(135deg, #0288D1, #01579B);
         }
         #btnRead:hover {
-            background: #01579B;
-            box-shadow: 0 6px 16px rgba(1, 87, 155, 0.3);
+            box-shadow: 0 6px 20px rgba(1, 87, 155, 0.25);
         }
 
         #btnWrite {
             background: linear-gradient(135deg, #00796B, #004D40);
         }
         #btnWrite:hover {
-            background: #004D40;
-            box-shadow: 0 6px 16px rgba(0, 77, 64, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 77, 64, 0.25);
         }
         
         #status {
             margin-top: 20px;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             text-align: center;
             font-weight: 600;
             display: none;
-            font-size: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 14px;
         }
 
-        .info { background-color: #E0F7FA; color: #006064; border: 1px solid #B2EBF2; }
-        .success { background-color: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
-        .error { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+        .info { background-color: #e0f7fa; color: #006064; border: 1px solid #b2ebf2; }
+        .success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .error { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
+        /* --- KẾT QUẢ HIỂN THỊ --- */
         .result-box {
-            margin-top: 22px;
-            padding: 18px;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            background-color: #fcfcfc;
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #eceff1;
+            border-radius: 14px;
+            background-color: #fcfdfe;
             display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
         .result-title {
             font-weight: 700;
             color: var(--primary-color);
-            border-bottom: 2px solid #E0F2F1;
+            border-bottom: 2px solid #e0f2f1;
             padding-bottom: 8px;
-            margin-bottom: 14px;
-            font-size: 16px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            letter-spacing: 0.5px;
         }
 
         .result-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #f0f4f4;
+            padding-bottom: 8px;
+        }
+        .result-item span {
+            font-weight: 600;
+            color: #102a43;
         }
 
         .final-verdict {
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 18px;
+            padding: 14px;
             text-align: center;
             font-weight: 700;
-            border-radius: 10px;
-            font-size: 15px;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 12px;
+            font-size: 14px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
             color: white;
-            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.2);
         }
 
-        /* --- BẢNG THÔNG TIN ĐƠN VỊ CUNG CẤP (FOOTER) --- */
+        /* --- FOOTER CÔNG TY ĐƠN VỊ CUNG CẤP --- */
         .footer-provider {
-            margin-top: auto; /* Đẩy footer luôn nằm dưới cùng */
+            margin-top: auto;
             background-color: white;
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
-            border-top: 3px solid var(--primary-color);
+            padding: 22px 20px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            border-top: 4px solid var(--primary-color);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .footer-title {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary-color);
             font-size: 16px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
         }
 
         .footer-desc {
-            color: #666;
-            margin-bottom: 12px;
+            color: #607d8b;
+            margin-bottom: 14px;
+            font-size: 13.5px;
         }
 
         .footer-contact {
-            border-top: 1px dashed #e0e0e0;
-            padding-top: 10px;
+            border-top: 1px dashed #cfd8dc;
+            padding-top: 12px;
         }
 
         .contact-item {
-            margin-bottom: 6px;
-            color: #444;
+            margin-bottom: 8px;
+            color: #37474f;
+            display: flex;
+            align-items: center;
         }
 
         .contact-item a {
             color: var(--secondary-color);
             text-decoration: none;
             font-weight: 700;
+            margin-left: 4px;
         }
 
         .contact-item a:hover {
@@ -212,9 +255,14 @@
 </head>
 <body>
 
+<!-- KHU VỰC TIÊU ĐỀ LOGO THƯƠNG HIỆU -->
+<div class="header-brand">
+    <img src="https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png" alt="Logo Vạn Phú Khánh">
+    <div class="brand-name">VẠN PHÚ KHÁNH</div>
+    <div class="brand-subtitle">Quản Lý Thẻ Nhận Dạng Lái Xe</div>
+</div>
+
 <div class="container">
-    <h2>THIẾT BỊ QUẢN LÝ THẺ LÁI XE QCVN</h2>
-    
     <div class="form-group">
         <label for="gplx">Số GPLX (Tối đa 15 ký tự):</label>
         <input type="text" id="gplx" maxlength="15" placeholder="Ví dụ: 790123456789" value="790123456789">
@@ -243,12 +291,13 @@
     </div>
 </div>
 
+<!-- BẢNG THÔNG TIN ĐƠN VỊ CUNG CẤP PHÍA DƯỚI CÙNG -->
 <div class="footer-provider">
     <div class="footer-title">Vạn Phú Khánh</div>
     <div class="footer-desc">Thẻ lái xe đa năng và dịch vụ toàn diện cho thiết bị giám sát hành trình.</div>
     <div class="footer-contact">
-        <div class="contact-item">📞 <strong>Mua thẻ lái xe đa năng:</strong> <a href="tel:0588588114">0588.588.114</a></div>
-        <div class="contact-item">⚙️ <strong>Các vấn đề khác:</strong> <a href="tel:0585114114">0585.114.114</a></div>
+        <div class="contact-item">📞 Mua thẻ lái xe đa năng: <a href="tel:0588588114">0588.588.114</a></div>
+        <div class="contact-item">⚙️ Các vấn đề khác: <a href="tel:0585114114">0585.114.114</a></div>
     </div>
 </div>
 
