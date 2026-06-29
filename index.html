@@ -28,7 +28,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- HEADER THEO MẪU ẢNH IMAGE_B0C3B9.PNG --- */
+        /* --- HEADER THEO MẪU HÀNG NGANG --- */
         .header-brand {
             display: flex;
             align-items: center;
@@ -146,14 +146,14 @@
             outline: none;
         }
 
-        /* --- NÚT ĐỌC THẺ CŨ ĐỂ TỰ ĐIỀN NHANH --- */
+        /* --- NÚT BẤM THU ÂM GIỌNG NÓI --- */
         .btn-scan-container {
             margin-bottom: 20px;
         }
 
-        .btn-scan {
+        .btn-voice {
             width: 100%;
-            background: linear-gradient(135deg, #7B1FA2, #4A148C);
+            background: linear-gradient(135deg, #e53935, #b71c1c);
             color: white;
             padding: 14px;
             border: none;
@@ -161,16 +161,23 @@
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(123, 31, 162, 0.2);
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .btn-scan:hover {
-            box-shadow: 0 6px 20px rgba(123, 31, 162, 0.35);
+        .btn-voice.recording {
+            background: linear-gradient(135deg, #ff1744, #d50000);
+            animation: pulse-animation 1.2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 23, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); }
         }
 
         /* --- KHU VỰC BUTTON ĐỔ BÓNG BO TRÒN --- */
@@ -195,7 +202,6 @@
 
         button:active {
             transform: scale(0.97);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         #btnRead {
@@ -325,7 +331,6 @@
 </head>
 <body>
 
-<!-- KHU VỰC TIÊU ĐỀ LOGO HÀNG NGANG THEO IMAGE_B0C3B9.PNG -->
 <div class="header-brand">
     <div class="logo-container">
         <img src="https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png" alt="Logo Vạn Phú Khánh">
@@ -339,10 +344,9 @@
 
 <div class="container">
     
-    <!-- TÍNH NĂNG ĐỔI MỚI: ĐỌC THẺ ĐỂ TỰ ĐỘNG ĐIỀN NHANH VÀO Ô DƯỚI -->
     <div class="btn-scan-container">
-        <button type="button" class="btn-scan" id="btnAutoFill">
-            💳 ĐỌC THẺ CŨ ĐỂ TỰ ĐỘNG ĐIỀN NHANH
+        <button type="button" class="btn-voice" id="btnVoice">
+            🎤 NHẤN ĐỂ NÓI (TỰ ĐIỀN HỌ TÊN & GPLX)
         </button>
     </div>
 
@@ -374,7 +378,6 @@
     </div>
 </div>
 
-<!-- BẢNG THÔNG TIN ĐƠN VỊ CUNG CẤP -->
 <div class="footer-provider">
     <div class="footer-title">Vạn Phú Khánh</div>
     <div class="footer-desc">Thẻ lái xe đa năng và dịch vụ toàn diện cho thiết bị giám sát hành trình.</div>
@@ -387,7 +390,7 @@
 <script {nonce}>
     const btnWrite = document.getElementById('btnWrite');
     const btnRead = document.getElementById('btnRead');
-    const btnAutoFill = document.getElementById('btnAutoFill');
+    const btnVoice = document.getElementById('btnVoice');
     const statusDiv = document.getElementById('status');
     const resultBox = document.getElementById('resultBox');
     
@@ -396,6 +399,9 @@
     
     const resGplx = document.getElementById('resGplx');
     const resHoTen = document.getElementById('resHoTen');
+
+    let recognition = null;
+    let isRecording = false;
 
     function showStatus(text, type) {
         statusDiv.style.display = 'block';
@@ -412,7 +418,7 @@
         return str.trim();
     }
 
-    // ================= RÀNG BUỘC NHẬP LIỆU REAL-TIME =================
+    // Ràng buộc nhập liệu bàn phím
     gplxInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length > 12) value = value.slice(0, 12);
@@ -431,60 +437,93 @@
         return sum & 0xFF;
     }
 
-    // ================= TÍNH NĂNG MỚI: ĐỌC THẺ ĐỂ ĐIỀN NHANH VÀO KHU VỰC FORM =================
-    btnAutoFill.addEventListener('click', async () => {
-        if (!('NDEFReader' in window)) {
-            showStatus("Thiết bị hoặc trình duyệt không hỗ trợ WebNFC. Hãy dùng Chrome trên Android.", "error");
-            return;
-        }
+    // ================= KHỞI TẠO NHẬN DIỆN GIỌNG NÓI WEB SPEECH API =================
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'vi-VN'; // Cấu hình nhận diện tiếng Việt
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
-        try {
-            const ndef = new NDEFReader();
-            await ndef.scan();
-            showStatus("Quẹt thẻ cũ vào lưng máy để lấy nhanh thông tin điền form...", "warning");
+        recognition.onstart = () => {
+            isRecording = true;
+            btnVoice.classList.add('recording');
+            btnVoice.innerHTML = '🛑 ĐANG NGHE... HÃY ĐỌC TÊN VÀ SỐ GPLX';
+            showStatus("Hệ thống đang lắng nghe... Hãy nói rõ Họ tên và dãy 12 số GPLX.", "warning");
+        };
 
-            ndef.addEventListener("reading", ({ message }) => {
-                for (const record of message.records) {
-                    if (record.recordType === "mime" || record.mediaType === "application/octet-stream") {
-                        const rawData = new Uint8Array(record.data.buffer);
-                        
-                        if (rawData.length >= 60) {
-                            const gplxPart = rawData.slice(0, 12); // Lấy đúng phân vùng gốc 12 số viết liền
-                            const namePart = rawData.slice(16, 59);
-
-                            let txtGplx = new TextDecoder("ascii").decode(gplxPart).trim();
-                            
-                            let validNameLength = 0;
-                            for(let i=0; i<namePart.length; i++) {
-                                if(namePart[i] === 0x00) break;
-                                validNameLength++;
-                            }
-                            let txtHoTen = new TextDecoder("ascii").decode(namePart.slice(0, validNameLength)).trim();
-
-                            // Điền ngược dữ liệu vào form nhập liệu phía dưới
-                            gplxInput.value = txtGplx.replace(/\D/g, '').slice(0, 12);
-                            hotenInput.value = removeVietnameseTones(txtHoTen);
-
-                            showStatus("✨ Đã đọc thẻ cũ và tự động điền nhanh vào form nhập liệu thành công!", "success");
-                            return;
-                        }
-                    }
+        recognition.onresult = (event) => {
+            const resultText = event.results[0][0].transcript;
+            showStatus(`Phân tích đoạn nói: "${resultText}"`, "info");
+            
+            // Lọc chuỗi tìm chính xác 12 chữ số liên tiếp hoặc tách biệt
+            const numbersOnly = resultText.replace(/\s/g, '').match(/\d{12}/);
+            let detectedGplx = numbersOnly ? numbersOnly[0] : "";
+            
+            // Nếu không tìm thấy dính liền liền mạch, cố gom tất cả số lại xem đủ 12 số không
+            if (!detectedGplx) {
+                const allDigits = resultText.replace(/\D/g, '');
+                if (allDigits.length === 12) {
+                    detectedGplx = allDigits;
                 }
-                showStatus("Thẻ cũ trống hoặc không có dữ liệu định dạng chuẩn!", "error");
-            });
+            }
 
-        } catch (error) {
-            showStatus("Lỗi khi đọc điền nhanh: " + error.message, "error");
+            // Xử lý tách họ tên: Loại bỏ các từ khóa phổ biến và phần số
+            let rawName = resultText;
+            if (detectedGplx) {
+                // Tách các cụm số rời rạc trong câu nói gốc
+                rawName = rawName.replace(/\d+/g, ''); 
+            }
+            // Loại bỏ một số cụm từ đệm phổ biến khi người dùng nói
+            rawName = rawName.replace(/(số gplx|số giấy phép lái xe|số lái xe|gplx|họ tên là|họ tên|tên là|tên)/gi, '');
+            
+            const cleanName = removeVietnameseTones(rawName);
+
+            // Cập nhật giá trị vào ô điền
+            if (detectedGplx) gplxInput.value = detectedGplx;
+            if (cleanName) hotenInput.value = cleanName;
+
+            if (detectedGplx || cleanName) {
+                showStatus("✨ Đã phân tích giọng nói và điền form thành công!", "success");
+            } else {
+                showStatus("Không nhận dạng rõ dữ liệu. Vui lòng nói lại rành mạch hơn.", "error");
+            }
+        };
+
+        recognition.onerror = (e) => {
+            showStatus("Lỗi nhận diện hoặc chưa cấp quyền Micro: " + e.error, "error");
+            resetVoiceButton();
+        };
+
+        recognition.onend = () => {
+            resetVoiceButton();
+        };
+    } else {
+        btnVoice.style.background = '#90a4ae';
+        btnVoice.innerHTML = '❌ Trình duyệt không hỗ trợ Giọng nói (Hãy dùng Chrome)';
+    }
+
+    function resetVoiceButton() {
+        isRecording = false;
+        btnVoice.classList.remove('recording');
+        btnVoice.innerHTML = '🎤 NHẤN ĐỂ NÓI (TỰ ĐIỀN HỌ TÊN & GPLX)';
+    }
+
+    btnVoice.addEventListener('click', () => {
+        if (!recognition) return;
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            recognition.start();
         }
     });
 
-    // ================= CHỨC NĂNG KIỂM TRA THẺ (XEM LẠI BÊN DƯỚI) =================
+    // ================= CHỨC NĂNG KIỂM TRA THẺ =================
     btnRead.addEventListener('click', async () => {
         if (!('NDEFReader' in window)) {
             showStatus("Thiết bị hoặc trình duyệt không hỗ trợ WebNFC. Hãy dùng Chrome trên Android.", "error");
             return;
         }
-
         try {
             const ndef = new NDEFReader();
             await ndef.scan();
@@ -538,21 +577,15 @@
                         }
                     }
                 }
-
                 showStatus("Thẻ lỗi hoặc KHÔNG đủ thông tin theo quy định của BCA!", "error");
                 resultBox.style.display = 'none';
-                
-                setTimeout(() => {
-                    alert("Vui lòng liên hệ nhà cung cấp để xác thực thông tin");
-                }, 100);
             });
-
         } catch (error) {
             showStatus("Lỗi khi quét thẻ: " + error.message, "error");
         }
     });
 
-    // ================= CHỨC NNG GHI THẺ MỚI =================
+    // ================= CHỨC NĂNG GHI THẺ MỚI =================
     btnWrite.addEventListener('click', async () => {
         if (!('NDEFReader' in window)) {
             showStatus("Thiết bị hoặc trình duyệt không hỗ trợ WebNFC.", "error");
@@ -567,9 +600,8 @@
             gplxInput.focus();
             return;
         }
-
         if (!hotenRaw) {
-            showStatus("Vui lòng điền hoặc quét họ và tên trước khi thực hiện ghi!", "error");
+            showStatus("Vui lòng điền hoặc nói họ và tên trước khi thực hiện ghi!", "error");
             hotenInput.focus();
             return;
         }
@@ -605,14 +637,11 @@
                     data: totalPayload
                 }]
             });
-
             showStatus("Ghi thẻ thành công! Thẻ được cấu trúc đạt chuẩn BCA.", "success");
-
         } catch (error) {
             showStatus("Lỗi khi ghi: " + error.message, "error");
         }
     });
 </script>
-
 </body>
 </html>
