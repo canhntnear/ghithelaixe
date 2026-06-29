@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vạn Phú Khánh - Quản Lý Thẻ Nhận Dạng Lái Xe</title>
+    <!-- Nhúng thư viện Tesseract.js để nhận diện chữ từ hình ảnh -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root {
             --primary-color: #00796B;
             --primary-hover: #004D40;
             --secondary-color: #0288D1;
             --secondary-hover: #01579B;
+            --ocr-color: #7B1FA2;
             --text-color: #2c3e50;
             --bg-color: #f4f7f6;
             --card-shadow: 0 15px 35px rgba(0, 77, 64, 0.06), 0 5px 15px rgba(0, 0, 0, 0.04);
@@ -104,6 +107,38 @@
             outline: none;
         }
 
+        /* --- NÚT SCAN CAMERA TỰ ĐỘNG --- */
+        .btn-scan-container {
+            margin-bottom: 20px;
+        }
+
+        .btn-scan {
+            width: 100%;
+            background: linear-gradient(135deg, #7B1FA2, #4A148C);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(123, 31, 162, 0.2);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-scan:hover {
+            box-shadow: 0 6px 20px rgba(123, 31, 162, 0.35);
+        }
+
+        /* Ẩn input file mặc định để custom bằng nút bấm đẹp hơn */
+        #cameraInput {
+            display: none;
+        }
+
         /* --- KHU VỰC BUTTON ĐỔ BÓNG BO TRÒN --- */
         .btn-group {
             display: flex;
@@ -156,6 +191,7 @@
         .info { background-color: #e0f7fa; color: #006064; border: 1px solid #b2ebf2; }
         .success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .error { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+        .warning { background-color: #FFF3E0; color: #E65100; border: 1px solid #FFE0B2; }
 
         /* --- KẾT QUẢ HIỂN THỊ --- */
         .result-box {
@@ -263,14 +299,23 @@
 </div>
 
 <div class="container">
+    
+    <!-- TÍNH NĂNG MỚI: QUÉT ẢNH TỰ ĐỘNG ĐIỀN THÔNG TIN -->
+    <div class="btn-scan-container">
+        <input type="file" id="cameraInput" accept="image/*" capture="environment">
+        <button type="button" class="btn-scan" onclick="document.getElementById('cameraInput').click()">
+            📷 CHỤP HOẶC TẢI ẢNH GPLX TỰ ĐỘNG ĐIỀN
+        </button>
+    </div>
+
     <div class="form-group">
         <label for="gplx">Số GPLX (Tối đa 15 ký tự):</label>
-        <input type="text" id="gplx" maxlength="15" placeholder="Ví dụ: 790123456789" value="790123456789">
+        <input type="text" id="gplx" maxlength="15" placeholder="Đang chờ nhập hoặc quét ảnh..." value="">
     </div>
 
     <div class="form-group">
         <label for="hoten">Họ và tên (Không dấu, tối đa 43 ký tự):</label>
-        <input type="text" id="hoten" maxlength="43" placeholder="Ví dụ: NGUYEN VAN A" value="NGUYEN VAN A">
+        <input type="text" id="hoten" maxlength="43" placeholder="Đang chờ nhập hoặc quét ảnh..." value="">
     </div>
 
     <div class="btn-group">
@@ -304,6 +349,7 @@
 <script {nonce}>
     const btnWrite = document.getElementById('btnWrite');
     const btnRead = document.getElementById('btnRead');
+    const cameraInput = document.getElementById('cameraInput');
     const statusDiv = document.getElementById('status');
     const resultBox = document.getElementById('resultBox');
     
@@ -323,6 +369,90 @@
         }
         return sum & 0xFF;
     }
+
+    // ================= XỬ LÝ AI NHẬN DIỆN HÌNH ẢNH (OCR) =================
+    cameraInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        showStatus("🤖 Hệ thống đang phân tích ảnh... Vui lòng đợi trong giây lát...", "warning");
+
+        try {
+            // Chạy nhận diện chữ qua thư viện Tesseract.js (hỗ trợ cả tiếng Anh/Số và tiếng Việt)
+            const result = await Tesseract.recognize(file, 'eng+vie');
+            const lines = result.data.text.split('\n');
+
+            let detectedGplx = "";
+            let detectedName = "";
+
+            // Biểu thức chính quy tìm chuỗi 12 chữ số liên tục (Số GPLX thế hệ mới)
+            const gplxRegex = /\b\d{12}\b/;
+
+            for (let line of lines) {
+                line = line.trim();
+                
+                // 1. Tìm số GPLX
+                if (!detectedGplx) {
+                    const match = line.match(gplxRegex);
+                    if (match) {
+                        detectedGplx = match[0];
+                    }
+                }
+
+                // 2. Thuật toán tìm Họ Tên (Tìm các dòng chữ IN HOA hoàn toàn có độ dài hợp lý)
+                if (!detectedName && line.length > 5 && line.length < 40) {
+                    // Loại bỏ các từ khóa tiêu đề chung trên bằng lái xe
+                    const upperLine = line.toUpperCase();
+                    if (
+                        /[A-Z]/.test(upperLine) && 
+                        upperLine === line && 
+                        !upperLine.includes("GIẤY PHÉP") && 
+                        !upperLine.includes("SỐ") && 
+                        !upperLine.includes("NO") && 
+                        !upperLine.includes("DRIVING") && 
+                        !upperLine.includes("LICENCE") &&
+                        !upperLine.includes("KÝ") &&
+                        !upperLine.includes("CỤC TRƯỞNG") &&
+                        !upperLine.includes("CỤC ĐƯỜNG BỘ")
+                    ) {
+                        detectedName = line;
+                    }
+                }
+            }
+
+            // Chuyển đổi tên sang dạng không dấu để ghi chuẩn vào chip RFID thẻ lái xe
+            if (detectedName) {
+                detectedName = detectedName.normalize("NFD")
+                                           .replace(/[\u0300-\u036f]/g, "")
+                                           .replace(/Đ/g, "D")
+                                           .replace(/đ/g, "d")
+                                           .toUpperCase()
+                                           .replace(/[^A-Z ]/g, "")
+                                           .trim();
+            }
+
+            // Điền kết quả tìm được vào form
+            if (detectedGplx) {
+                document.getElementById('gplx').value = detectedGplx;
+            }
+            if (detectedName) {
+                document.getElementById('hoten').value = detectedName;
+            }
+
+            if (detectedGplx || detectedName) {
+                showStatus("✨ Phân tích ảnh hoàn tất! Đã điền thông tin tự động.", "success");
+            } else {
+                showStatus("⚠️ Không tìm thấy Số GPLX hoặc Họ Tên rõ ràng. Vui lòng chụp thẳng góc/nét hơn hoặc tự điền tay.", "error");
+            }
+
+        } catch (err) {
+            showStatus("Lỗi phân tích hình ảnh: " + err.message, "error");
+        }
+        
+        // Reset input file để có thể quét lại cùng 1 bức ảnh nếu cần
+        cameraInput.value = "";
+    });
+
 
     // ================= CHỨC NĂNG ĐỌC & KIỂM TRA CHUẨN NGẦM =================
     btnRead.addEventListener('click', async () => {
@@ -385,11 +515,9 @@
                     }
                 }
 
-                // CẬP NHẬT: Thay đổi chuỗi thông báo lỗi và kích hoạt popup alert
                 showStatus("Thẻ lỗi hoặc KHÔNG đủ thông tin theo quy định của BCA!", "error");
                 resultBox.style.display = 'none';
                 
-                // Hiện popup cảnh báo liên hệ nhà cung cấp
                 setTimeout(() => {
                     alert("Vui lòng liên hệ nhà cung cấp để xác thực thông tin");
                 }, 100);
@@ -411,7 +539,7 @@
         const hotenInput = document.getElementById('hoten').value.trim().toUpperCase();
 
         if (!gplxInput || !hotenInput) {
-            showStatus("Vui lòng điền đầy đủ số GPLX và Họ tên trước khi ghi!", "error");
+            showStatus("Vui lòng điền hoặc quét đầy đủ số GPLX và Họ tên trước khi ghi!", "error");
             return;
         }
 
