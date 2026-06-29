@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghi Thẻ Lái Xe QCVN</title>
+    <title>Quản Lý Thẻ Lái Xe QCVN</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 30px auto;
-            padding: 20px;
+            max-width: 550px;
+            margin: 20px auto;
+            padding: 15px;
             background-color: #f5f5f5;
         }
         .container {
@@ -17,11 +17,13 @@
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
         h2 {
             text-align: center;
             color: #00796B;
             margin-bottom: 25px;
+            font-size: 22px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -40,29 +42,64 @@
             box-sizing: border-box;
             font-size: 16px;
         }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
         button {
-            width: 100%;
+            flex: 1;
             padding: 12px;
-            background-color: #00796B;
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
         }
-        button:hover {
-            background-color: #004D40;
-        }
+        #btnWrite { background-color: #00796B; }
+        #btnWrite:hover { background-color: #004D40; }
+        #btnRead { background-color: #0288D1; }
+        #btnRead:hover { background-color: #01579B; }
+        
         #status {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
             display: none;
         }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+            display: none;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #00796B;
+            border-bottom: 2px solid #00796B;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .result-item {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-success { background-color: #2E7D32; }
+        .badge-error { background-color: #C62828; }
+        
         .info { background-color: #E0F7FA; color: #006064; }
         .success { background-color: #E8F5E9; color: #2E7D32; }
         .error { background-color: #FFEBEE; color: #C62828; }
@@ -71,7 +108,7 @@
 <body>
 
 <div class="container">
-    <h2>GHI THẺ LÁI XE QCVN</h2>
+    <h2>THIẾT BỊ QUẢN LÝ THẺ LÁI XE QCVN</h2>
     
     <div class="form-group">
         <label for="gplx">Số GPLX (Tối đa 15 ký tự):</label>
@@ -79,18 +116,34 @@
     </div>
 
     <div class="form-group">
-        <label for="hoten">Họ và tên (Chữ không dấu, tối đa 43 ký tự):</label>
+        <label for="hoten">Họ và tên (Không dấu, tối đa 43 ký tự):</label>
         <input type="text" id="hoten" maxlength="43" placeholder="Ví dụ: NGUYEN VAN A" value="NGUYEN VAN A">
     </div>
 
-    <button id="btnWrite">BẮT ĐẦU GHI THẺ</button>
+    <div class="btn-group">
+        <button id="btnRead">BẮT ĐẦU ĐỌC THẺ</button>
+        <button id="btnWrite">GHI DỮ LIỆU VÀO THẺ</button>
+    </div>
 
     <div id="status"></div>
+
+    <div id="resultBox" class="result-box">
+        <div class="result-title">THÔNG TIN LÁI XE TRÊN THẺ</div>
+        <div class="result-item"><strong>Số GPLX:</strong> <span id="resGplx">---</span> <span id="badgeGplx"></span></div>
+        <div class="result-item"><strong>Họ và tên:</strong> <span id="resHoTen">---</span> <span id="badgeHoTen"></span></div>
+    </div>
 </div>
 
 <script>
     const btnWrite = document.getElementById('btnWrite');
+    const btnRead = document.getElementById('btnRead');
     const statusDiv = document.getElementById('status');
+    const resultBox = document.getElementById('resultBox');
+    
+    const resGplx = document.getElementById('resGplx');
+    const resHoTen = document.getElementById('resHoTen');
+    const badgeGplx = document.getElementById('badgeGplx');
+    const badgeHoTen = document.getElementById('badgeHoTen');
 
     function showStatus(text, type) {
         statusDiv.style.display = 'block';
@@ -98,7 +151,7 @@
         statusDiv.className = `info ${type}`;
     }
 
-    // Thuật toán tính mã kiểm tra: Tổng các byte & 255 lấy byte thấp
+    // Thuật toán tính mã kiểm tra theo chuẩn: Tổng các byte & 255 lấy byte thấp
     function calculateChecksum(uint8Array) {
         let sum = 0;
         for (let i = 0; i < uint8Array.length; i++) {
@@ -107,10 +160,88 @@
         return sum & 0xFF;
     }
 
-    btnWrite.addEventListener('click', async () => {
-        // 1. Kiểm tra xem trình duyệt có hỗ trợ WebNFC không
+    // ================= CHỨC NĂNG ĐỌC THẺ & KIỂM TRA ĐẠT CHUẨN =================
+    btnRead.addEventListener('click', async () => {
         if (!('NDEFReader' in window)) {
-            showStatus("Trình duyệt hoặc thiết bị của bạn không hỗ trợ WebNFC. Hãy thử lại bằng Chrome trên Android.", "error");
+            showStatus("Thiết bị hoặc trình duyệt không hỗ trợ WebNFC. Hãy dùng Chrome trên Android.", "error");
+            return;
+        }
+
+        try {
+            const ndef = new NDEFReader();
+            await ndef.scan();
+            showStatus("Vui lòng quẹt thẻ lái xe vào lưng điện thoại để đọc...", "info");
+            resultBox.style.display = 'none';
+
+            ndef.addEventListener("reading", ({ message }) => {
+                for (const record of message.records) {
+                    // Kiểm tra xem có đúng định dạng dữ liệu thô (mime/octet-stream) hay không
+                    if (record.recordType === "mime" || record.mediaType === "application/octet-stream") {
+                        
+                        const rawData = new Uint8Array(record.data.buffer);
+                        
+                        // Nếu dữ liệu đọc được nhỏ hơn gói cấu trúc tối thiểu (60 byte)
+                        if (rawData.length < 60) {
+                            showStatus("Cấu trúc dữ liệu trên thẻ không đúng chuẩn QCVN (Thiếu byte)!", "error");
+                            return;
+                        }
+
+                        // 1. Tách và kiểm tra Vùng 1: Số GPLX (Byte 0 -> 15)
+                        const gplxPart = rawData.slice(0, 15);
+                        const gplxChecksumOnCard = rawData[15];
+                        const gplxCalculatedChecksum = calculateChecksum(gplxPart);
+                        
+                        // Chuyển mảng byte sang chuỗi chữ ASCII
+                        let txtGplx = new TextDecoder("ascii").decode(gplxPart).trim();
+                        
+                        // 2. Tách và kiểm tra Vùng 2: Họ Tên (Byte 16 -> 59)
+                        const namePart = rawData.slice(16, 59);
+                        const nameChecksumOnCard = rawData[59];
+                        const nameCalculatedChecksum = calculateChecksum(namePart);
+                        
+                        // Lọc bỏ các ký tự đệm (Padding 0x00)
+                        let validNameLength = 0;
+                        for(let i=0; i<namePart.length; i++) {
+                            if(namePart[i] === 0x00) break;
+                            validNameLength++;
+                        }
+                        let txtHoTen = new TextDecoder("ascii").decode(namePart.slice(0, validNameLength)).trim();
+
+                        // 3. Hiển thị kết quả lên giao diện
+                        resGplx.innerText = txtGplx;
+                        resHoTen.innerText = txtHoTen;
+
+                        // Kiểm tra lỗi Checksum vùng GPLX
+                        if (gplxChecksumOnCard === gplxCalculatedChecksum) {
+                            badgeGplx.innerHTML = '<span class="badge badge-success">Hợp lệ</span>';
+                        } else {
+                            badgeGplx.innerHTML = '<span class="badge badge-error">Sai Checksum</span>';
+                        }
+
+                        // Kiểm tra lỗi Checksum vùng Họ Tên
+                        if (nameChecksumOnCard === nameCalculatedChecksum) {
+                            badgeHoTen.innerHTML = '<span class="badge badge-success">Hợp lệ</span>';
+                        } else {
+                            badgeHoTen.innerHTML = '<span class="badge badge-error">Sai Checksum</span>';
+                        }
+
+                        showStatus("Đọc dữ liệu hoàn tất!", "success");
+                        resultBox.style.display = 'block';
+                        return;
+                    }
+                }
+                showStatus("Không tìm thấy dữ liệu cấu trúc QCVN trên thẻ này.", "error");
+            });
+
+        } catch (error) {
+            showStatus("Lỗi khi quét thẻ: " + error.message, "error");
+        }
+    });
+
+    // ================= CHỨC NĂNG GHI DỮ LIỆU VÀO THẺ =================
+    btnWrite.addEventListener('click', async () => {
+        if (!('NDEFReader' in window)) {
+            showStatus("Thiết bị hoặc trình duyệt không hỗ trợ WebNFC.", "error");
             return;
         }
 
@@ -118,37 +249,35 @@
         const hotenInput = document.getElementById('hoten').value.trim().toUpperCase();
 
         if (!gplxInput || !hotenInput) {
-            showStatus("Vui lòng điền đầy đủ số GPLX và Họ tên!", "error");
+            showStatus("Vui lòng điền đầy đủ số GPLX và Họ tên trước khi ghi!", "error");
             return;
         }
 
         try {
-            showStatus("Đang chuẩn bị dữ liệu mã hóa...", "info");
+            showStatus("Đang chuẩn bị dữ liệu...", "info");
 
-            // --- XỬ LÝ VÙNG 1: SỐ GPLX (16 Byte) ---
+            // Format Vùng 1: Số GPLX
             const gplxBuffer = new Uint8Array(15);
-            // Điền chuỗi ASCII vào buffer, nếu thiếu tự động để trống
             for (let i = 0; i < 15; i++) {
-                gplxBuffer[i] = i < gplxInput.length ? gplxInput.charCodeAt(i) : 0x20; // 0x20 là khoảng trắng
+                gplxBuffer[i] = i < gplxInput.length ? gplxInput.charCodeAt(i) : 0x20; // Điền khoảng trắng nếu thiếu
             }
             const gplxChecksum = calculateChecksum(gplxBuffer);
 
-            // --- XỬ LÝ VÙNG 2: HỌ TÊN LÁI XE (44 Byte) ---
+            // Format Vùng 2: Họ Tên
             const nameBuffer = new Uint8Array(43);
             for (let i = 0; i < 43; i++) {
-                nameBuffer[i] = i < hotenInput.length ? hotenInput.charCodeAt(i) : 0x00; // 0x00 theo chuẩn đệm padding
+                nameBuffer[i] = i < hotenInput.length ? hotenInput.charCodeAt(i) : 0x00; // Điền byte 0x00 nếu thiếu
             }
             const nameChecksum = calculateChecksum(nameBuffer);
 
-            // --- GỘP TOÀN BỘ DỮ LIỆU ĐẠT CHUẨN (60 Byte) ---
+            // Gộp chuỗi 60 Byte
             const totalPayload = new Uint8Array(60);
             totalPayload.set(gplxBuffer, 0);
             totalPayload[15] = gplxChecksum;
             totalPayload.set(nameBuffer, 16);
             totalPayload[59] = nameChecksum;
 
-            // 2. Kích hoạt đầu đọc và tiến hành ghi đè dữ liệu thô (Mime Type)
-            showStatus("Vui lòng quẹt thẻ lái xe vào lưng điện thoại...", "info");
+            showStatus("Vui lòng giữ cố định thẻ lái xe ở lưng điện thoại...", "info");
             
             const ndef = new NDEFReader();
             await ndef.write({
@@ -159,11 +288,10 @@
                 }]
             });
 
-            showStatus("Ghi thẻ thành công! Thẻ đã đạt chuẩn QCVN.", "success");
+            showStatus("Ghi thẻ thành công! Thẻ đã sẵn sàng sử dụng.", "success");
 
         } catch (error) {
-            showStatus("Lỗi khi ghi thẻ: " + error.message, "error");
-            console.error(error);
+            showStatus("Lỗi khi ghi: " + error.message, "error");
         }
     });
 </script>
