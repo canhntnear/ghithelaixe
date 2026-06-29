@@ -125,7 +125,7 @@
             border: 1px solid rgba(0, 121, 107, 0.05);
         }
 
-        /* NÚT CHECK PHONE ĐÃ RÚT NGẮN */
+        /* NÚT CHECK PHONE */
         .btn-check-compat {
             width: 100%;
             background: linear-gradient(135deg, #78909c, #455a64);
@@ -327,7 +327,6 @@
 
 <div class="container">
 
-    <!-- NÚT CHECK PHONE ĐÃ ĐỔI TÊN NGẮN GỌN -->
     <button type="button" class="btn-check-compat" id="btnCheckCompat">
         🔍 Check Phone
     </button>
@@ -396,34 +395,36 @@
         statusDiv.className = `info ${type}`;
     }
 
-    // ================= LOGIC KIỂM TRA PHẦN CỨNG CHUẨN ĐẦU RA THEO YÊU CẦU =================
+    // ================= LOGIC KIỂM TRA PHẦN CỨNG + TRÌNH DUYỆT CHÍNH XÁC =================
     async function checkDeviceCompatibility(isManualClick = false) {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         
-        // Trường hợp là iPhone (iOS)
+        // 1. Trường hợp dùng iPhone
         if (isIOS) {
             showStatus("❌ Điện thoại không hỗ trợ", "error");
             return false;
         }
 
-        // Trường hợp Trình duyệt không hỗ trợ thư viện WebNFC (Không phải Chrome trên Android)
+        // 2. Trường hợp dùng Brave hoặc trình duyệt không hỗ trợ thư viện WebNFC
         if (!('NDEFReader' in window)) {
-            showStatus("❌ Điện thoại không hỗ trợ", "error");
+            if (isManualClick) {
+                showStatus("❌ Điện thoại không hỗ trợ (Brave/Trình duyệt này chặn NFC). Vui lòng copy link mở bằng ứng dụng GOOGLE CHROME!", "error");
+            } else {
+                showStatus("❌ Điện thoại không hỗ trợ", "error");
+            }
             return false;
         }
 
-        // Thực hiện kiểm tra sâu xuống phần cứng khi click nút
+        // 3. Thực hiện kiểm tra sâu phần cứng chip NFC thật khi click nút
         if (isManualClick) {
             showStatus("⏳ Đang kiểm tra...", "warning");
             try {
                 const ndef = new NDEFReader();
                 await ndef.scan();
                 
-                // Kích hoạt thành công phần cứng quét
                 showStatus("📱 Điện thoại tương thích", "success");
                 return true;
             } catch (error) {
-                // Các lỗi phần cứng không có NFC hoặc đang bị tắt NFC trong cài đặt
                 if (error.name === "NotSupportedError" || error.message.includes("supported")) {
                     showStatus("❌ Điện thoại không hỗ trợ", "error");
                 } else if (error.name === "NotAllowedError" || error.message.includes("permission")) {
@@ -437,7 +438,7 @@
         return true;
     }
 
-    // Cảnh báo sớm khi vừa tải trang
+    // Cảnh báo sớm ngay khi tải trang
     window.addEventListener('DOMContentLoaded', () => {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS || !('NDEFReader' in window)) {
