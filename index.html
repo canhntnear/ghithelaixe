@@ -127,8 +127,15 @@
             font-size: 14px;
         }
 
+        /* Ô CHỨA INPUT VÀ CÁC NÚT MIC BÊN CẠNH */
+        .input-with-mic {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         input[type="text"] {
-            width: 100%;
+            flex: 1;
             padding: 14px 16px;
             border: 1px solid #cfd8dc;
             border-radius: 12px;
@@ -146,47 +153,44 @@
             outline: none;
         }
 
-        /* --- NÚT GHI ÂM GIỌNG NÓI CAO CẤP --- */
-        .btn-scan-container {
-            margin-bottom: 20px;
-        }
-
-        .btn-voice {
-            width: 100%;
+        /* NÚT MIC TRÒN ĐỨNG BÊN CẠNH DÒNG THÔNG TIN */
+        .btn-mic-inline {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
             background: linear-gradient(135deg, #e53935, #b71c1c);
             color: white;
-            padding: 14px;
             border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
+            border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.25);
+            transition: all 0.2s ease;
+            padding: 0;
         }
 
-        .btn-voice.recording {
+        .btn-mic-inline.recording {
             background: linear-gradient(135deg, #ff1744, #d50000);
             animation: pulse-animation 1.2s infinite;
         }
 
         @keyframes pulse-animation {
-            0% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(255, 23, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.6); transform: scale(1); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 23, 68, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); transform: scale(1); }
         }
 
+        /* --- NHÓM BUTTON CHỨC NĂNG --- */
         .btn-group {
             display: flex;
             gap: 12px;
-            margin-top: 15px;
+            margin-top: 25px;
         }
 
-        button {
+        .btn-action {
             flex: 1;
             padding: 15px;
             color: white;
@@ -199,7 +203,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        button:active { transform: scale(0.97); }
+        .btn-action:active { transform: scale(0.97); }
         #btnRead { background: linear-gradient(135deg, #0288D1, #01579B); }
         #btnWrite { background: linear-gradient(135deg, #00796B, #004D40); }
         
@@ -284,29 +288,32 @@
         <div class="brand-name">VẠN PHÚ KHÁNH</div>
         <div class="brand-subtitle">QUẢN LÝ THẺ NHẬN DẠNG LÁI XE</div>
     </div>
-    <div class="hop-chuan-badge">Đang phát triển</div>
+    <div class="hop-chuan-badge">Hợp chuẩn</div>
 </div>
 
 <div class="container">
-    <div class="btn-scan-container">
-        <button type="button" class="btn-voice" id="btnVoice">
-            🎤 NHẤN ĐỂ NÓI (TỰ ĐIỀN HỌ TÊN & GPLX)
-        </button>
-    </div>
 
+    <!-- Ô NHẬP GPLX KÈM NÚT MIC RIÊNG -->
     <div class="form-group">
         <label for="gplx">Số GPLX (Yêu cầu đúng 12 số viết liền):</label>
-        <input type="text" id="gplx" placeholder="Ví dụ: 790123456789" value="">
+        <div class="input-with-mic">
+            <input type="text" id="gplx" placeholder="Ví dụ: 790123456789" value="">
+            <button type="button" class="btn-mic-inline" id="btnMicGplx" title="Nhấn để đọc riêng Số GPLX">🎤</button>
+        </div>
     </div>
 
+    <!-- Ô NHẬP HỌ TÊN KÈM NÚT MIC RIÊNG -->
     <div class="form-group">
         <label for="hoten">Họ và tên (Tự động chuyển viết hoa không dấu):</label>
-        <input type="text" id="hoten" placeholder="Ví dụ: NGUYEN VAN A" value="">
+        <div class="input-with-mic">
+            <input type="text" id="hoten" placeholder="Ví dụ: NGUYEN VAN A" value="">
+            <button type="button" class="btn-mic-inline" id="btnMicHoTen" title="Nhấn để đọc riêng Họ và Tên">🎤</button>
+        </div>
     </div>
 
     <div class="btn-group">
-        <button id="btnRead">KIỂM TRA THẺ</button>
-        <button id="btnWrite">GHI VÀO THẺ</button>
+        <button id="btnRead" class="btn-action">KIỂM TRA THẺ</button>
+        <button id="btnWrite class="btn-action" id="btnWrite">GHI VÀO THẺ</button>
     </div>
 
     <div id="status"></div>
@@ -331,7 +338,8 @@
 <script {nonce}>
     const btnWrite = document.getElementById('btnWrite');
     const btnRead = document.getElementById('btnRead');
-    const btnVoice = document.getElementById('btnVoice');
+    const btnMicGplx = document.getElementById('btnMicGplx');
+    const btnMicHoTen = document.getElementById('btnMicHoTen');
     const statusDiv = document.getElementById('status');
     const resultBox = document.getElementById('resultBox');
     
@@ -342,7 +350,7 @@
     const resHoTen = document.getElementById('resHoTen');
 
     let recognition = null;
-    let isRecording = false;
+    let activeTarget = null; // Xác định đang thu âm cho ô 'gplx' hay 'hoten'
 
     function showStatus(text, type) {
         statusDiv.style.display = 'block';
@@ -359,20 +367,12 @@
         return str.trim();
     }
 
-    // Chuyển đổi từ chữ số dạng văn bản tiếng Việt sang số ký tự để tránh lỗi lọc
     function convertWordsToNumbers(text) {
         let result = text.toLowerCase();
         const numberMap = {
-            "không": "0", "khong": "0",
-            "một": "1", "mot": "1",
-            "hai": "2",
-            "ba": "3",
-            "bốn": "4", "bon": "4", "tư": "4", "tu": "4",
-            "năm": "5", "nam": "5",
-            "sáu": "6", "sau": "6",
-            "bảy": "7", "bay": "7",
-            "tám": "8", "tam": "8",
-            "chín": "9", "chin": "9"
+            "không": "0", "khong": "0", "một": "1", "mot": "1", "hai": "2", "ba": "3",
+            "bốn": "4", "bon": "4", "tư": "4", "tu": "4", "năm": "5", "nam": "5",
+            "sáu": "6", "sau": "6", "bảy": "7", "bay": "7", "tám": "8", "tam": "8", "chín": "9", "chin": "9"
         };
         for (let key in numberMap) {
             let regex = new RegExp("\\b" + key + "\\b", "g");
@@ -397,7 +397,7 @@
         return sum & 0xFF;
     }
 
-    // ================= KHỞI TẠO BỘ GIẢI MÃ GIỌNG NÓI NÂNG CẤP =================
+    // ================= CẤU HÌNH WEB SPEECH API CHUYÊN DỤNG RIÊNG LẺ =================
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
@@ -406,76 +406,93 @@
         recognition.maxAlternatives = 1;
 
         recognition.onstart = () => {
-            isRecording = true;
-            btnVoice.classList.add('recording');
-            btnVoice.innerHTML = '🛑 ĐANG NGHE... HÃY ĐỌC';
-            showStatus("Đang nghe... Hãy đọc liền mạch: [Họ tên] và [12 số bằng lái]", "warning");
+            if (activeTarget === 'gplx') {
+                btnMicGplx.classList.add('recording');
+                btnMicGplx.innerHTML = '🛑';
+                showStatus("🎙️ Đang nghe Số GPLX... Hãy đọc chậm dãy 12 số.", "warning");
+            } else if (activeTarget === 'hoten') {
+                btnMicHoTen.classList.add('recording');
+                btnMicHoTen.innerHTML = '🛑';
+                showStatus("🎙️ Đang nghe Họ và tên... Hãy đọc rõ họ tên lái xe.", "warning");
+            }
         };
 
         recognition.onresult = (event) => {
             let resultText = event.results[0][0].transcript;
-            showStatus(`Đã nghe: "${resultText}"`, "info");
 
-            // Bước 1: Chuẩn hóa chữ số dạng từ (ví dụ "bảy chín" -> "79")
-            let processedText = convertWordsToNumbers(resultText);
-
-            // Bước 2: Gom toàn bộ các ký tự số ẩn trong câu (xóa sạch khoảng trắng rác, dấu chấm, dấu cách)
-            let digitsOnly = processedText.replace(/\D/g, '');
-
-            let detectedGplx = "";
-            if (digitsOnly.length >= 12) {
-                // Trích xuất lấy chuẩn xác 12 số đầu tiên xuất hiện trong câu nói
-                detectedGplx = digitsOnly.slice(0, 12);
-            }
-
-            // Bước 3: Tách lấy phần chữ làm Họ tên
-            let rawName = resultText;
-            // Xóa bỏ chuỗi số thô ra khỏi câu tên để tránh bị nhiễu dính số vào ô tên
-            rawName = rawName.replace(/\d+/g, '');
-            // Khử sạch từ khóa định danh đệm
-            rawName = rawName.replace(/(số gplx|số giấy phép lái xe|số lái xe|gplx|họ tên là|họ tên|tên là|tên|bằng lái)/gi, '');
-            
-            let cleanName = removeVietnameseTones(rawName);
-
-            // Đổ dữ liệu chuẩn hóa trực tiếp vào Form
-            if (detectedGplx.length === 12) {
-                gplxInput.value = detectedGplx;
-            }
-            if (cleanName) {
-                hotenInput.value = cleanName;
-            }
-
-            if (detectedGplx.length === 12 || cleanName) {
-                if (detectedGplx.length !== 12) {
-                    showStatus("✨ Nhận diện được tên, nhưng chưa bắt đủ 12 số GPLX. Vui lòng thử nói lại số rõ hơn!", "warning");
+            if (activeTarget === 'gplx') {
+                // Xử lý riêng cho ô Số GPLX: Ép chữ thành số + gom sạch rác ký tự
+                let processedText = convertWordsToNumbers(resultText);
+                let digitsOnly = processedText.replace(/\D/g, '');
+                
+                if (digitsOnly.length >= 12) {
+                    gplxInput.value = digitsOnly.slice(0, 12);
+                    showStatus("✨ Đã điền Số GPLX thành công!", "success");
+                } else if (digitsOnly.length > 0) {
+                    gplxInput.value = digitsOnly;
+                    showStatus(`⚠️ Số vừa đọc mới được ${digitsOnly.length} số (Thiếu số). Hãy bấm đọc lại rành mạch!`, "warning");
                 } else {
-                    showStatus("✨ Đã phân tích giọng nói và điền form chính xác thành công!", "success");
+                    showStatus("❌ Không nghe rõ chữ số nào. Vui lòng đọc lại!", "error");
                 }
-            } else {
-                showStatus("Không phân tích được dữ liệu. Vui lòng đọc to, rành mạch lại.", "error");
+
+            } else if (activeTarget === 'hoten') {
+                // Xử lý riêng cho ô Họ tên: Lọc chữ chuẩn hóa viết hoa không dấu
+                let rawName = resultText.replace(/\d/g, ''); // Loại bỏ số nếu người dùng đọc nhầm số vào đây
+                rawName = rawName.replace(/(họ tên là|họ tên|tên là|tên|lái xe|tên lái xe)/gi, '');
+                let cleanName = removeVietnameseTones(rawName);
+
+                if (cleanName) {
+                    hotenInput.value = cleanName;
+                    showStatus("✨ Đã điền Họ và tên thành công!", "success");
+                } else {
+                    showStatus("❌ Không nhận dạng được phần chữ của tên. Vui lòng đọc lại!", "error");
+                }
             }
         };
 
         recognition.onerror = (e) => {
-            showStatus("Lỗi nhận diện hoặc chưa bật Micro: " + e.error, "error");
-            resetVoiceButton();
+            showStatus("Lỗi thu âm: " + e.error, "error");
+            resetMicButtons();
         };
 
-        recognition.onend = () => { resetVoiceButton(); };
+        recognition.onend = () => {
+            resetMicButtons();
+        };
     } else {
-        btnVoice.style.background = '#90a4ae';
-        btnVoice.innerHTML = '❌ Trình duyệt không hỗ trợ Giọng nói';
+        btnMicGplx.style.background = '#90a4ae'; btnMicGplx.innerHTML = '✕';
+        btnMicHoTen.style.background = '#90a4ae'; btnMicHoTen.innerHTML = '✕';
     }
 
-    function resetVoiceButton() {
-        isRecording = false;
-        btnVoice.classList.remove('recording');
-        btnVoice.innerHTML = '🎤 NHẤN ĐỂ NÓI (TỰ ĐIỀN HỌ TÊN & GPLX)';
+    function resetMicButtons() {
+        btnMicGplx.classList.remove('recording');
+        btnMicGplx.innerHTML = '🎤';
+        btnMicHoTen.classList.remove('recording');
+        btnMicHoTen.innerHTML = '🎤';
+        activeTarget = null;
     }
 
-    btnVoice.addEventListener('click', () => {
+    // Sự kiện click nút Mic của ô Số GPLX
+    btnMicGplx.addEventListener('click', () => {
         if (!recognition) return;
-        if (isRecording) { recognition.stop(); } else { recognition.start(); }
+        if (activeTarget === 'gplx') {
+            recognition.stop();
+        } else {
+            recognition.stop();
+            activeTarget = 'gplx';
+            setTimeout(() => { recognition.start(); }, 100);
+        }
+    });
+
+    // Sự kiện click nút Mic của ô Họ tên
+    btnMicHoTen.addEventListener('click', () => {
+        if (!recognition) return;
+        if (activeTarget === 'hoten') {
+            recognition.stop();
+        } else {
+            recognition.stop();
+            activeTarget = 'hoten';
+            setTimeout(() => { recognition.start(); }, 100);
+        }
     });
 
     // ================= KIỂM TRA THẺ NDEF =================
@@ -492,7 +509,6 @@
 
             ndef.addEventListener("reading", ({ message }) => {
                 let isHardwareValid = false, isDataStructureValid = false, isChecksumValid = false;
-
                 for (const record of message.records) {
                     if (record.recordType === "mime" || record.mediaType === "application/octet-stream") {
                         isHardwareValid = true;
