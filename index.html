@@ -85,7 +85,6 @@
             line-height: 1.3;
         }
 
-        /* BADGE ĐANG PHÁT TRIỂN CÓ CHẤM NHẤP NHÁY */
         .dev-badge {
             background-color: #fffaf0;
             color: #dd6b20;
@@ -131,7 +130,7 @@
             width: 100%;
             background: linear-gradient(135deg, #78909c, #455a64);
             color: white;
-            padding: 12px;
+            padding: 13px;
             border: none;
             border-radius: 12px;
             font-size: 14px;
@@ -184,7 +183,6 @@
             outline: none;
         }
 
-        /* NÚT MIC TRÒN ĐỨNG BÊN CẠNH DÒNG THÔNG TIN */
         .btn-mic-inline {
             width: 48px;
             height: 48px;
@@ -236,19 +234,11 @@
 
         .btn-action:active { transform: scale(0.97); }
         
-        #btnRead { 
-            background: linear-gradient(135deg, #0288D1, #01579B); 
-        }
-        #btnRead:hover {
-            box-shadow: 0 6px 20px rgba(1, 87, 155, 0.25);
-        }
+        #btnRead { background: linear-gradient(135deg, #0288D1, #01579B); }
+        #btnRead:hover { box-shadow: 0 6px 20px rgba(1, 87, 155, 0.25); }
 
-        #btnWrite { 
-            background: linear-gradient(135deg, #00796B, #004D40); 
-        }
-        #btnWrite:hover {
-            box-shadow: 0 6px 20px rgba(0, 77, 64, 0.25);
-        }
+        #btnWrite { background: linear-gradient(135deg, #00796B, #004D40); }
+        #btnWrite:hover { box-shadow: 0 6px 20px rgba(0, 77, 64, 0.25); }
         
         #status {
             margin-top: 20px;
@@ -258,6 +248,7 @@
             font-weight: 600;
             display: none;
             font-size: 14px;
+            line-height: 1.4;
         }
 
         .info { background-color: #e0f7fa; color: #006064; border: 1px solid #b2ebf2; }
@@ -404,35 +395,58 @@
         statusDiv.className = `info ${type}`;
     }
 
-    // ================= LOGIC KIỂM TRA ĐỘ TƯƠNG THÍCH THIẾT BỊ =================
-    function checkDeviceCompatibility(isManualClick = false) {
-        // 1. Kiểm tra nếu là các dòng máy của Apple (iPhone / iPad)
+    // ================= LOGIC KIỂM TRA PHẦN CỨNG NFC CHÍNH XÁC 100% =================
+    async function checkDeviceCompatibility(isManualClick = false) {
+        // 1. Check bộ lọc iPhone (iOS)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        
         if (isIOS) {
-            showStatus("❌ Thiết bị: iPhone (iOS). Hệ điều hành Apple hiện KHÔNG hỗ trợ tính năng WebNFC trên trình duyệt Chrome/Safari. Bạn không thể quét hay ghi thẻ trực tiếp bằng web này.", "error");
+            showStatus("❌ Thiết bị: iPhone (iOS).\nApple hiện chặn không cho trình duyệt web (Chrome/Safari) truy cập chip NFC trên website. Bạn bắt buộc phải dùng máy Android.", "error");
             return false;
         }
 
-        // 2. Kiểm tra tính năng WebNFC có tồn tại trong Trình duyệt không (Yêu cầu Chrome trên Android)
+        // 2. Check xem trình duyệt có thư viện WebNFC không
         if (!('NDEFReader' in window)) {
-            showStatus("❌ Thiết bị/Trình duyệt không tương thích! WebNFC chỉ chạy trên Google Chrome (Android). Vui lòng copy link này mở bằng ứng dụng Chrome.", "error");
+            showStatus("❌ Trình duyệt không hỗ trợ!\nVui lòng sao chép liên kết này và mở bằng ứng dụng GOOGLE CHROME trên điện thoại Android.", "error");
             return false;
         }
 
-        // 3. Nếu vượt qua bộ lọc trên thì máy chạy được nền tảng WebNFC
+        // 3. THỰC HIỆN KIỂM TRA PHẦN CỨNG THẬT (Chỉ chạy sâu khi người dùng chủ động click nút)
         if (isManualClick) {
-            showStatus("📱 Thiết bị ĐẠT CHUẨN! Điện thoại Android và trình duyệt của bạn hỗ trợ đầy đủ tính năng quét/ghi thẻ NFC. Hãy bật NFC trong cài đặt máy trước khi quẹt.", "success");
+            showStatus("⏳ Đang đo kiểm tín hiệu phần cứng chip NFC...", "warning");
+            try {
+                const ndef = new NDEFReader();
+                // Khởi tạo tiến trình quét thử nghiệm ngắn
+                await ndef.scan();
+                
+                // Nếu chạy tới đây thành công nghĩa là máy CÓ chip NFC và ĐANG BẬT
+                showStatus("📱 Thiết bị ĐẠT CHUẨN!\nĐiện thoại Android của bạn tích hợp sẵn phần cứng chip NFC và đã bật sẵn sàng. Bạn có thể quẹt thẻ ngay!", "success");
+                return true;
+            } catch (error) {
+                // Nếu không có phần cứng NFC hoặc chưa bật NFC trong cài đặt, trình duyệt sẽ ném lỗi về đây
+                if (error.name === "NotSupportedError" || error.message.includes("supported")) {
+                    showStatus("❌ LỖI PHẦN CỨNG: Điện thoại Android này KHÔNG CÓ CHIP NFC vật lý, hoặc chip NFC không tương thích chuẩn WebNFC. Không thể dùng để đọc/ghi thẻ lái xe.", "error");
+                } else if (error.name === "NotAllowedError" || error.message.includes("permission")) {
+                    showStatus("⚠️ CẢNH BÁO: Tính năng NFC trên máy đang bị TẮT hoặc chưa cấp quyền cho Chrome. Hãy kéo thanh thông báo trạng thái của điện thoại xuống và BẬT NFC lên.", "warning");
+                } else {
+                    showStatus("⚠️ Trình duyệt sẵn sàng nhưng chưa quẹt thử phần cứng: " + error.message + ". Vui lòng bật NFC trong Cài đặt máy.", "warning");
+                }
+                return false;
+            }
         }
         return true;
     }
 
-    // Tự động kiểm tra ngầm ngay khi người dùng vừa truy cập trang web
+    // Khi vừa mở trang: kiểm tra phần mềm trước
     window.addEventListener('DOMContentLoaded', () => {
-        checkDeviceCompatibility(false);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            showStatus("❌ Thiết bị: iPhone (iOS). WebNFC không hoạt động trên iOS. Vui lòng chuyển sang máy Android.", "error");
+        } else if (!('NDEFReader' in window)) {
+            showStatus("⚠️ Trình duyệt hiện tại chưa tương thích. Hãy mở trang web này bằng ứng dụng GOOGLE CHROME trên Android.", "warning");
+        }
     });
 
-    // Xử lý khi người dùng chủ động bấm nút Kiểm tra thiết bị
+    // Khi người dùng bấm nút: Kiểm tra ép buộc sâu xuống phần cứng thật
     btnCheckCompat.addEventListener('click', () => {
         checkDeviceCompatibility(true);
     });
@@ -507,7 +521,7 @@
                     showStatus("✨ Đã điền Số GPLX thành công!", "success");
                 } else if (digitsOnly.length > 0) {
                     gplxInput.value = digitsOnly;
-                    showStatus(`⚠️ Số vừa đọc mới được ${digitsOnly.length} số (Thiếu số). Hãy bấm đọc lại rành mạch!`, "warning");
+                    showStatus(`⚠️ Số vừa đọc mới được ${digitsOnly.length} số (Thiếu số). Hãy đọc lại rành mạch!`, "warning");
                 } else {
                     showStatus("❌ Không nghe rõ chữ số nào. Vui lòng đọc lại!", "error");
                 }
@@ -569,7 +583,10 @@
 
     // ================= KIỂM TRA THẺ NDEF =================
     btnRead.addEventListener('click', async () => {
-        if (!checkDeviceCompatibility(false)) return;
+        if (!('NDEFReader' in window)) {
+            showStatus("Thiết bị không hỗ trợ WebNFC.", "error");
+            return;
+        }
         try {
             const ndef = new NDEFReader();
             await ndef.scan();
@@ -621,7 +638,10 @@
 
     // ================= GHI THẺ NDEF =================
     btnWrite.addEventListener('click', async () => {
-        if (!checkDeviceCompatibility(false)) return;
+        if (!('NDEFReader' in window)) {
+            showStatus("Thiết bị không hỗ trợ .", "error");
+            return;
+        }
         const gplxRaw = gplxInput.value.trim();
         const hotenRaw = hotenInput.value.trim();
 
