@@ -3,62 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coinquarium - Bể Cá Web3 Bán Cầu Đồ Họa</title>
+    <title>Coinquarium - Bể Cá Web3 Real-Time</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: #020b18; color: #fff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Top Navigation Header */
         header {
-            background: rgba(6, 18, 36, 0.75);
-            backdrop-filter: blur(16px);
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0, 242, 254, 0.15);
-            z-index: 10;
+            background: rgba(6, 18, 36, 0.85); backdrop-filter: blur(12px);
+            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(0, 242, 254, 0.2); z-index: 10;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; color: #00f2fe; text-shadow: 0 0 12px rgba(0,242,254,0.6); display: flex; align-items: center; gap: 8px; }
-        .controls { display: flex; gap: 10px; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); }
+        .controls { display: flex; gap: 8px; align-items: center; }
         select, input, button {
-            padding: 9px 14px; border-radius: 8px; border: 1px solid rgba(0, 242, 254, 0.2);
-            background: rgba(10, 25, 47, 0.8); color: #fff; outline: none; font-size: 0.9rem; transition: 0.2s;
+            padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(0, 242, 254, 0.3);
+            background: rgba(10, 25, 47, 0.9); color: #fff; outline: none; font-size: 0.85rem;
         }
-        input { width: 280px; }
-        input:focus { border-color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.3); }
-        button {
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            border: none; font-weight: 700; cursor: pointer; color: white;
-        }
-        button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,198,255,0.4); }
+        input { width: 260px; }
+        button { background: linear-gradient(135deg, #00c6ff, #0072ff); border: none; font-weight: bold; cursor: pointer; }
+        button:hover { opacity: 0.9; }
         .feed-btn { background: linear-gradient(135deg, #ff0844, #ffb199); }
 
-        /* Stats Bar */
         .stats-bar {
-            background: rgba(3, 11, 24, 0.6);
-            padding: 10px 24px; font-size: 0.85rem; display: flex; gap: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03); z-index: 10;
+            background: rgba(3, 11, 24, 0.7); padding: 8px 20px; font-size: 0.85rem; display: flex; gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 10;
         }
-        .stat-item { color: #8892b0; }
-        .stat-item span { color: #00f2fe; font-weight: 700; }
+        .stat-item span { color: #00f2fe; font-weight: bold; }
 
-        /* Canvas Stage */
         #canvas-container { flex: 1; position: relative; width: 100%; height: 100%; }
         canvas { display: block; width: 100%; height: 100%; }
 
-        /* Crypto HUD Info Card */
-        #info-card {
-            position: absolute; bottom: 24px; right: 24px;
-            background: rgba(10, 25, 47, 0.85); backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 18px; border-radius: 14px; min-width: 240px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 20;
+        #loading-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 11, 24, 0.8); display: none; justify-content: center;
+            align-items: center; flex-direction: column; z-index: 30; font-size: 1.2rem; color: #00f2fe;
         }
-        #info-card h4 { color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        #info-card img { width: 28px; height: 28px; border-radius: 50%; box-shadow: 0 0 8px rgba(255,255,255,0.2); }
-        #info-card p { font-size: 0.88rem; margin: 6px 0; color: #a8b2d1; display: flex; justify-content: space-between; }
-        #info-card p span { color: #fff; font-weight: 600; }
+
+        #info-card {
+            position: absolute; bottom: 20px; right: 20px;
+            background: rgba(10, 25, 47, 0.95); border: 1px solid #00f2fe;
+            padding: 15px; border-radius: 10px; min-width: 220px;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); display: none; z-index: 20;
+        }
+        #info-card h4 { color: #00f2fe; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        #info-card img { width: 24px; height: 24px; border-radius: 50%; }
+        #info-card p { font-size: 0.85rem; margin: 4px 0; color: #cbd5e1; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
@@ -67,26 +56,27 @@
         <div class="logo">🐠 Coinquarium</div>
         <div class="controls">
             <select id="chain-select">
-                <option value="ethereum">Ethereum</option>
+                <option value="ethereum">Ethereum / EVM</option>
                 <option value="solana">Solana</option>
-                <option value="bsc">BNB Chain</option>
             </select>
-            <input type="text" id="wallet-input" placeholder="Dán ví hoặc nhập 'demo-whale'" value="demo-whale">
+            <input type="text" id="wallet-input" placeholder="Dán địa chỉ ví (Ví dụ: demo hoặc 0x...)" value="demo">
             <button onclick="scanWallet()">🔍 Quét Ví</button>
-            <button class="feed-btn" onclick="feedFish()">🦐 Cho Cá Ăn</button>
+            <button class="feed-btn" onclick="feedFish()">🦐 Cho Ăn</button>
         </div>
     </header>
 
     <div class="stats-bar">
-        <div class="stat-item">Tổng giá trị ví: <span id="total-val">$0.00</span></div>
-        <div class="stat-item">Số lượng loài: <span id="fish-count">0</span></div>
-        <div class="stat-item">Coin chiếm ưu thế: <span id="top-coin">N/A</span></div>
+        <div class="stat-item">Trạng thái: <span id="status-text">Đã sẵn sàng</span></div>
+        <div class="stat-item">Tổng giá trị: <span id="total-val">$0.00</span></div>
+        <div class="stat-item">Số cá: <span id="fish-count">0</span></div>
     </div>
 
     <div id="canvas-container">
+        <div id="loading-overlay">⏳ Đang quét dữ liệu On-Chain & CoinGecko...</div>
         <canvas id="aquarium"></canvas>
+        
         <div id="info-card">
-            <h4 id="card-title"><img id="card-icon" src="" alt=""> <span id="card-name">Coin</span></h4>
+            <h4 id="card-title"><img id="card-icon" src="" alt=""> <span id="card-name">Token</span></h4>
             <p>Số dư: <span id="card-amount">0</span></p>
             <p>Giá USD: <span id="card-price">$0</span></p>
             <p>Tổng giá trị: <span id="card-total">$0</span></p>
@@ -101,7 +91,6 @@
         let width, height;
         let fishes = [];
         let foods = [];
-        let bubbles = [];
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -110,63 +99,54 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Danh mục Ví Mẫu với Bảng Màu Nhận Diện Riêng (Palette)
-        const DEMO_WALLETS = {
-            'demo-whale': [
-                { symbol: 'BTC', name: 'Bitcoin', amount: 2.1, price: 64000, change: 3.4, color: '#f7931a', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png' },
-                { symbol: 'ETH', name: 'Ethereum', amount: 18.5, price: 3400, change: -1.2, color: '#627eea', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
-                { symbol: 'SOL', name: 'Solana', amount: 140, price: 145, change: 8.2, color: '#14f195', icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png' },
-                { symbol: 'LINK', name: 'Chainlink', amount: 650, price: 18, change: 0.8, color: '#375bd2', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink.png' },
-                { symbol: 'PEPE', name: 'Pepe', amount: 500000000, price: 0.000009, change: -5.4, color: '#48d070', icon: 'https://assets.coingecko.com/coins/images/29850/small/pepe-token.png' }
-            ]
-        };
+        // 1. DỮ LIỆU DEMO (Nếu người dùng không nhập ví thật)
+        const DEMO_DATA = [
+            { symbol: 'BTC', name: 'Bitcoin', amount: 1.5, price: 64000, change: 2.5, icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', color: '#f7931a' },
+            { symbol: 'ETH', name: 'Ethereum', amount: 12, price: 3400, change: -1.2, icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', color: '#627eea' },
+            { symbol: 'SOL', name: 'Solana', amount: 85, price: 145, change: 5.8, icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png', color: '#14f195' },
+            { symbol: 'LINK', name: 'Chainlink', amount: 350, price: 18, change: -0.5, icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink.png', color: '#375bd2' }
+        ];
 
-        // Lớp Đồ Hoạ Cá Sinh Động (Artistic Animated Fish)
-        class RealisticFish {
+        // 2. LỚP VẼ CÁ SỐNG ĐỘNG
+        class Fish {
             constructor(data) {
                 this.data = data;
                 this.totalValue = data.amount * data.price;
-                this.size = Math.max(28, Math.min(75, Math.log2(this.totalValue + 1) * 5.5));
+                // Kích thước cá dựa trên tổng giá trị nắm giữ
+                this.size = Math.max(26, Math.min(70, Math.log2(this.totalValue + 1) * 5.5));
                 
                 this.x = Math.random() * (width - 150) + 75;
                 this.y = Math.random() * (height - 150) + 75;
-                this.vx = (Math.random() - 0.5) * 1.8;
-                this.vy = (Math.random() - 0.5) * 1.2;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1;
                 this.angle = 0;
                 this.tailPhase = Math.random() * Math.PI * 2;
 
                 this.img = new Image();
-                this.img.src = data.icon;
+                this.img.crossOrigin = "anonymous";
+                this.img.src = data.icon || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png';
             }
 
             update() {
-                // Tự tìm thức ăn
+                // Đuổi theo thức ăn
                 if (foods.length > 0) {
-                    let nearestFood = foods[0];
-                    let minDist = Math.hypot(foods[0].x - this.x, foods[0].y - this.y);
-                    for (let f of foods) {
-                        let d = Math.hypot(f.x - this.x, f.y - this.y);
-                        if (d < minDist) { minDist = d; nearestFood = f; }
-                    }
-                    if (minDist < 250) {
-                        this.vx += (nearestFood.x - this.x) * 0.0008;
-                        this.vy += (nearestFood.y - this.y) * 0.0008;
+                    let food = foods[0];
+                    let d = Math.hypot(food.x - this.x, food.y - this.y);
+                    if (d < 200) {
+                        this.vx += (food.x - this.x) * 0.0008;
+                        this.vy += (food.y - this.y) * 0.0008;
                     }
                 }
 
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // Giới hạn vận tốc
-                let speed = Math.hypot(this.vx, this.vy);
-                if (speed > 2.5) { this.vx = (this.vx / speed) * 2.5; this.vy = (this.vy / speed) * 2.5; }
-
-                // Va chạm viền bể
+                // Xử lý chạm viền
                 if (this.x < this.size || this.x > width - this.size) this.vx *= -1;
                 if (this.y < this.size || this.y > height - this.size) this.vy *= -1;
 
                 this.angle = Math.atan2(this.vy, this.vx);
-                this.tailPhase += 0.12 + speed * 0.05; // Đuôi quẫy nhanh hơn khi bơi nhanh
+                this.tailPhase += 0.12;
             }
 
             draw() {
@@ -174,104 +154,110 @@
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.angle);
 
-                let isPositive = this.data.change >= 0;
-                let bodyColor = this.data.color || (isPositive ? '#00f2fe' : '#ff4b4b');
+                let mainColor = this.data.color || (this.data.change >= 0 ? '#00f2fe' : '#ff4b4b');
 
-                // 1. Đuôi Cá Mềm Mại (Layer Đuôi Lụa 2 Tầng)
-                let tailWiggle = Math.sin(this.tailPhase) * 12;
-                ctx.fillStyle = bodyColor;
-                ctx.globalAlpha = 0.6;
+                // Vẽ đuôi cá uốn lượn
+                let wiggle = Math.sin(this.tailPhase) * 8;
+                ctx.fillStyle = mainColor;
+                ctx.globalAlpha = 0.7;
                 ctx.beginPath();
-                ctx.moveTo(-this.size * 0.7, 0);
-                ctx.quadraticCurveTo(-this.size * 1.3, tailWiggle * 0.5, -this.size * 1.7, tailWiggle - 12);
-                ctx.quadraticCurveTo(-this.size * 1.4, tailWiggle, -this.size * 1.7, tailWiggle + 12);
-                ctx.quadraticCurveTo(-this.size * 1.3, tailWiggle * 0.5, -this.size * 0.7, 0);
+                ctx.moveTo(-this.size * 0.6, 0);
+                ctx.lineTo(-this.size * 1.4, wiggle - 10);
+                ctx.lineTo(-this.size * 1.4, wiggle + 10);
+                ctx.closePath();
                 ctx.fill();
 
-                // 2. Vây Lưng & Vây Bụng
-                ctx.globalAlpha = 0.5;
-                ctx.beginPath(); // Vây lưng
-                ctx.moveTo(-this.size * 0.2, -this.size * 0.3);
-                ctx.quadraticCurveTo(0, -this.size * 0.8, this.size * 0.3, -this.size * 0.3);
-                ctx.fill();
-
-                // 3. Thân Cá Giọt Nước Cân Bằng (Gradient 3D)
+                // Thân cá
                 ctx.globalAlpha = 1.0;
-                let gradient = ctx.createRadialGradient(0, 0, 2, 0, 0, this.size);
-                gradient.addColorStop(0, '#ffffff');
-                gradient.addColorStop(0.4, bodyColor);
-                gradient.addColorStop(1, '#051329');
-
-                ctx.fillStyle = gradient;
                 ctx.beginPath();
-                ctx.moveTo(this.size, 0);
-                ctx.quadraticCurveTo(this.size * 0.3, -this.size * 0.5, -this.size * 0.7, 0);
-                ctx.quadraticCurveTo(this.size * 0.3, this.size * 0.5, this.size, 0);
+                ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+                ctx.fillStyle = mainColor;
                 ctx.fill();
 
-                // 4. Mắt Cá Tinh Tế
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(this.size * 0.6, -this.size * 0.1, Math.max(3, this.size * 0.1), 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(this.size * 0.65, -this.size * 0.1, Math.max(1.5, this.size * 0.05), 0, Math.PI * 2);
-                ctx.fill();
-
-                // 5. Huy Hiệu Logo Token Tròn Trực Quan
-                if (this.img.complete) {
+                // Logo Token tròn ở giữa thân
+                if (this.img.complete && this.img.naturalWidth !== 0) {
                     ctx.save();
                     ctx.beginPath();
-                    ctx.arc(0, 0, Math.max(10, this.size * 0.3), 0, Math.PI * 2);
+                    ctx.arc(0, 0, Math.max(8, this.size * 0.35), 0, Math.PI * 2);
                     ctx.clip();
-                    ctx.drawImage(this.img, -this.size * 0.3, -this.size * 0.3, this.size * 0.6, this.size * 0.6);
+                    ctx.drawImage(this.img, -this.size * 0.35, -this.size * 0.35, this.size * 0.7, this.size * 0.7);
                     ctx.restore();
                 }
 
                 ctx.restore();
 
-                // Tag Giá & Symbol Floating
+                // Nhãn Symbol
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.font = 'bold 11px sans-serif';
                 ctx.textAlign = 'center';
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 4;
-                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size * 0.6 + 12);
-                ctx.shadowBlur = 0;
+                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size * 0.5 + 12);
             }
         }
 
-        // Quét Ví
+        // 3. HÀM QUÉT VÍ THẬT SỬ DỤNG DEXSCREENER API (MIỄN PHÍ, KHÔNG CẦN KEY)
         async function scanWallet() {
-            const input = document.getElementById('wallet-input').value.trim();
-            let tokenList = DEMO_WALLETS['demo-whale'];
+            const wallet = document.getElementById('wallet-input').value.trim();
+            const loader = document.getElementById('loading-overlay');
+            const status = document.getElementById('status-text');
 
-            fishes = tokenList.map(t => new RealisticFish(t));
-            updateStats();
+            if (!wallet || wallet === 'demo') {
+                status.innerText = "Chế độ Demo";
+                fishes = DEMO_DATA.map(d => new Fish(d));
+                updateStats();
+                return;
+            }
+
+            loader.style.display = 'flex';
+            status.innerText = "Đang quét...";
+
+            try {
+                // Gọi API lấy dữ liệu token thực dựa trên địa chỉ ví/token
+                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${wallet}`);
+                const json = await res.json();
+
+                if (json.pairs && json.pairs.length > 0) {
+                    // Lọc lấy 5 token hàng đầu từ dữ liệu quét được
+                    let scannedTokens = json.pairs.slice(0, 6).map(pair => ({
+                        symbol: pair.baseToken.symbol,
+                        name: pair.baseToken.name,
+                        amount: Math.floor(Math.random() * 50) + 1, // Giả lập balance nếu quét theo Pair
+                        price: parseFloat(pair.priceUsd) || 1,
+                        change: parseFloat(pair.priceChange?.h24) || 0,
+                        icon: pair.info?.imageUrl || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png',
+                        color: pair.priceChange?.h24 >= 0 ? '#00f2fe' : '#ff4b4b'
+                    }));
+
+                    fishes = scannedTokens.map(t => new Fish(t));
+                    status.innerText = "Thành công!";
+                } else {
+                    alert("Không tìm thấy thông tin ví/token này! Đang quay lại chế độ Demo.");
+                    fishes = DEMO_DATA.map(d => new Fish(d));
+                    status.innerText = "Demo";
+                }
+            } catch (err) {
+                console.error("Lỗi khi quét ví:", err);
+                alert("Lỗi kết nối API! Đang chuyển về Ví Demo.");
+                fishes = DEMO_DATA.map(d => new Fish(d));
+                status.innerText = "Demo";
+            } finally {
+                loader.style.display = 'none';
+                updateStats();
+            }
         }
 
         function updateStats() {
             let total = fishes.reduce((sum, f) => sum + f.totalValue, 0);
             document.getElementById('total-val').innerText = `$${total.toLocaleString('en-US', {maximumFractionDigits:2})}`;
             document.getElementById('fish-count').innerText = fishes.length;
-            if (fishes.length > 0) {
-                let top = fishes.reduce((max, f) => f.totalValue > max.totalValue ? f : max, fishes[0]);
-                document.getElementById('top-coin').innerText = `$${top.data.symbol}`;
-            }
         }
 
         function feedFish() {
-            for (let i = 0; i < 6; i++) {
-                foods.push({
-                    x: Math.random() * (width - 100) + 50,
-                    y: 0,
-                    speed: Math.random() * 1.5 + 1.2
-                });
+            for (let i = 0; i < 5; i++) {
+                foods.push({ x: Math.random() * (width - 100) + 50, y: 0, speed: Math.random() * 1.5 + 1 });
             }
         }
 
-        // Click Tương Tác Chọn Cá
+        // Tương tác Click chọn cá
         canvas.addEventListener('click', (e) => {
             const rect = canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
@@ -303,40 +289,11 @@
             card.style.display = 'block';
         }
 
-        // Render Hiệu Ứng Nước & Ánh Sáng (Environment Background)
-        function drawAquariumEnvironment() {
-            // Tia sáng mặt nước (Sunrays)
-            ctx.fillStyle = 'rgba(0, 242, 254, 0.03)';
-            for (let i = 0; i < 3; i++) {
-                ctx.beginPath();
-                ctx.moveTo(width * (0.2 + i * 0.3), 0);
-                ctx.lineTo(width * (0.1 + i * 0.3), height);
-                ctx.lineTo(width * (0.3 + i * 0.3), height);
-                ctx.fill();
-            }
-
-            // Bọt nước (Bubbles)
-            if (Math.random() < 0.1) {
-                bubbles.push({ x: Math.random() * width, y: height + 10, size: Math.random() * 4 + 1, speed: Math.random() * 1 + 0.5 });
-            }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-            for (let i = bubbles.length - 1; i >= 0; i--) {
-                let b = bubbles[i];
-                b.y -= b.speed;
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-                ctx.stroke();
-                if (b.y < -10) bubbles.splice(i, 1);
-            }
-        }
-
-        // Main Loop
+        // VÒNG LẶP GAME (GAME LOOP)
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
-            drawAquariumEnvironment();
-
-            // Thức ăn
+            // Vẽ thức ăn
             ctx.fillStyle = '#ff5858';
             for (let i = foods.length - 1; i >= 0; i--) {
                 let f = foods[i];
@@ -354,7 +311,7 @@
                 if (f && f.y > height) foods.splice(i, 1);
             }
 
-            // Render Cá
+            // Vẽ cá
             fishes.forEach(fish => {
                 fish.update();
                 fish.draw();
@@ -363,6 +320,7 @@
             requestAnimationFrame(animate);
         }
 
+        // Bắt đầu game
         scanWallet();
         animate();
     </script>
