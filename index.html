@@ -126,4 +126,245 @@
             constructor(data) {
                 this.data = data;
                 this.totalValue = data.amount * data.price;
-                this.size = Math.max(28, Math.min(
+                this.size = Math.max(28, Math.min(75, Math.log2(this.totalValue + 1) * 5.5));
+                
+                this.x = Math.random() * (width - 150) + 75;
+                this.y = Math.random() * (height - 150) + 75;
+                this.vx = (Math.random() - 0.5) * 1.8;
+                this.vy = (Math.random() - 0.5) * 1.2;
+                this.angle = 0;
+                this.tailPhase = Math.random() * Math.PI * 2;
+
+                this.img = new Image();
+                this.img.src = data.icon;
+            }
+
+            update() {
+                // Tự tìm thức ăn
+                if (foods.length > 0) {
+                    let nearestFood = foods[0];
+                    let minDist = Math.hypot(foods[0].x - this.x, foods[0].y - this.y);
+                    for (let f of foods) {
+                        let d = Math.hypot(f.x - this.x, f.y - this.y);
+                        if (d < minDist) { minDist = d; nearestFood = f; }
+                    }
+                    if (minDist < 250) {
+                        this.vx += (nearestFood.x - this.x) * 0.0008;
+                        this.vy += (nearestFood.y - this.y) * 0.0008;
+                    }
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Giới hạn vận tốc
+                let speed = Math.hypot(this.vx, this.vy);
+                if (speed > 2.5) { this.vx = (this.vx / speed) * 2.5; this.vy = (this.vy / speed) * 2.5; }
+
+                // Va chạm viền bể
+                if (this.x < this.size || this.x > width - this.size) this.vx *= -1;
+                if (this.y < this.size || this.y > height - this.size) this.vy *= -1;
+
+                this.angle = Math.atan2(this.vy, this.vx);
+                this.tailPhase += 0.12 + speed * 0.05; // Đuôi quẫy nhanh hơn khi bơi nhanh
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+
+                let isPositive = this.data.change >= 0;
+                let bodyColor = this.data.color || (isPositive ? '#00f2fe' : '#ff4b4b');
+
+                // 1. Đuôi Cá Mềm Mại (Layer Đuôi Lụa 2 Tầng)
+                let tailWiggle = Math.sin(this.tailPhase) * 12;
+                ctx.fillStyle = bodyColor;
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                ctx.moveTo(-this.size * 0.7, 0);
+                ctx.quadraticCurveTo(-this.size * 1.3, tailWiggle * 0.5, -this.size * 1.7, tailWiggle - 12);
+                ctx.quadraticCurveTo(-this.size * 1.4, tailWiggle, -this.size * 1.7, tailWiggle + 12);
+                ctx.quadraticCurveTo(-this.size * 1.3, tailWiggle * 0.5, -this.size * 0.7, 0);
+                ctx.fill();
+
+                // 2. Vây Lưng & Vây Bụng
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath(); // Vây lưng
+                ctx.moveTo(-this.size * 0.2, -this.size * 0.3);
+                ctx.quadraticCurveTo(0, -this.size * 0.8, this.size * 0.3, -this.size * 0.3);
+                ctx.fill();
+
+                // 3. Thân Cá Giọt Nước Cân Bằng (Gradient 3D)
+                ctx.globalAlpha = 1.0;
+                let gradient = ctx.createRadialGradient(0, 0, 2, 0, 0, this.size);
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.4, bodyColor);
+                gradient.addColorStop(1, '#051329');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(this.size, 0);
+                ctx.quadraticCurveTo(this.size * 0.3, -this.size * 0.5, -this.size * 0.7, 0);
+                ctx.quadraticCurveTo(this.size * 0.3, this.size * 0.5, this.size, 0);
+                ctx.fill();
+
+                // 4. Mắt Cá Tinh Tế
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.size * 0.6, -this.size * 0.1, Math.max(3, this.size * 0.1), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(this.size * 0.65, -this.size * 0.1, Math.max(1.5, this.size * 0.05), 0, Math.PI * 2);
+                ctx.fill();
+
+                // 5. Huy Hiệu Logo Token Tròn Trực Quan
+                if (this.img.complete) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(0, 0, Math.max(10, this.size * 0.3), 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(this.img, -this.size * 0.3, -this.size * 0.3, this.size * 0.6, this.size * 0.6);
+                    ctx.restore();
+                }
+
+                ctx.restore();
+
+                // Tag Giá & Symbol Floating
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 4;
+                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size * 0.6 + 12);
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Quét Ví
+        async function scanWallet() {
+            const input = document.getElementById('wallet-input').value.trim();
+            let tokenList = DEMO_WALLETS['demo-whale'];
+
+            fishes = tokenList.map(t => new RealisticFish(t));
+            updateStats();
+        }
+
+        function updateStats() {
+            let total = fishes.reduce((sum, f) => sum + f.totalValue, 0);
+            document.getElementById('total-val').innerText = `$${total.toLocaleString('en-US', {maximumFractionDigits:2})}`;
+            document.getElementById('fish-count').innerText = fishes.length;
+            if (fishes.length > 0) {
+                let top = fishes.reduce((max, f) => f.totalValue > max.totalValue ? f : max, fishes[0]);
+                document.getElementById('top-coin').innerText = `$${top.data.symbol}`;
+            }
+        }
+
+        function feedFish() {
+            for (let i = 0; i < 6; i++) {
+                foods.push({
+                    x: Math.random() * (width - 100) + 50,
+                    y: 0,
+                    speed: Math.random() * 1.5 + 1.2
+                });
+            }
+        }
+
+        // Click Tương Tác Chọn Cá
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            let selected = false;
+            for (let f of fishes) {
+                if (Math.hypot(f.x - mouseX, f.y - mouseY) < f.size) {
+                    showCard(f.data);
+                    selected = true;
+                    break;
+                }
+            }
+            if (!selected) document.getElementById('info-card').style.display = 'none';
+        });
+
+        function showCard(data) {
+            const card = document.getElementById('info-card');
+            document.getElementById('card-icon').src = data.icon;
+            document.getElementById('card-name').innerText = `${data.name} (${data.symbol})`;
+            document.getElementById('card-amount').innerText = data.amount;
+            document.getElementById('card-price').innerText = `$${data.price.toLocaleString()}`;
+            document.getElementById('card-total').innerText = `$${(data.amount * data.price).toLocaleString()}`;
+            
+            const changeEl = document.getElementById('card-change');
+            changeEl.innerText = `${data.change >= 0 ? '+' : ''}${data.change}%`;
+            changeEl.style.color = data.change >= 0 ? '#00ff88' : '#ff4b4b';
+
+            card.style.display = 'block';
+        }
+
+        // Render Hiệu Ứng Nước & Ánh Sáng (Environment Background)
+        function drawAquariumEnvironment() {
+            // Tia sáng mặt nước (Sunrays)
+            ctx.fillStyle = 'rgba(0, 242, 254, 0.03)';
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(width * (0.2 + i * 0.3), 0);
+                ctx.lineTo(width * (0.1 + i * 0.3), height);
+                ctx.lineTo(width * (0.3 + i * 0.3), height);
+                ctx.fill();
+            }
+
+            // Bọt nước (Bubbles)
+            if (Math.random() < 0.1) {
+                bubbles.push({ x: Math.random() * width, y: height + 10, size: Math.random() * 4 + 1, speed: Math.random() * 1 + 0.5 });
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                let b = bubbles[i];
+                b.y -= b.speed;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+                ctx.stroke();
+                if (b.y < -10) bubbles.splice(i, 1);
+            }
+        }
+
+        // Main Loop
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            drawAquariumEnvironment();
+
+            // Thức ăn
+            ctx.fillStyle = '#ff5858';
+            for (let i = foods.length - 1; i >= 0; i--) {
+                let f = foods[i];
+                f.y += f.speed;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let fish of fishes) {
+                    if (Math.hypot(fish.x - f.x, fish.y - f.y) < fish.size) {
+                        foods.splice(i, 1);
+                        break;
+                    }
+                }
+                if (f && f.y > height) foods.splice(i, 1);
+            }
+
+            // Render Cá
+            fishes.forEach(fish => {
+                fish.update();
+                fish.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        scanWallet();
+        animate();
+    </script>
+</body>
+</html>
