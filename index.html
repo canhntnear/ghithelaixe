@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coinquarium - Bể Cá Web3 Real-Time</title>
+    <title>Coinquarium - Web3 Ecosystem Aquarium</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: #020b18; color: #fff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body { background: #010a15; color: #fff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
         header {
-            background: rgba(6, 18, 36, 0.85); backdrop-filter: blur(12px);
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(4, 18, 38, 0.85); backdrop-filter: blur(12px);
+            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid rgba(0, 242, 254, 0.2); z-index: 10;
         }
         .logo { font-size: 1.4rem; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.5); }
@@ -20,29 +20,37 @@
             background: rgba(10, 25, 47, 0.9); color: #fff; outline: none; font-size: 0.85rem;
         }
         input { width: 260px; }
-        button { background: linear-gradient(135deg, #00c6ff, #0072ff); border: none; font-weight: bold; cursor: pointer; }
+        button { background: linear-gradient(135deg, #00c6ff, #0072ff); border: none; font-weight: bold; cursor: pointer; color: #fff; }
         button:hover { opacity: 0.9; }
-        .feed-btn { background: linear-gradient(135deg, #ff0844, #ffb199); }
 
         .stats-bar {
-            background: rgba(3, 11, 24, 0.7); padding: 8px 20px; font-size: 0.85rem; display: flex; gap: 20px;
+            background: rgba(2, 11, 24, 0.7); padding: 8px 20px; font-size: 0.85rem; display: flex; gap: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 10;
         }
         .stat-item span { color: #00f2fe; font-weight: bold; }
 
-        #canvas-container { flex: 1; position: relative; width: 100%; height: 100%; }
+        #canvas-container { flex: 1; position: relative; width: 100%; height: 100%; cursor: crosshair; }
         canvas { display: block; width: 100%; height: 100%; }
+
+        /* Nút Cho Ăn Tích Hợp Trực Tiếp Trong Bể */
+        .in-game-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: linear-gradient(135deg, #ff0844, #ffb199);
+            border: none; padding: 10px 18px; border-radius: 20px; font-weight: bold;
+            color: white; box-shadow: 0 0 12px rgba(255, 8, 68, 0.5); cursor: pointer; z-index: 15;
+        }
+        .in-game-btn:hover { transform: scale(1.05); }
 
         #loading-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 11, 24, 0.8); display: none; justify-content: center;
+            background: rgba(2, 11, 24, 0.85); display: none; justify-content: center;
             align-items: center; flex-direction: column; z-index: 30; font-size: 1.2rem; color: #00f2fe;
         }
 
         #info-card {
             position: absolute; bottom: 20px; right: 20px;
             background: rgba(10, 25, 47, 0.95); border: 1px solid #00f2fe;
-            padding: 15px; border-radius: 10px; min-width: 220px;
+            padding: 15px; border-radius: 10px; min-width: 230px;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); display: none; z-index: 20;
         }
         #info-card h4 { color: #00f2fe; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -53,33 +61,33 @@
 <body>
 
     <header>
-        <div class="logo">🐠 Coinquarium</div>
+        <div class="logo">🪸 Coinquarium</div>
         <div class="controls">
             <select id="chain-select">
                 <option value="ethereum">Ethereum / EVM</option>
                 <option value="solana">Solana</option>
             </select>
-            <input type="text" id="wallet-input" placeholder="Dán địa chỉ ví (Ví dụ: demo hoặc 0x...)" value="demo">
+            <input type="text" id="wallet-input" placeholder="Nhập 'demo' hoặc dán Token/Wallet Address" value="demo">
             <button onclick="scanWallet()">🔍 Quét Ví</button>
-            <button class="feed-btn" onclick="feedFish()">🦐 Cho Ăn</button>
         </div>
     </header>
 
     <div class="stats-bar">
         <div class="stat-item">Trạng thái: <span id="status-text">Đã sẵn sàng</span></div>
-        <div class="stat-item">Tổng giá trị: <span id="total-val">$0.00</span></div>
-        <div class="stat-item">Số cá: <span id="fish-count">0</span></div>
+        <div class="stat-item">Tổng vốn hóa bể: <span id="total-mcap">$0.00</span></div>
+        <div class="stat-item">Số lượng sinh vật: <span id="creature-count">0</span></div>
     </div>
 
     <div id="canvas-container">
-        <div id="loading-overlay">⏳ Đang quét dữ liệu On-Chain & CoinGecko...</div>
+        <button class="in-game-btn" onclick="feedFishAtCenter(event)">🦐 Thả Thức Ăn</button>
+        <div id="loading-overlay">⏳ Đang khởi tạo hệ sinh thái biển...</div>
         <canvas id="aquarium"></canvas>
         
         <div id="info-card">
             <h4 id="card-title"><img id="card-icon" src="" alt=""> <span id="card-name">Token</span></h4>
-            <p>Số dư: <span id="card-amount">0</span></p>
+            <p>Cấp sinh vật: <span id="card-type">Cá</span></p>
             <p>Giá USD: <span id="card-price">$0</span></p>
-            <p>Tổng giá trị: <span id="card-total">$0</span></p>
+            <p>Vốn hóa (MCap): <span id="card-mcap">$0</span></p>
             <p>Biến động 24h: <span id="card-change">0%</span></p>
         </div>
     </div>
@@ -89,8 +97,9 @@
         const ctx = canvas.getContext('2d');
         
         let width, height;
-        let fishes = [];
+        let creatures = [];
         let foods = [];
+        let bubbles = [];
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -99,110 +108,230 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // 1. DỮ LIỆU DEMO (Nếu người dùng không nhập ví thật)
+        // DỮ LIỆU DEMO THEO VỐN HÓA (MARKET CAP) REAL-TIME ESTIMATE
         const DEMO_DATA = [
-            { symbol: 'BTC', name: 'Bitcoin', amount: 1.5, price: 64000, change: 2.5, icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', color: '#f7931a' },
-            { symbol: 'ETH', name: 'Ethereum', amount: 12, price: 3400, change: -1.2, icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', color: '#627eea' },
-            { symbol: 'SOL', name: 'Solana', amount: 85, price: 145, change: 5.8, icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png', color: '#14f195' },
-            { symbol: 'LINK', name: 'Chainlink', amount: 350, price: 18, change: -0.5, icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink.png', color: '#375bd2' }
+            { symbol: 'BTC', name: 'Bitcoin', mcap: 1250000000000, price: 64000, change: 2.5, icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png' }, // Cá voi
+            { symbol: 'ETH', name: 'Ethereum', mcap: 400000000000, price: 3400, change: -1.2, icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' }, // Cá mập lớn
+            { symbol: 'SOL', name: 'Solana', mcap: 68000000000, price: 145, change: 5.8, icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png' }, // Cá mập
+            { symbol: 'LINK', name: 'Chainlink', mcap: 11000000000, price: 18, change: 0.5, icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink.png' }, // Cá kiếm
+            { symbol: 'PENDLE', name: 'Pendle', mcap: 800000000, price: 5.2, change: -2.1, icon: 'https://assets.coingecko.com/coins/images/15069/small/pendle.png' }, // Cá hề
+            { symbol: 'SHIMP', name: 'Micro Cap Meme', mcap: 5000000, price: 0.0005, change: 12.4, icon: 'https://assets.coingecko.com/coins/images/29850/small/pepe-token.png' } // Tôm biển
         ];
 
-        // 2. LỚP VẼ CÁ SỐNG ĐỘNG
-        class Fish {
+        // LỚP SINH VẬT ĐA DẠNG THEO VỐN HÓA
+        class MarineCreature {
             constructor(data) {
                 this.data = data;
-                this.totalValue = data.amount * data.price;
-                // Kích thước cá dựa trên tổng giá trị nắm giữ
-                this.size = Math.max(26, Math.min(70, Math.log2(this.totalValue + 1) * 5.5));
-                
-                this.x = Math.random() * (width - 150) + 75;
-                this.y = Math.random() * (height - 150) + 75;
-                this.vx = (Math.random() - 0.5) * 1.5;
-                this.vy = (Math.random() - 0.5) * 1;
+                this.mcap = data.mcap || 1000000;
+
+                // Phân cấp loài dựa trên vốn hóa Market Cap
+                if (this.mcap >= 10000000000) { this.type = 'WHALE'; this.size = 85; }      // > 10 tỷ$: Cá Voi
+                else if (this.mcap >= 1000000000) { this.type = 'SHARK'; this.size = 55; }  // > 1 tỷ$: Cá Mập
+                else if (this.mcap >= 100000000) { this.type = 'FISH'; this.size = 38; }   // > 100 triệu$: Cá Thường
+                else { this.type = 'SHRIMP'; this.size = 22; }                             // < 100 triệu$: Tôm biển
+
+                this.x = Math.random() * (width - 200) + 100;
+                this.y = this.type === 'SHRIMP' ? height - 60 : Math.random() * (height - 200) + 100;
+                this.vx = (Math.random() - 0.5) * (this.type === 'WHALE' ? 0.8 : 1.8);
+                this.vy = this.type === 'SHRIMP' ? 0 : (Math.random() - 0.5) * 1;
                 this.angle = 0;
                 this.tailPhase = Math.random() * Math.PI * 2;
 
                 this.img = new Image();
                 this.img.crossOrigin = "anonymous";
-                this.img.src = data.icon || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png';
+                this.img.src = data.icon;
             }
 
             update() {
-                // Đuổi theo thức ăn
+                // Đuổi theo thức ăn gần nhất
                 if (foods.length > 0) {
-                    let food = foods[0];
-                    let d = Math.hypot(food.x - this.x, food.y - this.y);
-                    if (d < 200) {
-                        this.vx += (food.x - this.x) * 0.0008;
-                        this.vy += (food.y - this.y) * 0.0008;
+                    let nearest = foods[0];
+                    let minDist = Math.hypot(nearest.x - this.x, nearest.y - this.y);
+                    for (let f of foods) {
+                        let d = Math.hypot(f.x - this.x, f.y - this.y);
+                        if (d < minDist) { minDist = d; nearest = f; }
+                    }
+                    if (minDist < 300) {
+                        this.vx += (nearest.x - this.x) * 0.0008;
+                        if (this.type !== 'SHRIMP') this.vy += (nearest.y - this.y) * 0.0008;
                     }
                 }
 
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // Xử lý chạm viền
+                // Va chạm viền
                 if (this.x < this.size || this.x > width - this.size) this.vx *= -1;
-                if (this.y < this.size || this.y > height - this.size) this.vy *= -1;
+                if (this.type !== 'SHRIMP' && (this.y < this.size || this.y > height - 120)) this.vy *= -1;
 
                 this.angle = Math.atan2(this.vy, this.vx);
-                this.tailPhase += 0.12;
+                this.tailPhase += 0.1;
             }
 
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
+                
+                // Tôm di chuyển hướng ngang ở đáy
+                if (this.type === 'SHRIMP') {
+                    ctx.scale(this.vx > 0 ? 1 : -1, 1);
+                    this.drawShrimp();
+                } else {
+                    ctx.rotate(this.angle);
+                    if (this.type === 'WHALE') this.drawWhale();
+                    else if (this.type === 'SHARK') this.drawShark();
+                    else this.drawFish();
+                }
 
-                let mainColor = this.data.color || (this.data.change >= 0 ? '#00f2fe' : '#ff4b4b');
-
-                // Vẽ đuôi cá uốn lượn
-                let wiggle = Math.sin(this.tailPhase) * 8;
-                ctx.fillStyle = mainColor;
-                ctx.globalAlpha = 0.7;
-                ctx.beginPath();
-                ctx.moveTo(-this.size * 0.6, 0);
-                ctx.lineTo(-this.size * 1.4, wiggle - 10);
-                ctx.lineTo(-this.size * 1.4, wiggle + 10);
-                ctx.closePath();
-                ctx.fill();
-
-                // Thân cá
-                ctx.globalAlpha = 1.0;
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
-                ctx.fillStyle = mainColor;
-                ctx.fill();
-
-                // Logo Token tròn ở giữa thân
+                // Vẽ Icon Token lên thân
                 if (this.img.complete && this.img.naturalWidth !== 0) {
                     ctx.save();
                     ctx.beginPath();
-                    ctx.arc(0, 0, Math.max(8, this.size * 0.35), 0, Math.PI * 2);
+                    ctx.arc(0, 0, Math.max(8, this.size * 0.3), 0, Math.PI * 2);
                     ctx.clip();
-                    ctx.drawImage(this.img, -this.size * 0.35, -this.size * 0.35, this.size * 0.7, this.size * 0.7);
+                    ctx.drawImage(this.img, -this.size * 0.3, -this.size * 0.3, this.size * 0.6, this.size * 0.6);
                     ctx.restore();
                 }
 
                 ctx.restore();
 
-                // Nhãn Symbol
+                // Tên Symbol
                 ctx.fillStyle = '#ffffff';
                 ctx.font = 'bold 11px sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size * 0.5 + 12);
+                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size + 10);
+            }
+
+            // HÌNH DẠNG 1: CÁ VOI KHỔNG LỒ (WHALE)
+            drawWhale() {
+                let wiggle = Math.sin(this.tailPhase) * 6;
+                ctx.fillStyle = '#1e3c72';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size * 1.2, this.size * 0.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Đuôi Cá Voi nằm ngang
+                ctx.beginPath();
+                ctx.moveTo(-this.size * 1.1, 0);
+                ctx.lineTo(-this.size * 1.6, wiggle - 20);
+                ctx.lineTo(-this.size * 1.6, wiggle + 20);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // HÌNH DẠNG 2: CÁ MẬP (SHARK)
+            drawShark() {
+                let wiggle = Math.sin(this.tailPhase) * 10;
+                ctx.fillStyle = '#4a6572';
+                // Thân thon dài
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Vây lưng cá mập nhọn
+                ctx.beginPath();
+                ctx.moveTo(-5, -this.size * 0.3);
+                ctx.lineTo(10, -this.size * 0.8);
+                ctx.lineTo(20, -this.size * 0.3);
+                ctx.fill();
+                // Đuôi
+                ctx.beginPath();
+                ctx.moveTo(-this.size * 0.8, 0);
+                ctx.lineTo(-this.size * 1.3, wiggle - 15);
+                ctx.lineTo(-this.size * 1.3, wiggle + 15);
+                ctx.fill();
+            }
+
+            // HÌNH DẠNG 3: CÁ THƯỜNG (FISH)
+            drawFish() {
+                let wiggle = Math.sin(this.tailPhase) * 8;
+                ctx.fillStyle = this.data.change >= 0 ? '#00f2fe' : '#ff4b4b';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-this.size * 0.6, 0);
+                ctx.lineTo(-this.size * 1.2, wiggle - 10);
+                ctx.lineTo(-this.size * 1.2, wiggle + 10);
+                ctx.fill();
+            }
+
+            // HÌNH DẠNG 4: TÔM BIỂN (SHRIMP - BOTTOM DWELLER)
+            drawShrimp() {
+                ctx.fillStyle = '#ff7b54';
+                // Lưng cong tôm
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, Math.PI, Math.PI * 1.8);
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#ff7b54';
+                ctx.stroke();
+                // Râu tôm
+                ctx.beginPath();
+                ctx.moveTo(this.size * 0.5, -5);
+                ctx.lineTo(this.size * 1.2, -15);
+                ctx.strokeStyle = '#ffa07a';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
             }
         }
 
-        // 3. HÀM QUÉT VÍ THẬT SỬ DỤNG DEXSCREENER API (MIỄN PHÍ, KHÔNG CẦN KEY)
+        // VẼ PHÔNG NỀN BỂ CÁ (SAN HỎ, CÁT, BỌT NƯỚC, ÁNH SÁNG)
+        function drawAquariumBackground() {
+            // 1. Ánh sáng chiếu từ mặt nước (Sun Rays)
+            ctx.fillStyle = 'rgba(0, 242, 254, 0.03)';
+            for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(width * (0.15 + i * 0.25), 0);
+                ctx.lineTo(width * (0.05 + i * 0.25), height);
+                ctx.lineTo(width * (0.25 + i * 0.25), height);
+                ctx.fill();
+            }
+
+            // 2. Thảm cát đáy biển
+            let sandGradient = ctx.createLinearGradient(0, height - 80, 0, height);
+            sandGradient.addColorStop(0, '#102a45');
+            sandGradient.addColorStop(1, '#081726');
+            ctx.fillStyle = sandGradient;
+            ctx.beginPath();
+            ctx.moveTo(0, height - 60);
+            ctx.quadraticCurveTo(width * 0.5, height - 90, width, height - 60);
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.fill();
+
+            // 3. Cây thủy sinh & San hô đáy
+            ctx.fillStyle = '#00e676';
+            for (let i = 0; i < 6; i++) {
+                let x = width * (0.1 + i * 0.16);
+                ctx.beginPath();
+                ctx.moveTo(x, height - 50);
+                ctx.quadraticCurveTo(x + 20 * Math.sin(Date.now() * 0.002 + i), height - 150, x - 10, height - 220);
+                ctx.quadraticCurveTo(x - 20, height - 150, x, height - 50);
+                ctx.fill();
+            }
+
+            // 4. Bọt nước nổi tự nhiên
+            if (Math.random() < 0.1) {
+                bubbles.push({ x: Math.random() * width, y: height - 50, r: Math.random() * 4 + 1, speed: Math.random() * 1 + 0.5 });
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                let b = bubbles[i];
+                b.y -= b.speed;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.stroke();
+                if (b.y < 0) bubbles.splice(i, 1);
+            }
+        }
+
+        // QUÉT VÍ / TOKEN REAL-TIME
         async function scanWallet() {
-            const wallet = document.getElementById('wallet-input').value.trim();
+            const input = document.getElementById('wallet-input').value.trim();
             const loader = document.getElementById('loading-overlay');
             const status = document.getElementById('status-text');
 
-            if (!wallet || wallet === 'demo') {
-                status.innerText = "Chế độ Demo";
-                fishes = DEMO_DATA.map(d => new Fish(d));
+            if (!input || input === 'demo') {
+                status.innerText = "Demo";
+                creatures = DEMO_DATA.map(d => new MarineCreature(d));
                 updateStats();
                 return;
             }
@@ -211,34 +340,26 @@
             status.innerText = "Đang quét...";
 
             try {
-                // Gọi API lấy dữ liệu token thực dựa trên địa chỉ ví/token
-                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${wallet}`);
+                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${input}`);
                 const json = await res.json();
 
                 if (json.pairs && json.pairs.length > 0) {
-                    // Lọc lấy 5 token hàng đầu từ dữ liệu quét được
-                    let scannedTokens = json.pairs.slice(0, 6).map(pair => ({
-                        symbol: pair.baseToken.symbol,
-                        name: pair.baseToken.name,
-                        amount: Math.floor(Math.random() * 50) + 1, // Giả lập balance nếu quét theo Pair
-                        price: parseFloat(pair.priceUsd) || 1,
-                        change: parseFloat(pair.priceChange?.h24) || 0,
-                        icon: pair.info?.imageUrl || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png',
-                        color: pair.priceChange?.h24 >= 0 ? '#00f2fe' : '#ff4b4b'
+                    let scanned = json.pairs.slice(0, 7).map(p => ({
+                        symbol: p.baseToken.symbol,
+                        name: p.baseToken.name,
+                        mcap: p.fdv || p.marketCap || 50000000,
+                        price: parseFloat(p.priceUsd) || 1,
+                        change: parseFloat(p.priceChange?.h24) || 0,
+                        icon: p.info?.imageUrl || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'
                     }));
-
-                    fishes = scannedTokens.map(t => new Fish(t));
+                    creatures = scanned.map(c => new MarineCreature(c));
                     status.innerText = "Thành công!";
                 } else {
-                    alert("Không tìm thấy thông tin ví/token này! Đang quay lại chế độ Demo.");
-                    fishes = DEMO_DATA.map(d => new Fish(d));
-                    status.innerText = "Demo";
+                    alert("Không tìm thấy dữ liệu! Chuyển về Ví Demo.");
+                    creatures = DEMO_DATA.map(d => new MarineCreature(d));
                 }
             } catch (err) {
-                console.error("Lỗi khi quét ví:", err);
-                alert("Lỗi kết nối API! Đang chuyển về Ví Demo.");
-                fishes = DEMO_DATA.map(d => new Fish(d));
-                status.innerText = "Demo";
+                creatures = DEMO_DATA.map(d => new MarineCreature(d));
             } finally {
                 loader.style.display = 'none';
                 updateStats();
@@ -246,55 +367,67 @@
         }
 
         function updateStats() {
-            let total = fishes.reduce((sum, f) => sum + f.totalValue, 0);
-            document.getElementById('total-val').innerText = `$${total.toLocaleString('en-US', {maximumFractionDigits:2})}`;
-            document.getElementById('fish-count').innerText = fishes.length;
+            let totalMcap = creatures.reduce((sum, c) => sum + c.mcap, 0);
+            document.getElementById('total-mcap').innerText = `$${(totalMcap / 1e6).toFixed(1)}M`;
+            document.getElementById('creature-count').innerText = creatures.length;
         }
 
-        function feedFish() {
-            for (let i = 0; i < 5; i++) {
-                foods.push({ x: Math.random() * (width - 100) + 50, y: 0, speed: Math.random() * 1.5 + 1 });
-            }
-        }
-
-        // Tương tác Click chọn cá
+        // CLICK TRỰC TIẾP VÀO BỂ ĐỂ THẢ THỨC ĂN HOẶC XEM THÔNG TIN
         canvas.addEventListener('click', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
 
-            let selected = false;
-            for (let f of fishes) {
-                if (Math.hypot(f.x - mouseX, f.y - mouseY) < f.size) {
-                    showCard(f.data);
-                    selected = true;
+            // Kiểm tra click trúng sinh vật không
+            let clickedCreature = false;
+            for (let c of creatures) {
+                if (Math.hypot(c.x - clickX, c.y - clickY) < c.size) {
+                    showCard(c);
+                    clickedCreature = true;
                     break;
                 }
             }
-            if (!selected) document.getElementById('info-card').style.display = 'none';
+
+            // Nếu không click trúng sinh vật -> Thả 3 viên thức ăn ngay vị trí click!
+            if (!clickedCreature) {
+                document.getElementById('info-card').style.display = 'none';
+                for (let i = 0; i < 3; i++) {
+                    foods.push({ x: clickX + (Math.random() - 0.5) * 20, y: clickY, speed: Math.random() * 1.2 + 0.8 });
+                }
+            }
         });
 
-        function showCard(data) {
+        function feedFishAtCenter(e) {
+            e.stopPropagation(); // Tránh trùng lặp event click canvas
+            for (let i = 0; i < 6; i++) {
+                foods.push({ x: Math.random() * (width - 200) + 100, y: 10, speed: Math.random() * 1.5 + 1 });
+            }
+        }
+
+        function showCard(c) {
             const card = document.getElementById('info-card');
-            document.getElementById('card-icon').src = data.icon;
-            document.getElementById('card-name').innerText = `${data.name} (${data.symbol})`;
-            document.getElementById('card-amount').innerText = data.amount;
-            document.getElementById('card-price').innerText = `$${data.price.toLocaleString()}`;
-            document.getElementById('card-total').innerText = `$${(data.amount * data.price).toLocaleString()}`;
+            document.getElementById('card-icon').src = c.data.icon;
+            document.getElementById('card-name').innerText = `${c.data.name} (${c.data.symbol})`;
+            document.getElementById('card-type').innerText = c.type === 'WHALE' ? '🐳 Cá Voi' : (c.type === 'SHARK' ? '🦈 Cá Mập' : (c.type === 'FISH' ? '🐠 Cá Thường' : '🦐 Tôm Biển'));
+            document.getElementById('card-price').innerText = `$${c.data.price.toLocaleString()}`;
+            document.getElementById('card-mcap').innerText = `$${(c.mcap / 1e6).toFixed(2)}M`;
             
             const changeEl = document.getElementById('card-change');
-            changeEl.innerText = `${data.change >= 0 ? '+' : ''}${data.change}%`;
-            changeEl.style.color = data.change >= 0 ? '#00ff88' : '#ff4b4b';
+            changeEl.innerText = `${c.data.change >= 0 ? '+' : ''}${c.data.change}%`;
+            changeEl.style.color = c.data.change >= 0 ? '#00ff88' : '#ff4b4b';
 
             card.style.display = 'block';
         }
 
-        // VÒNG LẶP GAME (GAME LOOP)
+        // GAME LOOP
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
-            // Vẽ thức ăn
-            ctx.fillStyle = '#ff5858';
+            // 1. Vẽ Phông nền Bể cá
+            drawAquariumBackground();
+
+            // 2. Vẽ & Cập nhật Thức ăn
+            ctx.fillStyle = '#ff5252';
             for (let i = foods.length - 1; i >= 0; i--) {
                 let f = foods[i];
                 f.y += f.speed;
@@ -302,25 +435,26 @@
                 ctx.arc(f.x, f.y, 4, 0, Math.PI * 2);
                 ctx.fill();
 
-                for (let fish of fishes) {
-                    if (Math.hypot(fish.x - f.x, fish.y - f.y) < fish.size) {
+                // Cá ăn thức ăn
+                for (let c of creatures) {
+                    if (Math.hypot(c.x - f.x, c.y - f.y) < c.size) {
                         foods.splice(i, 1);
                         break;
                     }
                 }
-                if (f && f.y > height) foods.splice(i, 1);
+                if (f && f.y > height - 60) foods.splice(i, 1); // Chạm đáy thì mất
             }
 
-            // Vẽ cá
-            fishes.forEach(fish => {
-                fish.update();
-                fish.draw();
+            // 3. Vẽ & Cập nhật Sinh vật
+            creatures.forEach(c => {
+                c.update();
+                c.draw();
             });
 
             requestAnimationFrame(animate);
         }
 
-        // Bắt đầu game
+        // Chạy game
         scanWallet();
         animate();
     </script>
