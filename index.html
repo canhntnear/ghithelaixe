@@ -14,12 +14,12 @@ h1{font-size:16px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
 .layout{max-width:1300px;margin:10px auto;padding:0 8px;display:grid;grid-template-columns:minmax(400px,1fr) 390px;gap:10px}
 .card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 25px #0006;overflow:hidden}
 .game{position:relative;display:flex;flex-direction:column;align-items:center;background:#1b2e1e}
-.game canvas{display:block;width:100%;max-width:550px;height:auto;aspect-ratio:760/620}
+.game canvas{display:block;width:100%;max-width:550px;height:auto;aspect-ratio:760/620;cursor:pointer}
 .hud{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none;z-index:2}
 .hud span{background:#06101ddd;border:1px solid #34536c;padding:5px 8px;border-radius:7px;font-size:10px}
 .hud b{color:var(--cyan)}
 
-/* CỤM ĐIỀU KHIỂN CẢM ỨNG TRÊN MOBILE */
+/* CỤM ĐIỀU KHIỂN CẢM ỨNG MOBILE */
 .touch-controls{display:none;width:100%;max-width:550px;padding:8px 12px;background:#081320;border-top:1px solid var(--line);justify-content:space-between;align-items:center;touch-action:none}
 .dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,44px);gap:4px}
 .t-btn{background:#162b42;border:1px solid #2c4a6b;color:#fff;font-size:16px;font-weight:900;border-radius:10px;display:flex;justify-content:center;align-items:center;user-select:none;touch-action:none}
@@ -83,7 +83,7 @@ h1{font-size:16px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
       <span>🏁 <b id="routeHud">ĐÔ THỊ · 50</b></span>
     </div>
 
-    <!-- CỤM PHÍM ẢO CẢM ỨNG TRÊN MOBILE -->
+    <!-- CỤM PHÍM ẢO CẢM ỨNG MOBILE -->
     <div class="touch-controls">
       <div class="dpad">
         <div></div>
@@ -194,6 +194,9 @@ let currentLng = 106.700910;
 let gpsSatellites = 14;
 let gpsJitterTimer = 0;
 let displayedGpsStr = '10.77692, 106.70091';
+
+// Tọa độ nút Restart trên Canvas
+const restartBtnRect = { x: W / 2 - 130, y: H / 2 + 80, w: 260, h: 54 };
 
 function reset() {
   car = { x: W / 2, y: H - 120, w: 52, h: 96, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
@@ -364,13 +367,13 @@ function carDraw(c, player = false) {
     ctx.globalAlpha = 0.4;
   }
 
-  // Bóng xe
+  // 1. Bóng xe
   ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
   ctx.fill();
 
-  // Bánh xe
+  // 2. Bánh xe
   ctx.fillStyle = '#0f172a';
   const wheelW = 6, wheelH = 16;
   ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH);
@@ -378,14 +381,14 @@ function carDraw(c, player = false) {
   ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);
   ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);
 
-  // Gương chiếu hậu
+  // 3. Gương chiếu hậu
   ctx.fillStyle = player ? '#0284c7' : c.color;
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
   ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
   ctx.fill();
 
-  // Khung thân xe
+  // 4. Khung thân xe
   const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
   if (player) {
     grad.addColorStop(0, '#0369a1');
@@ -406,7 +409,7 @@ function carDraw(c, player = false) {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // Kính chắn gió
+  // 5. Kính chắn gió
   const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
   glassGrad.addColorStop(0, '#091829');
   glassGrad.addColorStop(1, '#1e3a5f');
@@ -416,7 +419,7 @@ function carDraw(c, player = false) {
   ctx.roundRect(-c.w * 0.4, -c.h * 0.42, c.w * 0.8, c.h * 0.22, [6, 6, 2, 2]);
   ctx.fill();
 
-  // Nóc xe & Logo
+  // 6. Nóc xe & Logo
   if (player) {
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
@@ -436,7 +439,7 @@ function carDraw(c, player = false) {
     ctx.fill();
   }
 
-  // Đèn trước & sau
+  // 7. Đèn trước & sau
   ctx.fillStyle = '#fef08a';
   ctx.beginPath();
   ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
@@ -469,6 +472,89 @@ function carDraw(c, player = false) {
   ctx.fillRect(-c.w * 0.44, c.h / 2 - 4, 10, 3);
   ctx.fillRect(c.w * 0.44 - 10, c.h / 2 - 4, 10, 3);
   ctx.shadowBlur = 0;
+
+  ctx.restore();
+}
+
+// -------------------------------------------------------------
+// VẼ MÀN HÌNH GAME OVER NGAY TRONG CANVAS
+// -------------------------------------------------------------
+function drawGameOver() {
+  ctx.save();
+  // 1. Phủ mờ tối toàn bộ màn hình
+  ctx.fillStyle = 'rgba(5, 11, 19, 0.88)';
+  ctx.fillRect(0, 0, W, H);
+
+  // 2. Khung thông báo trung tâm
+  const boxW = 500, boxH = 340;
+  const boxX = (W - boxW) / 2, boxY = (H - boxH) / 2 - 10;
+
+  ctx.fillStyle = '#0d1b2d';
+  ctx.beginPath();
+  ctx.roundRect(boxX, boxY, boxW, boxH, 16);
+  ctx.fill();
+
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // 3. Tiêu đề GAME OVER
+  ctx.fillStyle = '#ef4444';
+  ctx.font = '900 32px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('⛔ GAME OVER', W / 2, boxY + 50);
+
+  // Phụ đề
+  ctx.fillStyle = '#fca5a5';
+  ctx.font = 'bold 15px system-ui';
+  ctx.fillText('TƯỚC QUYỀN SỬ DỤNG GIẤY PHÉP LÁI XE', W / 2, boxY + 80);
+
+  // 4. Bảng thống kê vi phạm
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.beginPath();
+  ctx.roundRect(boxX + 24, boxY + 105, boxW - 48, 100, 10);
+  ctx.fill();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '13px system-ui';
+  ctx.textAlign = 'left';
+  ctx.fillText('Điểm GPLX còn lại:', boxX + 44, boxY + 135);
+  ctx.fillText('Thời gian điều khiển:', boxX + 44, boxY + 162);
+  ctx.fillText('Tình trạng xử lý:', boxX + 44, boxY + 189);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#ef4444';
+  ctx.font = 'bold 15px system-ui';
+  ctx.fillText('0 / 12 ĐIỂM', boxX + boxW - 44, boxY + 135);
+
+  ctx.fillStyle = '#38bdf8';
+  const tripMin = Math.floor(tripTime / 60);
+  const tripSec = Math.floor(tripTime % 60);
+  ctx.fillText(`${String(tripMin).padStart(2,'0')}:${String(tripSec).padStart(2,'0')} phút`, boxX + boxW - 44, boxY + 162);
+
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText('Phải thi phục hồi điểm GPLX', boxX + boxW - 44, boxY + 189);
+
+  // 5. Nút bấm Chơi lại (Restart Button)
+  const b = restartBtnRect;
+  const btnGrad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+  btnGrad.addColorStop(0, '#0284c7');
+  btnGrad.addColorStop(1, '#0369a1');
+
+  ctx.fillStyle = btnGrad;
+  ctx.beginPath();
+  ctx.roundRect(b.x, b.y, b.w, b.h, 12);
+  ctx.fill();
+
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 16px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('↻ THI LẠI / CHUYẾN MỚI', W / 2, b.y + b.h / 2);
 
   ctx.restore();
 }
@@ -663,6 +749,7 @@ function updateUI() {
 
   if (score <= 0 && playing) {
     playing = false;
+    car.speed = 0;
     alertStatus('danger', '⛔ TƯỚC GPLX: GPLX đã bị trừ hết 12/12 điểm. Phải thi phục hồi điểm!');
     log('GAME OVER: Giấy phép lái xe đã hết điểm hiệu lực theo quy định.');
   }
@@ -673,7 +760,7 @@ function draw() {
   objects.forEach(o => carDraw(o));
   carDraw(car, true);
 
-  if (doze > 25) {
+  if (doze > 25 && playing) {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#fff';
@@ -681,6 +768,11 @@ function draw() {
     ctx.textAlign = 'center';
     ctx.fillText('😴 BUỒN NGỦ! BẤM NÚT CÒI NGAY!', W / 2, H / 2);
     ctx.textAlign = 'start';
+  }
+
+  // HIỂN THỊ MÀN HÌNH GAME OVER TRỰC TIẾP TRÊN CANVAS
+  if (!playing) {
+    drawGameOver();
   }
 }
 
@@ -693,12 +785,36 @@ function loop(t) {
   requestAnimationFrame(loop);
 }
 
-// Bắt sự kiện bàn phím PC
+// Bắt sự kiện Click / Touch vào nút Chơi Lại trên Canvas khi Game Over
+function handleCanvasClick(clientX, clientY) {
+  if (playing) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const canvasX = (clientX - rect.left) * scaleX;
+  const canvasY = (clientY - rect.top) * scaleY;
+
+  const b = restartBtnRect;
+  if (canvasX >= b.x && canvasX <= b.x + b.w && canvasY >= b.y && canvasY <= b.y + b.h) {
+    reset();
+  }
+}
+
+canvas.addEventListener('click', e => handleCanvasClick(e.clientX, e.clientY));
+canvas.addEventListener('touchstart', e => {
+  if (!playing && e.touches.length > 0) {
+    e.preventDefault();
+    handleCanvasClick(e.touches[0].clientX, e.touches[0].clientY);
+  }
+}, { passive: false });
+
 window.addEventListener('keydown', e => {
   keys[e.key.toLowerCase()] = true;
   keys[e.key] = true;
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
   if (e.key === ' ') triggerHorn();
+  if (e.key.toLowerCase() === 'r' && !playing) reset();
 });
 
 window.addEventListener('keyup', e => {
@@ -706,7 +822,6 @@ window.addEventListener('keyup', e => {
   keys[e.key] = false;
 });
 
-// XỬ LÝ SỰ KIỆN CẢM ỨNG ĐA ĐIỂM (MULTI-TOUCH) CHO MOBILE
 function bindTouch(btnId, keyName) {
   const el = $(btnId);
   const start = e => { e.preventDefault(); keys[keyName] = true; el.classList.add('active'); };
