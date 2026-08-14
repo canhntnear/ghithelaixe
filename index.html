@@ -159,8 +159,6 @@ const speedLimitPresets = [
 const vpkLogo = new Image();
 vpkLogo.crossOrigin = "anonymous";
 vpkLogo.src = 'https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png';
-let logoLoaded = false;
-vpkLogo.onload = () => { logoLoaded = true; };
 
 const $ = id => document.getElementById(id);
 
@@ -242,13 +240,12 @@ function spawn(first = false) {
   });
 }
 
-// Sinh ra logo sơn ngẫu nhiên trên mặt đường
 function spawnRoadDecal(first = false) {
   const lanes = [road.x + 58, road.x + 175, road.x + 292];
   roadDecals.push({
     x: lanes[Math.floor(Math.random() * 3)],
     y: first ? H - 300 : -120,
-    w: 78,
+    w: 80,
     h: 46
   });
 }
@@ -279,35 +276,21 @@ function drawRoad() {
   ctx.fillRect(road.x + road.w - 10, 0, 4, H);
 
   // -------------------------------------------------------------
-  // VẼ LOGO SƠN DƯỚI LÒNG ĐƯỜNG (ROAD SURFACE LOGO DECAL)
+  // VẼ LOGO BẰNG HÌNH ẢNH TRỰC TIẾP DƯỚI LÒNG ĐƯỜNG
   // -------------------------------------------------------------
   roadDecals.forEach(d => {
     ctx.save();
-    // Nền trắng mờ mô phỏng vệt sơn nhiệt giao thông
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.beginPath();
     ctx.roundRect(d.x - d.w / 2, d.y - d.h / 2, d.w, d.h, 6);
     ctx.fill();
 
-    // Viền sơn dạ quang
     ctx.strokeStyle = 'rgba(14, 165, 233, 0.8)';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    if (logoLoaded) {
-      try {
-        ctx.drawImage(vpkLogo, d.x - d.w / 2 + 4, d.y - d.h / 2 + 4, d.w - 8, d.h - 8);
-      } catch (e) {
-        ctx.fillStyle = '#0284c7';
-        ctx.font = '900 11px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText('VPK GSHT', d.x, d.y + 4);
-      }
-    } else {
-      ctx.fillStyle = '#0284c7';
-      ctx.font = '900 11px system-ui';
-      ctx.textAlign = 'center';
-      ctx.fillText('VPK GSHT', d.x, d.y + 4);
+    if (vpkLogo.complete && vpkLogo.naturalWidth !== 0) {
+      ctx.drawImage(vpkLogo, d.x - d.w / 2 + 4, d.y - d.h / 2 + 4, d.w - 8, d.h - 8);
     }
     ctx.restore();
   });
@@ -370,13 +353,13 @@ function carDraw(c, player = false) {
     ctx.globalAlpha = 0.4;
   }
 
-  // Bóng xe
+  // 1. Bóng xe
   ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
   ctx.fill();
 
-  // Bánh xe
+  // 2. Bánh xe
   ctx.fillStyle = '#0f172a';
   const wheelW = 6, wheelH = 16;
   ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH);
@@ -391,14 +374,14 @@ function carDraw(c, player = false) {
   ctx.fillRect(-c.w / 2 - 4, c.h * 0.26, 2, 8);
   ctx.fillRect(c.w / 2 + 2, c.h * 0.26, 2, 8);
 
-  // Gương chiếu hậu
+  // 3. Gương chiếu hậu
   ctx.fillStyle = player ? '#0284c7' : c.color;
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
   ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
   ctx.fill();
 
-  // Khung thân xe
+  // 4. Khung thân xe
   const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
   if (player) {
     grad.addColorStop(0, '#0369a1');
@@ -419,7 +402,7 @@ function carDraw(c, player = false) {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // Kính chắn gió trước
+  // 5. Kính chắn gió trước
   const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
   glassGrad.addColorStop(0, '#091829');
   glassGrad.addColorStop(1, '#1e3a5f');
@@ -443,7 +426,9 @@ function carDraw(c, player = false) {
   ctx.roundRect(-c.w * 0.38, c.h * 0.26, c.w * 0.76, c.h * 0.12, 3);
   ctx.fill();
 
-  // Nóc xe & Logo VPK
+  // -------------------------------------------------------------
+  // 6. NÓC XE VẼ ẢNH LOGO TRỰC TIẾP
+  // -------------------------------------------------------------
   if (player) {
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
@@ -453,20 +438,8 @@ function carDraw(c, player = false) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    if (logoLoaded) {
-      try {
-        ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.11, c.w * 0.68, c.h * 0.29);
-      } catch (e) {
-        ctx.fillStyle = '#0284c7';
-        ctx.font = '900 11px system-ui';
-        ctx.textAlign = 'center';
-        ctx.fillText('VPK GSHT', 0, 4);
-      }
-    } else {
-      ctx.fillStyle = '#0284c7';
-      ctx.font = '900 11px system-ui';
-      ctx.textAlign = 'center';
-      ctx.fillText('VPK GSHT', 0, 4);
+    if (vpkLogo.complete && vpkLogo.naturalWidth !== 0) {
+      ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.11, c.w * 0.68, c.h * 0.29);
     }
   } else {
     ctx.fillStyle = '#0f172a';
@@ -475,7 +448,7 @@ function carDraw(c, player = false) {
     ctx.fill();
   }
 
-  // Đèn trước
+  // 7. Đèn trước
   ctx.fillStyle = '#fef08a';
   ctx.beginPath();
   ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
