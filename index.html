@@ -1,499 +1,538 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coinquarium - Web3 Aquarium Simulator</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: #020813; color: #fff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-        
-        /* Glassmorphism Header Bar */
-        header {
-            position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 1200px;
-            background: rgba(8, 21, 41, 0.55); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 10px 24px; border-radius: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(0, 242, 254, 0.18);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            z-index: 20;
-        }
-        .logo { 
-            font-size: 1.3rem; font-weight: 800; 
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .controls { display: flex; gap: 10px; align-items: center; }
-        input {
-            padding: 10px 16px; border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(4, 15, 31, 0.7); color: #fff; outline: none;
-            font-size: 0.85rem; width: 280px; transition: all 0.3s ease;
-        }
-        input:focus { border-color: #00f2fe; box-shadow: 0 0 12px rgba(0, 242, 254, 0.3); }
-        button {
-            padding: 10px 18px; border-radius: 12px;
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-            border: none; font-weight: 700; cursor: pointer; color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3); transition: all 0.2s ease;
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 198, 255, 0.5); }
-
-        /* Floating HUD Stats Bar */
-        .stats-hud {
-            position: absolute; top: 80px; left: 4%;
-            display: flex; gap: 16px; z-index: 20;
-        }
-        .hud-card {
-            background: rgba(8, 21, 41, 0.45); backdrop-filter: blur(12px);
-            padding: 8px 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.8rem; color: #94a3b8;
-        }
-        .hud-card span { color: #00f2fe; font-weight: 700; font-size: 0.9rem; margin-left: 6px; }
-
-        /* Full Canvas Container */
-        #canvas-container { position: relative; width: 100vw; height: 100vh; cursor: crosshair; }
-        canvas { display: block; width: 100%; height: 100%; }
-
-        /* In-game Feed Button */
-        .in-game-btn {
-            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: linear-gradient(135deg, #ff0844, #ffb199);
-            border: none; padding: 12px 28px; border-radius: 30px; font-weight: 800;
-            color: white; box-shadow: 0 0 20px rgba(255, 8, 68, 0.4); cursor: pointer; z-index: 20;
-            transition: all 0.2s ease; letter-spacing: 0.5px;
-        }
-        .in-game-btn:hover { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 30px rgba(255, 8, 68, 0.7); }
-
-        /* Glass Token Info Card */
-        #info-card {
-            position: absolute; bottom: 30px; right: 30px;
-            background: rgba(8, 21, 41, 0.75); backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 20px; border-radius: 18px; min-width: 250px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); display: none; z-index: 20;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        #info-card h4 { color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        #info-card img { width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        #info-card p { font-size: 0.85rem; margin: 6px 0; color: #94a3b8; display: flex; justify-content: space-between; }
-        #info-card p span { color: #fff; font-weight: 600; }
-
-        #loading-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 8, 19, 0.85); backdrop-filter: blur(10px); display: none;
-            justify-content: center; align-items: center; flex-direction: column; z-index: 30;
-            font-size: 1.2rem; color: #00f2fe; font-weight: 600;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tài xế chuẩn GSHT · Vạn Phú Khánh</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--line:#29405a;--text:#eef7ff;--muted:#8fa7bf;--cyan:#31d7ff;--ok:#36d399;--warn:#f7c948;--danger:#ff5c6c}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#142942,#050b13 65%);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:var(--text);user-select:none}
+header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#071321ee;position:sticky;top:0;z-index:5}
+h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-size:11px;color:var(--muted);margin-top:3px}
+.badge{border:1px solid #27556d;border-radius:99px;padding:7px 10px;font-size:11px}
+.layout{max-width:1300px;margin:14px auto;padding:0 12px;display:grid;grid-template-columns:minmax(450px,1fr) 400px;gap:14px}
+.card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px #0006;overflow:hidden}
+.game{position:relative}
+.game canvas{display:block;width:100%;background:#233c2a}
+.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}
+.hud span{background:#06101ddd;border:1px solid #34536c;padding:7px 9px;border-radius:9px;font-size:11px}
+.hud b{color:var(--cyan)}
+.cockpit{padding:14px}
+.section-title{font-size:14px;font-weight:800;margin:0 0 9px}
+.device{border:1px solid #31516c;background:#06111e;border-radius:13px;padding:12px}
+.device-head{display:flex;justify-content:space-between;align-items:center}
+.led{width:8px;height:8px;background:var(--ok);border-radius:50%;display:inline-block;box-shadow:0 0 10px var(--ok);margin-right:5px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.metric{border:1px solid #20374d;border-radius:9px;padding:9px;background:#0a1726}
+.metric small{display:block;color:var(--muted);font-size:9px}
+.metric strong{font-size:14px}
+.status{padding:9px;margin-top:9px;border-radius:9px;background:#0a2731;border:1px solid #1b5662;color:#c3f4ff;font-size:11px;min-height:36px;display:flex;align-items:center}
+.warn{background:#2c2410;border-color:#6d5617;color:#ffe59a}
+.danger{background:#32151c;border-color:#712b37;color:#ffb2ba}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.btn{border:1px solid #34516a;background:#102238;color:var(--text);padding:9px;border-radius:9px;cursor:pointer;font-size:11px;transition:0.15s}
+.btn:hover{background:#17314d;border-color:var(--cyan)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.primary{background:#0b4150;border-color:#16829b}
+.dangerBtn{border-color:#73343c}
+.log{height:125px;overflow-y:auto;background:#040a11;border:1px solid #1b2b3d;border-radius:9px;margin-top:8px;padding:8px;font:10px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#adc2d6}
+.log div{padding:3px 0;border-bottom:1px dashed #172737}
+.score{margin-top:12px;padding:12px;border:1px solid #31516c;border-radius:12px;background:#071421}
+.scoretop{display:flex;justify-content:space-between;align-items:center}
+.points{font-size:28px;font-weight:900;color:var(--cyan)}
+.rank{font-weight:800}
+.bar{height:8px;background:#18283a;border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:100%;background:var(--ok);transition:.2s}
+.rules{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
+.rules b{color:#d9e8f6}
+.help{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.game canvas{min-height:380px}}
+</style>
 </head>
 <body>
+<header>
+  <div>
+    <h1><span class="brand">VẠN PHÚ KHÁNH</span> · TÀI XẾ CHUẨN GSHT</h1>
+    <div class="sub">Multi-tasking Driving & Journey Monitoring Simulator</div>
+  </div>
+  <div class="badge">● LIVE TELEMETRY</div>
+</header>
 
-    <header>
-        <div class="logo">🪸 Coinquarium</div>
-        <div class="controls">
-            <input type="text" id="wallet-input" placeholder="Nhập mã Token (LINK, BTC, ETH) hoặc Address..." value="LINK">
-            <button onclick="scanWallet()">🔍 Quét Token</button>
-        </div>
-    </header>
+<main class="layout">
+  <section class="card game">
+    <canvas id="game" width="760" height="620"></canvas>
+    <div class="hud">
+      <span>🚗 <b id="speedHud">0 km/h</b></span>
+      <span>📍 <b id="gpsHud">LOCK</b></span>
+      <span>⭐ Uy tín: <b id="scoreHud">100</b></span>
+      <span>🏁 <b id="routeHud">ĐÔ THỊ · 50</b></span>
+    </div>
+  </section>
 
-    <div class="stats-hud">
-        <div class="hud-card">Vốn hóa bể: <span id="total-mcap">$0.00</span></div>
-        <div class="hud-card">Sinh vật: <span id="creature-count">0</span></div>
+  <aside class="card cockpit">
+    <h2 class="section-title">📡 Thiết bị GSHT · Hộp đen</h2>
+    <div class="device">
+      <div class="device-head">
+        <strong><span class="led" id="led"></span>DV4G-VPK ONLINE</strong>
+        <small id="clock">--:--:--</small>
+      </div>
+      <div class="metrics">
+        <div class="metric"><small>Tốc độ</small><strong id="speed">0 km/h</strong></div>
+        <div class="metric"><small>Giới hạn</small><strong id="limit">50 km/h</strong></div>
+        <div class="metric"><small>GPS</small><strong id="gps">10.7769, 106.7009</strong></div>
+        <div class="metric"><small>Thẻ lái xe</small><strong id="driver">CHƯA QUẸT</strong></div>
+        <div class="metric"><small>Lái liên tục</small><strong id="driveTime">00:00</strong></div>
+        <div class="metric"><small>Ca chạy</small><strong id="trip">00:00</strong></div>
+      </div>
+      <div id="status" class="status">Vui lòng quẹt thẻ lái xe trước khi nhấn ga!</div>
     </div>
 
-    <div id="canvas-container">
-        <button class="in-game-btn" onclick="feedFishAtCenter(event)">🦐 Thả Thức Ăn</button>
-        <div id="loading-overlay">⏳ Đang tải hiệu ứng đồ họa...</div>
-        <canvas id="aquarium"></canvas>
-        
-        <div id="info-card">
-            <h4 id="card-title"><img id="card-icon" src="" alt=""> <span id="card-name">Token</span></h4>
-            <p>Cấp sinh vật: <span id="card-type">Cá</span></p>
-            <p>Giá USD: <span id="card-price">$0</span></p>
-            <p>Vốn hóa (MCap): <span id="card-mcap">$0</span></p>
-            <p>Biến động 24h: <span id="card-change">0%</span></p>
-        </div>
+    <div class="buttons">
+      <button class="btn primary" id="cardBtn">💳 Quẹt thẻ tài xế 1</button>
+      <button class="btn" id="swapBtn">🔄 Đổi sang tài xế 2</button>
+      <button class="btn" id="gpsBtn">📍 Reset ăng-ten GPS</button>
+      <button class="btn" id="restBtn">☕ Tấp vào nghỉ 15 phút</button>
+      <button class="btn" id="printBtn">🧾 Xuất phiếu GSHT</button>
+      <button class="btn dangerBtn" id="resetBtn">↻ Chuyến mới</button>
     </div>
 
-    <script>
-        const canvas = document.getElementById('aquarium');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let creatures = [];
-        let foods = [];
-        let bubbles = [];
-        let ripples = [];
+    <h2 class="section-title" style="margin-top:14px">📋 Nhật ký thiết bị</h2>
+    <div class="log" id="log"></div>
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+    <div class="score">
+      <div class="scoretop">
+        <div>
+          <div class="rank" id="rank">Bác tài Vàng</div>
+          <small>Điểm Uy tín</small>
+        </div>
+        <div class="points" id="points">100</div>
+      </div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="rules"><b>Quy tắc trừ điểm:</b> Quá tốc độ >5s (-15) · Lái quá 4h liên tục (-30) · Lái xe chưa quẹt thẻ (-50) · Va chạm (-20).</div>
+    </div>
 
-        const DEFAULT_CREATURES = [
-            { symbol: 'LINK', name: 'Chainlink', mcap: 11000000000, price: 18.2, change: 3.5, icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink.png', color: '#375bd2' },
-            { symbol: 'BTC', name: 'Bitcoin', mcap: 1250000000000, price: 64000, change: 2.5, icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', color: '#f7931a' },
-            { symbol: 'ETH', name: 'Ethereum', mcap: 400000000000, price: 3400, change: -1.2, icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', color: '#627eea' },
-            { symbol: 'SOL', name: 'Solana', mcap: 68000000000, price: 145, change: 5.8, icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png', color: '#14f195' },
-            { symbol: 'PEPE', name: 'Pepe', mcap: 4000000000, price: 0.000009, change: 12.4, icon: 'https://assets.coingecko.com/coins/images/29850/small/pepe-token.png', color: '#52ae5f' }
-        ];
+    <div class="help">
+      <b>Điều khiển:</b> W/↑: Ga · S/↓: Phanh · A/← D/→: Đánh lái · Phím Space: Còi khi buồn ngủ.<br>
+      <b>Quy đổi:</b> 1 phút thực tế = 1 giờ trong game (Cảnh báo mốc 3:45).
+    </div>
+  </aside>
+</main>
 
-        class ArtisticCreature {
-            constructor(data) {
-                this.data = data;
-                this.mcap = data.mcap || 10000000;
-                this.color = data.color || (data.change >= 0 ? '#00f2fe' : '#ff4b4b');
+<script>
+// Polyfill an toàn cho roundRect trên mọi trình duyệt
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    if (typeof r === 'undefined') r = 0;
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.lineTo(x + w - r, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r);
+    this.lineTo(x + w, y + h - r);
+    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    this.lineTo(x + r, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r);
+    this.lineTo(x, y + r);
+    this.quadraticCurveTo(x, y, x + r, y);
+    this.closePath();
+    return this;
+  };
+}
 
-                if (this.mcap >= 100000000000) { this.type = 'WHALE'; this.size = 85; }
-                else if (this.mcap >= 10000000000) { this.type = 'SHARK'; this.size = 58; }
-                else if (this.mcap >= 1000000000) { this.type = 'FISH'; this.size = 40; }
-                else { this.type = 'SHRIMP'; this.size = 24; }
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const road = { x: 205, w: 350 };
+const routes = [['ĐÔ THỊ', 50], ['NGOÀI ĐÔ THỊ', 80], ['CAO TỐC', 100]];
+const $ = id => document.getElementById(id);
 
-                this.x = Math.random() * (width - 200) + 100;
-                this.y = this.type === 'SHRIMP' ? height - 70 : Math.random() * (height - 250) + 120;
-                this.vx = (Math.random() - 0.5) * (this.type === 'WHALE' ? 0.8 : 1.6);
-                this.vy = this.type === 'SHRIMP' ? 0 : (Math.random() - 0.5) * 1;
-                this.angle = 0;
-                this.tailPhase = Math.random() * Math.PI * 2;
+let keys = {}, car, objects, score, elapsed, tripTime, driveSecs, playing;
+let driver = false, driverId = 0, gps = true, roadOffset = 0, last = performance.now();
+let overspeedSecs = 0, routeIndex = 0, eventTimer = 12, inspection = false, doze = 0, resting = false;
+let invulnerableTimer = 0;
 
-                this.img = new Image();
-                this.img.crossOrigin = "anonymous";
-                this.img.src = data.icon;
-            }
+function reset() {
+  car = { x: W / 2, y: H - 105, w: 44, h: 74, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
+  objects = [];
+  score = 100;
+  elapsed = 0;
+  tripTime = 0;
+  driveSecs = 0;
+  playing = true;
+  driver = false;
+  driverId = 0;
+  gps = true;
+  roadOffset = 0;
+  last = performance.now();
+  overspeedSecs = 0;
+  routeIndex = 0;
+  eventTimer = 12;
+  inspection = false;
+  doze = 0;
+  resting = false;
+  invulnerableTimer = 0;
 
-            update() {
-                if (foods.length > 0) {
-                    let nearest = foods[0];
-                    let minDist = Math.hypot(nearest.x - this.x, nearest.y - this.y);
-                    for (let f of foods) {
-                        let d = Math.hypot(f.x - this.x, f.y - this.y);
-                        if (d < minDist) { minDist = d; nearest = f; }
-                    }
-                    if (minDist < 350) {
-                        this.vx += (nearest.x - this.x) * 0.0008;
-                        if (this.type !== 'SHRIMP') this.vy += (nearest.y - this.y) * 0.0008;
-                    }
-                }
+  $('driver').textContent = 'CHƯA QUẸT';
+  $('driver').style.color = 'var(--danger)';
+  $('gps').textContent = '10.7769, 106.7009';
+  $('cardBtn').disabled = false;
+  $('cardBtn').textContent = '💳 Quẹt thẻ tài xế 1';
+  alertStatus('', 'Vui lòng quẹt thẻ lái xe trước khi nhấn ga!');
+  $('log').innerHTML = '';
+  log('Hệ thống khởi động · DV4G-VPK SẴN SÀNG');
+  spawn(true);
+  updateUI();
+}
 
-                this.x += this.vx;
-                this.y += this.vy;
+function log(t) {
+  const d = document.createElement('div');
+  d.textContent = `[${new Date().toLocaleTimeString('vi-VN')}] ${t}`;
+  $('log').prepend(d);
+}
 
-                if (this.x < this.size || this.x > width - this.size) this.vx *= -1;
-                if (this.type !== 'SHRIMP' && (this.y < this.size + 80 || this.y > height - 120)) this.vy *= -1;
+function alertStatus(type, msg) {
+  $('status').className = 'status ' + type;
+  $('status').textContent = msg;
+}
 
-                this.angle = Math.atan2(this.vy, this.vx);
-                this.tailPhase += 0.12;
-            }
+function spawn(first = false) {
+  const lanes = [road.x + 58, road.x + 175, road.x + 292];
+  objects.push({
+    x: lanes[Math.floor(Math.random() * 3)],
+    y: first ? H - 450 : -90,
+    w: 40,
+    h: 70,
+    color: ['#ef4444', '#f59e0b', '#3b82f6', '#ec4899'][Math.floor(Math.random() * 4)],
+    speed: 40 + Math.random() * 40
+  });
+}
 
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
+function drawRoad() {
+  ctx.fillStyle = '#29462e';
+  ctx.fillRect(0, 0, W, H);
+  for (let y = -40 + (roadOffset % 80); y < H; y += 80) {
+    ctx.fillStyle = '#355a39';
+    ctx.fillRect(0, y, road.x - 10, 42);
+    ctx.fillRect(road.x + road.w + 10, y, W - road.x - road.w - 10, 42);
+  }
+  ctx.fillStyle = '#2c333b';
+  ctx.fillRect(road.x, 0, road.w, H);
+  ctx.fillStyle = '#e8e3c5';
+  ctx.fillRect(road.x + 7, 0, 5, H);
+  ctx.fillRect(road.x + road.w - 12, 0, 5, H);
 
-                // Glow Effect Phát Sáng Đồ Hoạ Web3
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;
+  ctx.strokeStyle = '#c8cdd0';
+  ctx.lineWidth = 5;
+  ctx.setLineDash([35, 32]);
+  ctx.lineDashOffset = -roadOffset;
+  for (let i = 1; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(road.x + (road.w * i) / 3, 0);
+    ctx.lineTo(road.x + (road.w * i) / 3, H);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
 
-                if (this.type === 'SHRIMP') {
-                    ctx.scale(this.vx > 0 ? 1 : -1, 1);
-                    this.drawShrimp();
-                } else {
-                    ctx.rotate(this.angle);
-                    if (this.type === 'WHALE') this.drawWhale();
-                    else if (this.type === 'SHARK') this.drawShark();
-                    else this.drawFish();
-                }
+  if (inspection) {
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(18, H - 110, 165, 65);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 13px system-ui';
+    ctx.fillText('🚨 CSGT YÊU CẦU KIỂM TRA', 25, H - 85);
+    ctx.font = '11px system-ui';
+    ctx.fillText('Bấm [Xuất phiếu GSHT]!', 25, H - 65);
+  }
+}
 
-                ctx.shadowBlur = 0; // Reset Shadow
+function carDraw(c, player = false) {
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  ctx.rotate(c.angle || 0);
 
-                // Logo Token Tròn Đẹp
-                if (this.img.complete && this.img.naturalWidth !== 0) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(0, 0, Math.max(10, this.size * 0.32), 0, Math.PI * 2);
-                    ctx.clip();
-                    ctx.drawImage(this.img, -this.size * 0.32, -this.size * 0.32, this.size * 0.64, this.size * 0.64);
-                    ctx.restore();
-                }
+  if (player && invulnerableTimer > 0 && Math.floor(invulnerableTimer * 10) % 2 === 0) {
+    ctx.globalAlpha = 0.4;
+  }
 
-                ctx.restore();
+  ctx.fillStyle = player ? '#06b6d4' : c.color;
+  ctx.beginPath();
+  ctx.roundRect(-c.w / 2, -c.h / 2, c.w, c.h, 8);
+  ctx.fill();
 
-                // Floating Symbol & Price Label
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 12px Plus Jakarta Sans, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(`$${this.data.symbol}`, this.x, this.y + this.size + 16);
-            }
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.roundRect(-c.w * 0.35, -c.h * 0.2, c.w * 0.7, c.h * 0.25, 4);
+  ctx.fill();
 
-            drawWhale() {
-                let wiggle = Math.sin(this.tailPhase) * 8;
-                let grad = ctx.createLinearGradient(-this.size, 0, this.size, 0);
-                grad.addColorStop(0, '#0f2027'); grad.addColorStop(0.5, this.color); grad.addColorStop(1, '#2c5364');
-                ctx.fillStyle = grad;
+  ctx.fillStyle = '#fef08a';
+  ctx.fillRect(-c.w * 0.38, -c.h * 0.48, 8, 4);
+  ctx.fillRect(c.w * 0.2, -c.h * 0.48, 8, 4);
+  ctx.fillStyle = '#ef4444';
+  ctx.fillRect(-c.w * 0.38, c.h * 0.44, 8, 4);
+  ctx.fillRect(c.w * 0.2, c.h * 0.44, 8, 4);
 
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size * 1.3, this.size * 0.65, 0, 0, Math.PI * 2);
-                ctx.fill();
+  if (player) {
+    ctx.strokeStyle = '#a5f3fc';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-c.w / 2 - 2, -c.h / 2 - 2, c.w + 4, c.h + 4);
+  }
+  ctx.restore();
+}
 
-                // Đuôi Lụa Cá Voi
-                ctx.beginPath();
-                ctx.moveTo(-this.size * 1.2, 0);
-                ctx.quadraticCurveTo(-this.size * 1.5, wiggle, -this.size * 1.8, wiggle - 25);
-                ctx.quadraticCurveTo(-this.size * 1.5, wiggle, -this.size * 1.8, wiggle + 25);
-                ctx.closePath();
-                ctx.fill();
-            }
+function update(dt) {
+  if (!playing) return;
 
-            drawShark() {
-                let wiggle = Math.sin(this.tailPhase) * 10;
-                ctx.fillStyle = this.color;
+  tripTime += dt;
+  if (invulnerableTimer > 0) invulnerableTimer -= dt;
 
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size * 0.45, 0, 0, Math.PI * 2);
-                ctx.fill();
+  const k = kName => keys[kName.toLowerCase()] || keys[kName];
+  const gas = k('ArrowUp') || k('w');
+  const brake = k('ArrowDown') || k('s');
+  const steer = (k('ArrowLeft') || k('a') ? -1 : 0) + (k('ArrowRight') || k('d') ? 1 : 0);
 
-                // Vây Lưng Sắc Bút
-                ctx.beginPath();
-                ctx.moveTo(-10, -this.size * 0.3);
-                ctx.lineTo(8, -this.size * 0.9);
-                ctx.lineTo(22, -this.size * 0.3);
-                ctx.fill();
+  let accel = gas ? 85 : 0;
+  if (brake) accel -= 150;
+  if (!gas && !brake) accel = -30;
 
-                // Đuôi Cá Mập
-                ctx.beginPath();
-                ctx.moveTo(-this.size * 0.8, 0);
-                ctx.lineTo(-this.size * 1.4, wiggle - 18);
-                ctx.lineTo(-this.size * 1.1, wiggle);
-                ctx.lineTo(-this.size * 1.4, wiggle + 18);
-                ctx.fill();
-            }
+  car.speed = Math.max(0, Math.min(130, car.speed + accel * dt));
 
-            drawFish() {
-                let wiggle = Math.sin(this.tailPhase) * 9;
-                ctx.fillStyle = this.color;
+  if (!driver && car.speed > 2) {
+    car.speed = 0;
+    if (!car._cardPenalty) {
+      score = Math.max(0, score - 50);
+      car._cardPenalty = true;
+      log('VI PHẠM: Xe di chuyển khi chưa quẹt thẻ (-50đ)');
+      alertStatus('danger', '🚨 CẢNH BÁO: Chưa quẹt thẻ lái xe! (-50 điểm)');
+    }
+  }
 
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size * 0.5, 0, 0, Math.PI * 2);
-                ctx.fill();
+  car.x += steer * (90 + car.speed * 1.2) * dt;
+  car.angle = steer * 0.08;
+  car.x = Math.max(road.x + 25, Math.min(road.x + road.w - 25, car.x));
+  roadOffset += car.speed * dt * 1.2;
 
-                ctx.beginPath();
-                ctx.moveTo(-this.size * 0.7, 0);
-                ctx.lineTo(-this.size * 1.3, wiggle - 12);
-                ctx.lineTo(-this.size * 1.3, wiggle + 12);
-                ctx.fill();
-            }
+  const currentLimit = routes[routeIndex][1];
+  if (car.speed > currentLimit) {
+    overspeedSecs += dt;
+    if (overspeedSecs > 5 && !car._speedPenalty) {
+      score = Math.max(0, score - 15);
+      car._speedPenalty = true;
+      log(`VI PHẠM: Quá tốc độ (${Math.round(car.speed)}/${currentLimit} km/h) > 5s (-15đ)`);
+      alertStatus('danger', '🔴 QUÁ TỐC ĐỘ: GSHT đã gửi dữ liệu vi phạm về Cục ĐBVN!');
+    }
+  } else {
+    overspeedSecs = 0;
+    if (car.speed <= currentLimit - 3) car._speedPenalty = false;
+  }
 
-            drawShrimp() {
-                ctx.fillStyle = '#ff7b54';
-                ctx.beginPath();
-                ctx.arc(0, 0, this.size, Math.PI * 0.9, Math.PI * 1.8);
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = '#ff7b54';
-                ctx.stroke();
-            }
-        }
+  if (car.speed > 2 && !resting) {
+    driveSecs += dt;
+  }
 
-        // VẼ KHUNG CẢNH BỂ CÁ NỀN SANG TRỌNG
-        function drawAquariumEnvironment() {
-            // Gradient Nước Biển Sâu
-            let bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-            bgGrad.addColorStop(0, '#04152d');
-            bgGrad.addColorStop(0.6, '#020d1e');
-            bgGrad.addColorStop(1, '#01060f');
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, width, height);
+  if (driveSecs >= 225 && !car._warning) {
+    car._warning = true;
+    log('CẢNH BÁO: Lái xe liên tục chạm mốc 3h45m');
+    alertStatus('warn', '🟡 Sắp chạm giới hạn 4 giờ lái xe liên tục! Hãy chuẩn bị nghỉ.');
+  }
 
-            // Tia Sáng Mặt Nước (Sun Rays)
-            ctx.fillStyle = 'rgba(0, 242, 254, 0.025)';
-            for (let i = 0; i < 5; i++) {
-                ctx.beginPath();
-                ctx.moveTo(width * (0.1 + i * 0.2), 0);
-                ctx.lineTo(width * (-0.05 + i * 0.2), height);
-                ctx.lineTo(width * (0.15 + i * 0.2), height);
-                ctx.fill();
-            }
+  if (driveSecs >= 240 && !car._four) {
+    car._four = true;
+    score = Math.max(0, score - 30);
+    log('VI PHẠM: Vượt quá 4 giờ lái xe liên tục (-30đ)');
+    alertStatus('danger', '🔴 VI PHẠM 4 GIỜ: GSHT ghi nhận lái xe quá thời gian quy định (-30đ)');
+  }
 
-            // Đáy Cát Biển 3D Soft Curve
-            let sandGrad = ctx.createLinearGradient(0, height - 100, 0, height);
-            sandGrad.addColorStop(0, '#0a223d');
-            sandGrad.addColorStop(1, '#040f1c');
-            ctx.fillStyle = sandGrad;
-            ctx.beginPath();
-            ctx.moveTo(0, height - 80);
-            ctx.quadraticCurveTo(width * 0.4, height - 120, width, height - 70);
-            ctx.lineTo(width, height);
-            ctx.lineTo(0, height);
-            ctx.fill();
+  objects.forEach(o => {
+    o.y += (car.speed - o.speed) * dt * 1.2;
+  });
 
-            // Tảo Biển Uốn Lượn
-            ctx.fillStyle = 'rgba(0, 230, 118, 0.4)';
-            for (let i = 0; i < 7; i++) {
-                let x = width * (0.08 + i * 0.14);
-                ctx.beginPath();
-                ctx.moveTo(x, height - 60);
-                let time = Date.now() * 0.002 + i;
-                ctx.quadraticCurveTo(x + 25 * Math.sin(time), height - 160, x - 15, height - 260);
-                ctx.quadraticCurveTo(x - 25, height - 160, x, height - 60);
-                ctx.fill();
-            }
+  if (objects.length < 4 && Math.random() < dt * 0.75) spawn();
 
-            // Bọt Nước Nổi
-            if (Math.random() < 0.12) {
-                bubbles.push({ x: Math.random() * width, y: height - 60, r: Math.random() * 3 + 1, speed: Math.random() * 1 + 0.6 });
-            }
-            ctx.strokeStyle = 'rgba(0, 242, 254, 0.3)';
-            for (let i = bubbles.length - 1; i >= 0; i--) {
-                let b = bubbles[i];
-                b.y -= b.speed;
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.stroke();
-                if (b.y < 0) bubbles.splice(i, 1);
-            }
+  for (let i = objects.length - 1; i >= 0; i--) {
+    const o = objects[i];
+    if (o.y > H + 120 || o.y < -200) {
+      objects.splice(i, 1);
+      continue;
+    }
 
-            // Gợn Sóng Nước Ripple khi Click
-            for (let i = ripples.length - 1; i >= 0; i--) {
-                let r = ripples[i];
-                r.r += 1.5;
-                r.alpha -= 0.02;
-                ctx.strokeStyle = `rgba(0, 242, 254, ${r.alpha})`;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
-                ctx.stroke();
-                if (r.alpha <= 0) ripples.splice(i, 1);
-            }
-        }
+    if (invulnerableTimer <= 0 && Math.abs(o.x - car.x) < (o.w + car.w) / 2 - 6 && Math.abs(o.y - car.y) < (o.h + car.h) / 2 - 8) {
+      score = Math.max(0, score - 20);
+      invulnerableTimer = 2.0;
+      car.speed = Math.max(0, car.speed - 35);
+      log('TAI NẠN: Va chạm giao thông trên tuyến (-20đ)');
+      alertStatus('danger', '💥 VA CHẠM! Thiết bị ghi nhận gia tốc va chạm mạnh (-20đ).');
+      objects.splice(i, 1);
+    }
+  }
 
-        async function scanWallet() {
-            const query = document.getElementById('wallet-input').value.trim();
-            const loader = document.getElementById('loading-overlay');
-            if (!query) return;
+  eventTimer -= dt;
+  if (eventTimer <= 0) {
+    eventTimer = 16 + Math.random() * 14;
+    randomEvent();
+  }
 
-            loader.style.display = 'flex';
+  if (car.speed > 60) doze += dt * 0.5;
+  if (doze > 25 && !car._doze) {
+    car._doze = true;
+    alertStatus('warn', '😴 Dấu hiệu mất tập trung! Nhấn SPACE (Còi) để tỉnh táo!');
+  }
+}
 
-            try {
-                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${query}`);
-                const json = await res.json();
+function randomEvent() {
+  const r = Math.random();
+  if (r < 0.28) {
+    gps = false;
+    log('SỰ KIỆN: Ăng-ten mất kết nối vệ tinh GPS');
+    alertStatus('warn', '📍 MẤT TÍN HIỆU GPS: Hãy nhấn [Reset ăng-ten GPS].');
+  } else if (r < 0.55 && !inspection) {
+    inspection = true;
+    log('SỰ KIỆN: Trạm CSGT ra hiệu kiểm tra hành trình');
+    alertStatus('warn', '🚨 YÊU CẦU KIỂM TRA: Bấm [Xuất phiếu GSHT] ngay!');
+  } else if (r < 0.85) {
+    routeIndex = (routeIndex + 1) % routes.length;
+    log(`BIỂN BÁO: Chuyển sang cung đường [${routes[routeIndex][0]}] - Tối đa ${routes[routeIndex][1]} km/h`);
+    alertStatus('', `🏁 Vào cung đường ${routes[routeIndex][0]} (Tốc độ tối đa: ${routes[routeIndex][1]} km/h)`);
+  }
+}
 
-                if (json.pairs && json.pairs.length > 0) {
-                    let scanned = json.pairs.slice(0, 6).map(p => ({
-                        symbol: p.baseToken.symbol,
-                        name: p.baseToken.name,
-                        mcap: p.fdv || p.marketCap || 10000000000,
-                        price: parseFloat(p.priceUsd) || 18,
-                        change: parseFloat(p.priceChange?.h24) || 0,
-                        icon: p.info?.imageUrl || 'https://assets.coingecko.com/coins/images/877/small/chainlink.png',
-                        color: p.priceChange?.h24 >= 0 ? '#00f2fe' : '#ff4b4b'
-                    }));
-                    creatures = scanned.map(c => new ArtisticCreature(c));
-                } else {
-                    creatures = DEFAULT_CREATURES.map(d => new ArtisticCreature(d));
-                }
-            } catch (err) {
-                creatures = DEFAULT_CREATURES.map(d => new ArtisticCreature(d));
-            } finally {
-                loader.style.display = 'none';
-                updateStats();
-            }
-        }
+function updateUI() {
+  const h = Math.floor(driveSecs / 60);
+  const m = Math.floor(driveSecs % 60);
 
-        function updateStats() {
-            let totalMcap = creatures.reduce((sum, c) => sum + c.mcap, 0);
-            document.getElementById('total-mcap').innerText = `$${(totalMcap / 1e6).toFixed(1)}M`;
-            document.getElementById('creature-count').innerText = creatures.length;
-        }
+  $('speed').textContent = Math.round(car.speed) + ' km/h';
+  $('speedHud').textContent = Math.round(car.speed) + ' km/h';
+  $('limit').textContent = routes[routeIndex][1] + ' km/h';
+  $('routeHud').textContent = routes[routeIndex][0] + ' · ' + routes[routeIndex][1];
+  $('scoreHud').textContent = score;
+  $('points').textContent = score;
+  $('driveTime').textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  $('trip').textContent = Math.floor(tripTime / 60).toString().padStart(2, '0') + ':' + String(Math.floor(tripTime % 60)).padStart(2, '0');
+  $('gps').textContent = gps ? '10.7769, 106.7009' : 'MẤT TÍN HIỆU';
+  $('gpsHud').textContent = gps ? 'LOCK' : 'NO GPS';
+  $('clock').textContent = new Date().toLocaleTimeString('vi-VN');
 
-        // TƯƠNG TÁC THẢ THỨC ĂN
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
+  const rank = score >= 90 ? 'Bác tài Vàng' : score >= 70 ? 'Bác tài Chuẩn' : 'Tước bằng lái';
+  $('rank').textContent = rank;
+  $('bar').style.width = Math.max(0, score) + '%';
+  $('bar').style.background = score < 70 ? 'var(--danger)' : score < 90 ? 'var(--warn)' : 'var(--ok)';
 
-            let clickedCreature = false;
-            for (let c of creatures) {
-                if (Math.hypot(c.x - clickX, c.y - clickY) < c.size) {
-                    showCard(c);
-                    clickedCreature = true;
-                    break;
-                }
-            }
+  if (score < 70 && playing) {
+    playing = false;
+    alertStatus('danger', '⛔ KẾT THÚC: Điểm uy tín dưới 70. Bị tạm giữ phương tiện!');
+    log('GAME OVER: Vi phạm nhiều lỗi, không đủ điều kiện vận hành.');
+  }
+}
 
-            if (!clickedCreature) {
-                document.getElementById('info-card').style.display = 'none';
-                ripples.push({ x: clickX, y: clickY, r: 5, alpha: 1.0 });
-                for (let i = 0; i < 4; i++) {
-                    foods.push({ x: clickX + (Math.random() - 0.5) * 20, y: clickY, speed: Math.random() * 1.2 + 0.8 });
-                }
-            }
-        });
+function draw() {
+  drawRoad();
+  objects.forEach(o => carDraw(o));
+  carDraw(car, true);
 
-        function feedFishAtCenter(e) {
-            e.stopPropagation();
-            for (let i = 0; i < 8; i++) {
-                foods.push({ x: Math.random() * (width - 200) + 100, y: 50, speed: Math.random() * 1.5 + 1 });
-            }
-        }
+  if (doze > 25) {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 22px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('😴 CẢNH BÁO BUỒN NGỦ! BẤM SPACE ĐỂ BẤM CÒI!', W / 2, H / 2);
+    ctx.textAlign = 'start';
+  }
+}
 
-        function showCard(c) {
-            const card = document.getElementById('info-card');
-            document.getElementById('card-icon').src = c.data.icon;
-            document.getElementById('card-name').innerText = `${c.data.name} (${c.data.symbol})`;
-            document.getElementById('card-type').innerText = c.type === 'WHALE' ? '🐳 Cá Voi Khổng Lồ' : (c.type === 'SHARK' ? '🦈 Cá Mập' : (c.type === 'FISH' ? '🐠 Cá Thường' : '🦐 Tôm Biển'));
-            document.getElementById('card-price').innerText = `$${c.data.price.toLocaleString()}`;
-            document.getElementById('card-mcap').innerText = `$${(c.mcap / 1e6).toFixed(2)}M`;
-            
-            const changeEl = document.getElementById('card-change');
-            changeEl.innerText = `${c.data.change >= 0 ? '+' : ''}${c.data.change}%`;
-            changeEl.style.color = c.data.change >= 0 ? '#00ff88' : '#ff4b4b';
+function loop(t) {
+  const dt = Math.min(0.035, (t - last) / 1000);
+  last = t;
+  update(dt);
+  updateUI();
+  draw();
+  requestAnimationFrame(loop);
+}
 
-            card.style.display = 'block';
-        }
+window.addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  keys[e.key] = true;
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
 
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
+  if (e.key === ' ' && doze > 0) {
+    doze = 0;
+    car._doze = false;
+    log('THAO TÁC: Bấm còi đánh thức · Tỉnh táo trở lại');
+    alertStatus('', '🟢 Đã tập trung trở lại! Tiếp tục hành trình.');
+  }
+});
 
-            drawAquariumEnvironment();
+window.addEventListener('keyup', e => {
+  keys[e.key.toLowerCase()] = false;
+  keys[e.key] = false;
+});
 
-            // Thức Ăn Phát Sáng
-            ctx.fillStyle = '#ff0844';
-            ctx.shadowColor = '#ff0844';
-            ctx.shadowBlur = 8;
-            for (let i = foods.length - 1; i >= 0; i--) {
-                let f = foods[i];
-                f.y += f.speed;
-                ctx.beginPath();
-                ctx.arc(f.x, f.y, 4, 0, Math.PI * 2);
-                ctx.fill();
+$('cardBtn').onclick = () => {
+  if (!driver) {
+    driver = true;
+    driverId = 1;
+    $('driver').textContent = 'TÀI XẾ 1 (ĐÃ ĐĂNG NHẬP)';
+    $('driver').style.color = 'var(--ok)';
+    $('cardBtn').disabled = true;
+    log('CHECK-IN: Tài xế 1 quẹt thẻ thành công (TÍT!)');
+    alertStatus('', '🟢 Đăng nhập thành công! Bắt đầu chuyến đi an toàn.');
+  }
+};
 
-                for (let c of creatures) {
-                    if (Math.hypot(c.x - f.x, c.y - f.y) < c.size) {
-                        foods.splice(i, 1);
-                        break;
-                    }
-                }
-                if (f && f.y > height - 70) foods.splice(i, 1);
-            }
-            ctx.shadowBlur = 0;
+$('swapBtn').onclick = () => {
+  if (!driver) {
+    alertStatus('warn', 'Hãy quẹt thẻ tài xế ban đầu trước!');
+    return;
+  }
+  driverId = driverId === 1 ? 2 : 1;
+  $('driver').textContent = `TÀI XẾ ${driverId} (ĐÃ ĐĂNG NHẬP)`;
+  driveSecs = 0;
+  car._four = false;
+  car._warning = false;
+  log(`ĐỔI TÀI: Chuyển giao ca sang Tài xế ${driverId} · Đặt lại bộ đếm 4h`);
+  alertStatus('', `🔄 Đã đổi sang Tài xế ${driverId}. Bộ đếm lái liên tục đã về 00:00.`);
+};
 
-            creatures.forEach(c => {
-                c.update();
-                c.draw();
-            });
+$('gpsBtn').onclick = () => {
+  if (!gps) {
+    gps = true;
+    log('GPS FIX: Kết nối lại 12 vệ tinh · Toạ độ chuẩn xác');
+    alertStatus('', '🟢 Tín hiệu GPS đã được khôi phục thành công.');
+  } else {
+    alertStatus('', 'Tín hiệu GPS hiện tại đang rất tốt.');
+  }
+};
 
-            requestAnimationFrame(animate);
-        }
+$('restBtn').onclick = () => {
+  if (car.speed > 5) {
+    alertStatus('warn', 'Phải dừng hẳn xe vào làn dừng nghỉ trước khi nghỉ ngơi!');
+    return;
+  }
+  resting = true;
+  driveSecs = 0;
+  car._four = false;
+  car._warning = false;
+  log('NGHỈ NGƠI: Dừng xe nghỉ 15 phút theo quy định');
+  alertStatus('', '☕ Đang nghỉ 15 phút... Bộ đếm lái xe liên tục đã reset.');
+  setTimeout(() => {
+    resting = false;
+    alertStatus('', '🟢 Kết thúc thời gian nghỉ. Sẵn sàng tiếp tục lộ trình!');
+  }, 2500);
+};
 
-        scanWallet();
-        animate();
-    </script>
+$('printBtn').onclick = () => {
+  if (inspection) {
+    inspection = false;
+    log('KIỂM TRA GSHT: Xuất dữ liệu thành công · CSGT xác nhận hợp lệ');
+    alertStatus('', '🧾 Đã xuất phiếu dữ liệu. Kiểm tra đạt chuẩn!');
+  } else {
+    log('THAO TÁC: Xuất phiếu dữ liệu GSHT thủ công');
+    alertStatus('', '🧾 Phiếu giám sát hành trình đã được in.');
+  }
+};
+
+$('resetBtn').onclick = reset;
+
+reset();
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
