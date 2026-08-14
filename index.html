@@ -14,7 +14,7 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
 .layout{max-width:1300px;margin:14px auto;padding:0 12px;display:grid;grid-template-columns:minmax(450px,1fr) 400px;gap:14px}
 .card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px #0006;overflow:hidden}
 .game{position:relative}
-.game canvas{display:block;width:100%;background:#233c2a}
+.game canvas{display:block;width:100%;background:#1b2e1e}
 .hud{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}
 .hud span{background:#06101ddd;border:1px solid #34536c;padding:7px 9px;border-radius:9px;font-size:11px}
 .hud b{color:var(--cyan)}
@@ -40,7 +40,9 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
 .log div{padding:3px 0;border-bottom:1px dashed #172737}
 .score{margin-top:12px;padding:12px;border:1px solid #31516c;border-radius:12px;background:#071421}
 .scoretop{display:flex;justify-content:space-between;align-items:center}
+.points-box{display:flex;align-items:baseline;gap:4px}
 .points{font-size:28px;font-weight:900;color:var(--cyan)}
+.points-max{font-size:14px;color:var(--muted);font-weight:700}
 .rank{font-weight:800}
 .bar{height:8px;background:#18283a;border-radius:9px;overflow:hidden;margin-top:8px}
 .bar i{display:block;height:100%;width:100%;background:var(--ok);transition:.2s}
@@ -65,7 +67,7 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
     <div class="hud">
       <span>🚗 <b id="speedHud">0 km/h</b></span>
       <span>📍 <b id="gpsHud">LOCK (14 SV)</b></span>
-      <span>⭐ Uy tín: <b id="scoreHud">100</b></span>
+      <span>🪪 GPLX: <b id="scoreHud">12/12</b></span>
       <span>🏁 <b id="routeHud">ĐÔ THỊ · 50</b></span>
     </div>
   </section>
@@ -82,7 +84,7 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
         <div class="metric"><small>Giới hạn đường</small><strong id="limit">50 km/h</strong></div>
         <div class="metric"><small>Định vị GPS</small><strong id="gps">10.77692, 106.70091</strong></div>
         <div class="metric"><small>Thẻ lái xe</small><strong id="driver">CHƯA QUẸT</strong></div>
-        <div class="metric"><small>Lái liên tục</small><strong id="driveTime">00:00</strong></div>
+        <div class="metric"><small>Lái liên tục (Tua nhanh)</small><strong id="driveTime" style="color:var(--cyan)">00:00</strong></div>
         <div class="metric"><small>Ca chạy</small><strong id="trip">00:00</strong></div>
       </div>
       <div id="status" class="status">Vui lòng quẹt thẻ lái xe trước khi nhấn ga!</div>
@@ -103,24 +105,25 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
     <div class="score">
       <div class="scoretop">
         <div>
-          <div class="rank" id="rank">Bác tài Vàng</div>
-          <small>Điểm Uy tín</small>
+          <div class="rank" id="rank">Bằng lái chuẩn (12đ)</div>
+          <small>Điểm Giấy phép lái xe</small>
         </div>
-        <div class="points" id="points">100</div>
+        <div class="points-box">
+          <span class="points" id="points">12</span>
+          <span class="points-max">/12</span>
+        </div>
       </div>
       <div class="bar"><i id="bar"></i></div>
-      <div class="rules"><b>Quy tắc trừ điểm:</b> Quá tốc độ >5s (-15) · Lái quá 4h liên tục (-30) · Lái xe chưa quẹt thẻ (-50) · Va chạm (-20).</div>
+      <div class="rules"><b>Trừ điểm GPLX:</b> Quá tốc độ >5s (-3đ) · Quá 4h liên tục (-2đ) · Chưa quẹt thẻ GSHT (-2đ) · Gây va chạm (-3đ).</div>
     </div>
     
     <div class="help">
-      <b>Điều khiển:</b> W/↑: Tăng tốc · S/↓: Giảm tốc/Phanh (Thả phím sẽ <b>cố định vận tốc</b>) · A/← D/→: Đánh lái · Phím Space: Còi khi buồn ngủ.<br>
-      <b>GPS Logic:</b> Tọa độ tịnh tiến theo vận tốc và dao động vi mô mô phỏng bắt sóng vệ tinh thực tế.
+      <b>Điều khiển:</b> W/↑: Tăng tốc · S/↓: Giảm tốc/Phanh (Thả phím sẽ <b>cố định vận tốc</b>) · A/← D/→: Đánh lái · Phím Space: Còi khi buồn ngủ.
     </div>
   </aside>
 </main>
 
 <script>
-// Polyfill Canvas roundRect
 if (!CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
     if (typeof r === 'undefined') r = 0;
@@ -144,7 +147,6 @@ const ctx = canvas.getContext('2d');
 const W = canvas.width, H = canvas.height;
 const road = { x: 205, w: 350 };
 
-// Tốc độ giới hạn các cung đường
 const speedLimitPresets = [
   { label: 'ĐÔ THỊ', limit: 50 },
   { label: 'ĐÔ THỊ THÔNG THOÁNG', limit: 60 },
@@ -153,8 +155,8 @@ const speedLimitPresets = [
   { label: 'CAO TỐC LIÊN TỈNH', limit: 120 }
 ];
 
-// Logo Vạn Phú Khánh
 const vpkLogo = new Image();
+vpkLogo.crossOrigin = "anonymous";
 vpkLogo.src = 'https://dinhvi.vanphukhanh.com/Images/VanPhuKhanh/logo.png';
 let logoLoaded = false;
 vpkLogo.onload = () => { logoLoaded = true; };
@@ -166,7 +168,8 @@ let driver = false, driverId = 0, gps = true, roadOffset = 0, last = performance
 let overspeedSecs = 0, currentLimitIndex = 0, speedChangeTimer = 20, eventTimer = 12;
 let inspection = false, doze = 0, resting = false, invulnerableTimer = 0;
 
-// Hệ thống tính toán tọa độ GPS thực tế
+const TIME_SCALE = 6.0;
+
 let currentLat = 10.776920;
 let currentLng = 106.700910;
 let gpsSatellites = 14;
@@ -174,9 +177,9 @@ let gpsJitterTimer = 0;
 let displayedGpsStr = '10.77692, 106.70091';
 
 function reset() {
-  car = { x: W / 2, y: H - 115, w: 50, h: 84, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
+  car = { x: W / 2, y: H - 120, w: 52, h: 96, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
   objects = [];
-  score = 100;
+  score = 12;
   elapsed = 0;
   tripTime = 0;
   driveSecs = 0;
@@ -195,7 +198,6 @@ function reset() {
   resting = false;
   invulnerableTimer = 0;
 
-  // Reset GPS về mốc khởi hành
   currentLat = 10.776920;
   currentLng = 106.700910;
   gpsSatellites = 14;
@@ -209,7 +211,7 @@ function reset() {
   $('cardBtn').textContent = '💳 Quẹt thẻ tài xế 1';
   alertStatus('', 'Vui lòng quẹt thẻ lái xe trước khi nhấn ga!');
   $('log').innerHTML = '';
-  log('Hệ thống khởi động · DV4G-VPK ONLINE · VỆ TINH: 14/16');
+  log('Hệ thống khởi động · DV4G-VPK ONLINE · GPLX: 12/12 ĐIỂM');
   spawn(true);
   updateUI();
 }
@@ -229,31 +231,43 @@ function spawn(first = false) {
   const lanes = [road.x + 58, road.x + 175, road.x + 292];
   objects.push({
     x: lanes[Math.floor(Math.random() * 3)],
-    y: first ? H - 460 : -90,
-    w: 42,
-    h: 74,
+    y: first ? H - 460 : -100,
+    w: 46,
+    h: 82,
     color: ['#ef4444', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)],
     speed: 40 + Math.random() * 45
   });
 }
 
 function drawRoad() {
-  ctx.fillStyle = '#29462e';
+  ctx.fillStyle = '#1c3322';
   ctx.fillRect(0, 0, W, H);
-  for (let y = -40 + (roadOffset % 80); y < H; y += 80) {
-    ctx.fillStyle = '#355a39';
-    ctx.fillRect(0, y, road.x - 10, 42);
-    ctx.fillRect(road.x + road.w + 10, y, W - road.x - road.w - 10, 42);
-  }
-  ctx.fillStyle = '#2c333b';
-  ctx.fillRect(road.x, 0, road.w, H);
-  ctx.fillStyle = '#e8e3c5';
-  ctx.fillRect(road.x + 7, 0, 5, H);
-  ctx.fillRect(road.x + road.w - 12, 0, 5, H);
 
-  ctx.strokeStyle = '#c8cdd0';
-  ctx.lineWidth = 5;
-  ctx.setLineDash([35, 32]);
+  // Vỉa hè / Bãi cỏ hai bên
+  for (let y = -40 + (roadOffset % 80); y < H; y += 80) {
+    ctx.fillStyle = '#24452d';
+    ctx.fillRect(0, y, road.x - 12, 40);
+    ctx.fillRect(road.x + road.w + 12, y, W - road.x - road.w - 12, 40);
+  }
+
+  // Rào chắn mạ kẽm hai bên
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(road.x - 12, 0, 6, H);
+  ctx.fillRect(road.x + road.w + 6, 0, 6, H);
+
+  // Mặt đường Asphalt cao cấp
+  ctx.fillStyle = '#21262d';
+  ctx.fillRect(road.x, 0, road.w, H);
+
+  // Vạch kẻ liền viền đường
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillRect(road.x + 6, 0, 4, H);
+  ctx.fillRect(road.x + road.w - 10, 0, 4, H);
+
+  // Vạch đứt quãng phân làn
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([32, 28]);
   ctx.lineDashOffset = -roadOffset;
   for (let i = 1; i < 3; i++) {
     ctx.beginPath();
@@ -263,34 +277,45 @@ function drawRoad() {
   }
   ctx.setLineDash([]);
 
-  // Biển báo tốc độ
+  // Biển báo tốc độ 3D
   const curLimit = speedLimitPresets[currentLimitIndex].limit;
   ctx.save();
+  ctx.shadowColor = '#0008';
+  ctx.shadowBlur = 8;
   ctx.beginPath();
-  ctx.arc(road.x - 32, 70, 24, 0, Math.PI * 2);
+  ctx.arc(road.x - 36, 75, 25, 0, Math.PI * 2);
   ctx.fillStyle = '#ffffff';
   ctx.fill();
   ctx.lineWidth = 5;
-  ctx.strokeStyle = '#ef4444';
+  ctx.strokeStyle = '#dc2626';
   ctx.stroke();
+  ctx.shadowBlur = 0;
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 16px system-ui';
+  ctx.font = '900 17px system-ui';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(curLimit, road.x - 32, 70);
+  ctx.fillText(curLimit, road.x - 36, 75);
   ctx.restore();
 
   if (inspection) {
+    ctx.save();
     ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(18, H - 110, 165, 65);
+    ctx.fillRect(18, H - 115, 170, 70);
+    ctx.strokeStyle = '#b45309';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(18, H - 115, 170, 70);
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 13px system-ui';
-    ctx.fillText('🚨 CSGT YÊU CẦU KIỂM TRA', 25, H - 85);
+    ctx.fillText('🚨 CSGT YÊU CẦU KIỂM TRA', 25, H - 88);
     ctx.font = '11px system-ui';
-    ctx.fillText('Bấm [Xuất phiếu GSHT]!', 25, H - 65);
+    ctx.fillText('Bấm [Xuất phiếu GSHT]!', 25, H - 68);
+    ctx.restore();
   }
 }
 
+// -------------------------------------------------------------
+// VẼ XE CHI TIẾT CAO CẤP (DETAILED VEHICLE RENDERER)
+// -------------------------------------------------------------
 function carDraw(c, player = false) {
   ctx.save();
   ctx.translate(c.x, c.y);
@@ -300,58 +325,152 @@ function carDraw(c, player = false) {
     ctx.globalAlpha = 0.4;
   }
 
-  // Thân xe
-  ctx.fillStyle = player ? '#083344' : c.color;
+  // 1. Bóng xe (Shadow)
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+  ctx.beginPath();
+  ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
+  ctx.fill();
+
+  // 2. Bánh xe (4 Wheels)
+  ctx.fillStyle = '#0f172a';
+  const wheelW = 6, wheelH = 16;
+  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH); // Trước trái
+  ctx.fillRect(c.w / 2 - 2, -c.h * 0.38, wheelW, wheelH);  // Trước phải
+  ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);  // Sau trái
+  ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);   // Sau phải
+
+  // Gai lốp viền xám
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.34, 2, 8);
+  ctx.fillRect(c.w / 2 + 2, -c.h * 0.34, 2, 8);
+  ctx.fillRect(-c.w / 2 - 4, c.h * 0.26, 2, 8);
+  ctx.fillRect(c.w / 2 + 2, c.h * 0.26, 2, 8);
+
+  // 3. Gương chiếu hậu 2 bên (Side Mirrors)
+  ctx.fillStyle = player ? '#0284c7' : c.color;
+  ctx.beginPath();
+  ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
+  ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
+  ctx.fill();
+
+  // 4. Khung thân xe chính (Chassis Gradient)
+  const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
+  if (player) {
+    grad.addColorStop(0, '#0369a1');
+    grad.addColorStop(0.5, '#0ea5e9');
+    grad.addColorStop(1, '#0284c7');
+  } else {
+    grad.addColorStop(0, '#1e293b');
+    grad.addColorStop(0.5, c.color);
+    grad.addColorStop(1, '#0f172a');
+  }
+
+  ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.roundRect(-c.w / 2, -c.h / 2, c.w, c.h, 10);
   ctx.fill();
 
-  // Kính chắn gió
+  // Đường viền bo mạ crom
+  ctx.strokeStyle = player ? '#38bdf8' : 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // 5. Kính chắn gió trước (Front Windshield) vát cong bóng bẩy
+  const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
+  glassGrad.addColorStop(0, '#091829');
+  glassGrad.addColorStop(1, '#1e3a5f');
+
+  ctx.fillStyle = glassGrad;
+  ctx.beginPath();
+  ctx.roundRect(-c.w * 0.4, -c.h * 0.42, c.w * 0.8, c.h * 0.22, [6, 6, 2, 2]);
+  ctx.fill();
+
+  // Vệt phản chiếu ánh sáng trên kính
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(-c.w * 0.25, -c.h * 0.39);
+  ctx.lineTo(-c.w * 0.05, -c.h * 0.23);
+  ctx.stroke();
+
+  // Kính chắn gió sau (Rear Window)
   ctx.fillStyle = '#0f172a';
   ctx.beginPath();
-  ctx.roundRect(-c.w * 0.38, -c.h * 0.38, c.w * 0.76, c.h * 0.2, 4);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.roundRect(-c.w * 0.35, c.h * 0.22, c.w * 0.7, c.h * 0.14, 3);
+  ctx.roundRect(-c.w * 0.38, c.h * 0.26, c.w * 0.76, c.h * 0.12, 3);
   ctx.fill();
 
-  // Logo VPK trên nóc
+  // 6. Khu vực Decal / Nóc xe
   if (player) {
+    // Decal mui xe sơn trắng trang nhã
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.roundRect(-c.w * 0.38, -c.h * 0.12, c.w * 0.76, c.h * 0.28, 4);
+    ctx.roundRect(-c.w * 0.38, -c.h * 0.14, c.w * 0.76, c.h * 0.35, 5);
     ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
+    // Vẽ Logo Vạn Phú Khánh
     if (logoLoaded) {
       try {
-        ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.1, c.w * 0.68, c.h * 0.24);
+        ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.11, c.w * 0.68, c.h * 0.29);
       } catch (e) {
         ctx.fillStyle = '#0284c7';
-        ctx.font = 'bold 9px system-ui';
+        ctx.font = '900 11px system-ui';
         ctx.textAlign = 'center';
-        ctx.fillText('VPK', 0, 2);
+        ctx.fillText('VPK GSHT', 0, 4);
       }
     } else {
       ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 9px system-ui';
+      ctx.font = '900 11px system-ui';
       ctx.textAlign = 'center';
-      ctx.fillText('VPK', 0, 2);
+      ctx.fillText('VPK GSHT', 0, 4);
     }
+  } else {
+    // Nóc xe xe đối thủ có vân cửa sổ trời (Sunroof)
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(-c.w * 0.3, -c.h * 0.12, c.w * 0.6, c.h * 0.28, 4);
+    ctx.fill();
   }
 
-  // Đèn trước & sau
+  // 7. Hệ thống đèn chiếu sáng & Vệt sáng (Headlights & Glow)
+  // Đèn trước (Pha Halogen / Xenon sáng rực)
   ctx.fillStyle = '#fef08a';
-  ctx.fillRect(-c.w * 0.42, -c.h * 0.48, 9, 4);
-  ctx.fillRect(c.w * 0.24, -c.h * 0.48, 9, 4);
-  ctx.fillStyle = '#ef4444';
-  ctx.fillRect(-c.w * 0.42, c.h * 0.44, 9, 4);
-  ctx.fillRect(c.w * 0.24, c.h * 0.44, 9, 4);
+  ctx.beginPath();
+  ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
+  ctx.roundRect(c.w * 0.44 - 10, -c.h / 2 + 1, 10, 5, 2);
+  ctx.fill();
 
-  if (player) {
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(-c.w / 2 - 2, -c.h / 2 - 2, c.w + 4, c.h + 4);
+  // Vệt sáng đèn trước
+  if (car.speed > 0 || player) {
+    const lightGlow = ctx.createLinearGradient(0, -c.h / 2, 0, -c.h / 2 - 40);
+    lightGlow.addColorStop(0, 'rgba(254, 240, 138, 0.35)');
+    lightGlow.addColorStop(1, 'rgba(254, 240, 138, 0)');
+    ctx.fillStyle = lightGlow;
+    ctx.beginPath();
+    ctx.moveTo(-c.w * 0.44, -c.h / 2);
+    ctx.lineTo(-c.w * 0.7, -c.h / 2 - 40);
+    ctx.lineTo(-c.w * 0.2, -c.h / 2 - 40);
+    ctx.lineTo(-c.w * 0.24, -c.h / 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(c.w * 0.24, -c.h / 2);
+    ctx.lineTo(c.w * 0.2, -c.h / 2 - 40);
+    ctx.lineTo(c.w * 0.7, -c.h / 2 - 40);
+    ctx.lineTo(c.w * 0.44, -c.h / 2);
+    ctx.fill();
   }
+
+  // Đèn hậu LED đỏ (Taillights)
+  ctx.fillStyle = '#ef4444';
+  ctx.shadowColor = '#ef4444';
+  ctx.shadowBlur = 6;
+  ctx.fillRect(-c.w * 0.44, c.h / 2 - 4, 10, 3);
+  ctx.fillRect(c.w * 0.44 - 10, c.h / 2 - 4, 10, 3);
+  ctx.shadowBlur = 0;
+
   ctx.restore();
 }
 
@@ -366,7 +485,6 @@ function update(dt) {
   const brake = k('ArrowDown') || k('s');
   const steer = (k('ArrowLeft') || k('a') ? -1 : 0) + (k('ArrowRight') || k('d') ? 1 : 0);
 
-  // Cruise Control (Tăng / Giảm khi giữ nút, thả ra giữ nguyên)
   if (gas) {
     car.speed = Math.min(140, car.speed + 45 * dt);
   }
@@ -374,14 +492,14 @@ function update(dt) {
     car.speed = Math.max(0, car.speed - 75 * dt);
   }
 
-  // Kiểm tra chưa quẹt thẻ
+  // Lỗi chưa quẹt thẻ
   if (!driver && car.speed > 2) {
     car.speed = 0;
     if (!car._cardPenalty) {
-      score = Math.max(0, score - 50);
+      score = Math.max(0, score - 2);
       car._cardPenalty = true;
-      log('VI PHẠM: Xe di chuyển khi chưa quẹt thẻ (-50đ)');
-      alertStatus('danger', '🚨 CẢNH BÁO: Chưa quẹt thẻ lái xe! (-50 điểm)');
+      log('VI PHẠM: Xe kinh doanh vận tải không truyền dữ liệu định danh lái xe (-2đ GPLX)');
+      alertStatus('danger', '🚨 CẢNH BÁO GSHT: Chưa quẹt thẻ lái xe! Bị trừ 2 điểm GPLX.');
     }
   }
 
@@ -390,22 +508,16 @@ function update(dt) {
   car.x = Math.max(road.x + 25, Math.min(road.x + road.w - 25, car.x));
   roadOffset += car.speed * dt * 1.2;
 
-  // -------------------------------------------------------------
-  // THUẬT TOÁN MÔ PHỎNG DỊCH CHUYỂN GPS THỰC TẾ (DEAD RECKONING)
-  // -------------------------------------------------------------
+  // GPS Dead Reckoning
   if (gps) {
     if (car.speed > 0) {
-      // 1 độ Vĩ tuyến ~ 111.32 km. Quãng đường trong dt giây = (car.speed * dt) / 3600 km
       const deltaKm = (car.speed * dt) / 3600;
       const deltaLat = deltaKm / 111.32;
       const deltaLng = deltaKm / (111.32 * Math.cos(currentLat * Math.PI / 180));
-
-      // Xe tịnh tiến theo hướng Đông Bắc (Bearing ~ 35 độ)
       currentLat += deltaLat * 0.82;
       currentLng += deltaLng * 0.57;
     }
 
-    // Mô phỏng dao động vệ tinh vi mô (Jitter) mỗi 0.25 giây
     gpsJitterTimer += dt;
     if (gpsJitterTimer >= 0.25) {
       gpsJitterTimer = 0;
@@ -417,7 +529,7 @@ function update(dt) {
     displayedGpsStr = 'MẤT TÍN HIỆU (0 VỆ TINH)';
   }
 
-  // Đổi giới hạn tốc độ mỗi ~20s
+  // Đổi tốc độ giới hạn
   speedChangeTimer -= dt;
   if (speedChangeTimer <= 0) {
     speedChangeTimer = 18 + Math.random() * 6;
@@ -432,37 +544,37 @@ function update(dt) {
     alertStatus('warn', `🏁 BIỂN BÁO: ${cur.label} · Tốc độ tối đa: ${cur.limit} km/h`);
   }
 
-  // Giám sát quá tốc độ
+  // Quá tốc độ
   const currentLimit = speedLimitPresets[currentLimitIndex].limit;
   if (car.speed > currentLimit) {
     overspeedSecs += dt;
     if (overspeedSecs > 5 && !car._speedPenalty) {
-      score = Math.max(0, score - 15);
+      score = Math.max(0, score - 3);
       car._speedPenalty = true;
-      log(`VI PHẠM: Quá tốc độ (${Math.round(car.speed)}/${currentLimit} km/h) > 5s (-15đ)`);
-      alertStatus('danger', '🔴 QUÁ TỐC ĐỘ: GSHT đã gửi dữ liệu vi phạm về Cục ĐBVN!');
+      log(`VI PHẠM: Điều khiển xe chạy quá tốc độ quy định (${Math.round(car.speed)}/${currentLimit} km/h) (-3đ GPLX)`);
+      alertStatus('danger', '🔴 QUÁ TỐC ĐỘ: GSHT ghi nhận dữ liệu vi phạm tốc độ (-3 điểm GPLX)!');
     }
   } else {
     overspeedSecs = 0;
     if (car.speed <= currentLimit - 2) car._speedPenalty = false;
   }
 
-  // Giám sát lái liên tục
+  // Đếm giờ lái xe liên tục
   if (car.speed > 2 && !resting) {
-    driveSecs += dt;
+    driveSecs += dt * TIME_SCALE;
   }
 
   if (driveSecs >= 225 && !car._warning) {
     car._warning = true;
     log('CẢNH BÁO: Lái xe liên tục chạm mốc 3h45m');
-    alertStatus('warn', '🟡 Sắp chạm giới hạn 4 giờ lái xe liên tục! Hãy chuẩn bị nghỉ.');
+    alertStatus('warn', '🟡 CẢNH BÁO GSHT: Đã lái 3h45m liên tục! Hãy chuẩn bị nghỉ hoặc đổi tài.');
   }
 
   if (driveSecs >= 240 && !car._four) {
     car._four = true;
-    score = Math.max(0, score - 30);
-    log('VI PHẠM: Vượt quá 4 giờ lái xe liên tục (-30đ)');
-    alertStatus('danger', '🔴 VI PHẠM 4 GIỜ: GSHT ghi nhận lái xe quá thời gian quy định (-30đ)');
+    score = Math.max(0, score - 2);
+    log('VI PHẠM: Điều khiển xe chạy quá thời gian quy định liên tục > 4 giờ (-2đ GPLX)');
+    alertStatus('danger', '🔴 VI PHẠM 4 GIỜ: GSHT ghi nhận lái xe quá thời gian quy định (-2 điểm GPLX)');
   }
 
   // Xe lưu thông
@@ -480,11 +592,11 @@ function update(dt) {
     }
 
     if (invulnerableTimer <= 0 && Math.abs(o.x - car.x) < (o.w + car.w) / 2 - 6 && Math.abs(o.y - car.y) < (o.h + car.h) / 2 - 8) {
-      score = Math.max(0, score - 20);
+      score = Math.max(0, score - 3);
       invulnerableTimer = 2.0;
       car.speed = Math.max(0, car.speed - 30);
-      log('TAI NẠN: Va chạm giao thông trên tuyến (-20đ)');
-      alertStatus('danger', '💥 VA CHẠM! Thiết bị ghi nhận gia tốc va chạm mạnh (-20đ).');
+      log('TAI NẠN: Không giữ khoảng cách an toàn gây va chạm (-3đ GPLX)');
+      alertStatus('danger', '💥 VA CHẠM! Ghi nhận sự cố va chạm giao thông (-3 điểm GPLX).');
       objects.splice(i, 1);
     }
   }
@@ -526,25 +638,24 @@ function updateUI() {
   $('speedHud').textContent = Math.round(car.speed) + ' km/h';
   $('limit').textContent = cur.limit + ' km/h';
   $('routeHud').textContent = cur.label + ' · ' + cur.limit;
-  $('scoreHud').textContent = score;
+  $('scoreHud').textContent = `${score}/12`;
   $('points').textContent = score;
   $('driveTime').textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   $('trip').textContent = Math.floor(tripTime / 60).toString().padStart(2, '0') + ':' + String(Math.floor(tripTime % 60)).padStart(2, '0');
   
-  // Hiển thị tọa độ GPS động
   $('gps').textContent = displayedGpsStr;
   $('gpsHud').textContent = gps ? `LOCK (${gpsSatellites} SV)` : 'NO GPS';
   $('clock').textContent = new Date().toLocaleTimeString('vi-VN');
 
-  const rank = score >= 90 ? 'Bác tài Vàng' : score >= 70 ? 'Bác tài Chuẩn' : 'Tước bằng lái';
+  const rank = score >= 10 ? 'Bằng lái chuẩn (Tốt)' : score >= 6 ? 'Cảnh báo điểm GPLX' : score > 0 ? 'Nguy cơ tước bằng' : 'Tước quyền sử dụng GPLX';
   $('rank').textContent = rank;
-  $('bar').style.width = Math.max(0, score) + '%';
-  $('bar').style.background = score < 70 ? 'var(--danger)' : score < 90 ? 'var(--warn)' : 'var(--ok)';
+  $('bar').style.width = Math.max(0, (score / 12) * 100) + '%';
+  $('bar').style.background = score <= 3 ? 'var(--danger)' : score <= 8 ? 'var(--warn)' : 'var(--ok)';
 
-  if (score < 70 && playing) {
+  if (score <= 0 && playing) {
     playing = false;
-    alertStatus('danger', '⛔ KẾT THÚC: Điểm uy tín dưới 70. Bị tạm giữ phương tiện!');
-    log('GAME OVER: Vi phạm nhiều lỗi, không đủ điều kiện vận hành.');
+    alertStatus('danger', '⛔ TƯỚC GPLX: GPLX đã bị trừ hết 12/12 điểm. Phải thi phục hồi điểm!');
+    log('GAME OVER: Giấy phép lái xe đã hết điểm hiệu lực theo quy định.');
   }
 }
 
@@ -658,7 +769,7 @@ $('printBtn').onclick = () => {
 
 $('resetBtn').onclick = reset;
 
-// Khởi chạy
+// Khởi chạy game
 reset();
 requestAnimationFrame(loop);
 </script>
