@@ -155,15 +155,16 @@ const speedLimitPresets = [
   { label: 'CAO TỐC LIÊN TỈNH', limit: 120 }
 ];
 
+// Logo Vạn Phú Khánh link mới
 const vpkLogo = new Image();
 vpkLogo.crossOrigin = "anonymous";
-vpkLogo.src = 'https://dinhvi.vanphukhanh.com/Images/VanPhuKhanh/logo.png';
+vpkLogo.src = 'https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png';
 let logoLoaded = false;
 vpkLogo.onload = () => { logoLoaded = true; };
 
 const $ = id => document.getElementById(id);
 
-let keys = {}, car, objects, score, elapsed, tripTime, driveSecs, playing;
+let keys = {}, car, objects, billboards, score, elapsed, tripTime, driveSecs, playing;
 let driver = false, driverId = 0, gps = true, roadOffset = 0, last = performance.now();
 let overspeedSecs = 0, currentLimitIndex = 0, speedChangeTimer = 20, eventTimer = 12;
 let inspection = false, doze = 0, resting = false, invulnerableTimer = 0;
@@ -176,9 +177,17 @@ let gpsSatellites = 14;
 let gpsJitterTimer = 0;
 let displayedGpsStr = '10.77692, 106.70091';
 
+const adsMessages = [
+  'ĐỊNH VỊ VẠN PHÚ KHÁNH · CHUẨN QCVN 31',
+  'DV4G-VPK · BẠN ĐỒNG HÀNH MỌI NẺO ĐƯỜNG',
+  'GIẢI PHÁP GSHT XE TẢI & XE KHÁCH HÀNG ĐẦU',
+  'VẠN PHÚ KHÁNH · KẾT NỐI DỮ LIỆU CỤC ĐBVN'
+];
+
 function reset() {
   car = { x: W / 2, y: H - 120, w: 52, h: 96, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
   objects = [];
+  billboards = [];
   score = 12;
   elapsed = 0;
   tripTime = 0;
@@ -213,6 +222,7 @@ function reset() {
   $('log').innerHTML = '';
   log('Hệ thống khởi động · DV4G-VPK ONLINE · GPLX: 12/12 ĐIỂM');
   spawn(true);
+  spawnBillboard(true);
   updateUI();
 }
 
@@ -239,6 +249,13 @@ function spawn(first = false) {
   });
 }
 
+function spawnBillboard(first = false) {
+  billboards.push({
+    y: first ? -150 : -220,
+    text: adsMessages[Math.floor(Math.random() * adsMessages.length)]
+  });
+}
+
 function drawRoad() {
   ctx.fillStyle = '#1c3322';
   ctx.fillRect(0, 0, W, H);
@@ -255,11 +272,11 @@ function drawRoad() {
   ctx.fillRect(road.x - 12, 0, 6, H);
   ctx.fillRect(road.x + road.w + 6, 0, 6, H);
 
-  // Mặt đường Asphalt cao cấp
+  // Mặt đường Asphalt
   ctx.fillStyle = '#21262d';
   ctx.fillRect(road.x, 0, road.w, H);
 
-  // Vạch kẻ liền viền đường
+  // Vạch kẻ viền
   ctx.fillStyle = '#fbbf24';
   ctx.fillRect(road.x + 6, 0, 4, H);
   ctx.fillRect(road.x + road.w - 10, 0, 4, H);
@@ -314,8 +331,71 @@ function drawRoad() {
 }
 
 // -------------------------------------------------------------
-// VẼ XE CHI TIẾT CAO CẤP (DETAILED VEHICLE RENDERER)
+// VẼ BIỂN QUẢNG CÁO CỔNG VÒM TRÊN ĐƯỜNG CAO TỐC (OVERHEAD BILLBOARD)
 // -------------------------------------------------------------
+function drawBillboard(b) {
+  const gantryX = road.x - 18;
+  const gantryW = road.w + 36;
+  const boardH = 50;
+
+  ctx.save();
+
+  // Bóng đổ của biển quảng cáo xuống mặt đường
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+  ctx.fillRect(gantryX + 8, b.y + 18, gantryW - 16, boardH + 6);
+
+  // Chân trụ giàn giáo 2 bên lề đường
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(gantryX, b.y - 10, 10, boardH + 20);
+  ctx.fillRect(gantryX + gantryW - 10, b.y - 10, 10, boardH + 20);
+
+  // Khung biển quảng cáo (Banner Box)
+  const bGrad = ctx.createLinearGradient(gantryX, b.y, gantryX, b.y + boardH);
+  bGrad.addColorStop(0, '#0f172a');
+  bGrad.addColorStop(0.5, '#022c43');
+  bGrad.addColorStop(1, '#051923');
+
+  ctx.fillStyle = bGrad;
+  ctx.beginPath();
+  ctx.roundRect(gantryX + 6, b.y, gantryW - 12, boardH, 6);
+  ctx.fill();
+
+  // Viền sáng Neon công nghệ
+  ctx.strokeStyle = '#00e5ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Logo Vạn Phú Khánh trên biển quảng cáo
+  const logoBoxW = 90;
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.roundRect(gantryX + 16, b.y + 7, logoBoxW, boardH - 14, 4);
+  ctx.fill();
+
+  if (logoLoaded) {
+    try {
+      ctx.drawImage(vpkLogo, gantryX + 20, b.y + 9, logoBoxW - 8, boardH - 18);
+    } catch (e) {
+      ctx.fillStyle = '#0284c7';
+      ctx.font = '900 11px system-ui';
+      ctx.fillText('VPK GSHT', gantryX + 26, b.y + 28);
+    }
+  } else {
+    ctx.fillStyle = '#0284c7';
+    ctx.font = '900 11px system-ui';
+    ctx.fillText('VPK GSHT', gantryX + 26, b.y + 28);
+  }
+
+  // Chữ khẩu hiệu quảng cáo
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = 'bold 12px system-ui';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(b.text, gantryX + logoBoxW + 28, b.y + boardH / 2);
+
+  ctx.restore();
+}
+
 function carDraw(c, player = false) {
   ctx.save();
   ctx.translate(c.x, c.y);
@@ -325,35 +405,35 @@ function carDraw(c, player = false) {
     ctx.globalAlpha = 0.4;
   }
 
-  // 1. Bóng xe (Shadow)
+  // 1. Bóng xe
   ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
   ctx.fill();
 
-  // 2. Bánh xe (4 Wheels)
+  // 2. Bánh xe
   ctx.fillStyle = '#0f172a';
   const wheelW = 6, wheelH = 16;
-  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH); // Trước trái
-  ctx.fillRect(c.w / 2 - 2, -c.h * 0.38, wheelW, wheelH);  // Trước phải
-  ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);  // Sau trái
-  ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);   // Sau phải
+  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH);
+  ctx.fillRect(c.w / 2 - 2, -c.h * 0.38, wheelW, wheelH);
+  ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);
+  ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);
 
-  // Gai lốp viền xám
+  // Gai lốp
   ctx.fillStyle = '#475569';
   ctx.fillRect(-c.w / 2 - 4, -c.h * 0.34, 2, 8);
   ctx.fillRect(c.w / 2 + 2, -c.h * 0.34, 2, 8);
   ctx.fillRect(-c.w / 2 - 4, c.h * 0.26, 2, 8);
   ctx.fillRect(c.w / 2 + 2, c.h * 0.26, 2, 8);
 
-  // 3. Gương chiếu hậu 2 bên (Side Mirrors)
+  // 3. Gương chiếu hậu
   ctx.fillStyle = player ? '#0284c7' : c.color;
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
   ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
   ctx.fill();
 
-  // 4. Khung thân xe chính (Chassis Gradient)
+  // 4. Khung thân xe
   const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
   if (player) {
     grad.addColorStop(0, '#0369a1');
@@ -370,12 +450,11 @@ function carDraw(c, player = false) {
   ctx.roundRect(-c.w / 2, -c.h / 2, c.w, c.h, 10);
   ctx.fill();
 
-  // Đường viền bo mạ crom
   ctx.strokeStyle = player ? '#38bdf8' : 'rgba(255,255,255,0.2)';
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // 5. Kính chắn gió trước (Front Windshield) vát cong bóng bẩy
+  // 5. Kính chắn gió trước
   const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
   glassGrad.addColorStop(0, '#091829');
   glassGrad.addColorStop(1, '#1e3a5f');
@@ -385,7 +464,7 @@ function carDraw(c, player = false) {
   ctx.roundRect(-c.w * 0.4, -c.h * 0.42, c.w * 0.8, c.h * 0.22, [6, 6, 2, 2]);
   ctx.fill();
 
-  // Vệt phản chiếu ánh sáng trên kính
+  // Vệt phản quang
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -393,15 +472,14 @@ function carDraw(c, player = false) {
   ctx.lineTo(-c.w * 0.05, -c.h * 0.23);
   ctx.stroke();
 
-  // Kính chắn gió sau (Rear Window)
+  // Kính sau
   ctx.fillStyle = '#0f172a';
   ctx.beginPath();
   ctx.roundRect(-c.w * 0.38, c.h * 0.26, c.w * 0.76, c.h * 0.12, 3);
   ctx.fill();
 
-  // 6. Khu vực Decal / Nóc xe
+  // 6. Nóc xe & Logo
   if (player) {
-    // Decal mui xe sơn trắng trang nhã
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.roundRect(-c.w * 0.38, -c.h * 0.14, c.w * 0.76, c.h * 0.35, 5);
@@ -410,7 +488,6 @@ function carDraw(c, player = false) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Vẽ Logo Vạn Phú Khánh
     if (logoLoaded) {
       try {
         ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.11, c.w * 0.68, c.h * 0.29);
@@ -427,22 +504,19 @@ function carDraw(c, player = false) {
       ctx.fillText('VPK GSHT', 0, 4);
     }
   } else {
-    // Nóc xe xe đối thủ có vân cửa sổ trời (Sunroof)
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
     ctx.roundRect(-c.w * 0.3, -c.h * 0.12, c.w * 0.6, c.h * 0.28, 4);
     ctx.fill();
   }
 
-  // 7. Hệ thống đèn chiếu sáng & Vệt sáng (Headlights & Glow)
-  // Đèn trước (Pha Halogen / Xenon sáng rực)
+  // 7. Đèn xe
   ctx.fillStyle = '#fef08a';
   ctx.beginPath();
   ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
   ctx.roundRect(c.w * 0.44 - 10, -c.h / 2 + 1, 10, 5, 2);
   ctx.fill();
 
-  // Vệt sáng đèn trước
   if (car.speed > 0 || player) {
     const lightGlow = ctx.createLinearGradient(0, -c.h / 2, 0, -c.h / 2 - 40);
     lightGlow.addColorStop(0, 'rgba(254, 240, 138, 0.35)');
@@ -463,7 +537,6 @@ function carDraw(c, player = false) {
     ctx.fill();
   }
 
-  // Đèn hậu LED đỏ (Taillights)
   ctx.fillStyle = '#ef4444';
   ctx.shadowColor = '#ef4444';
   ctx.shadowBlur = 6;
@@ -507,6 +580,16 @@ function update(dt) {
   car.angle = steer * 0.08;
   car.x = Math.max(road.x + 25, Math.min(road.x + road.w - 25, car.x));
   roadOffset += car.speed * dt * 1.2;
+
+  // Cập nhật vị trí biển quảng cáo trôi từ trên xuống theo vận tốc
+  billboards.forEach(b => {
+    b.y += car.speed * dt * 1.2;
+  });
+
+  if (billboards.length < 2 && Math.random() < dt * 0.08 && car.speed > 5) {
+    spawnBillboard();
+  }
+  billboards = billboards.filter(b => b.y < H + 100);
 
   // GPS Dead Reckoning
   if (gps) {
@@ -664,6 +747,9 @@ function draw() {
   objects.forEach(o => carDraw(o));
   carDraw(car, true);
 
+  // Vẽ các biển quảng cáo cổng vòm nổi lên trên xe khi lướt qua
+  billboards.forEach(b => drawBillboard(b));
+
   if (doze > 25) {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.fillRect(0, 0, W, H);
@@ -769,7 +855,6 @@ $('printBtn').onclick = () => {
 
 $('resetBtn').onclick = reset;
 
-// Khởi chạy game
 reset();
 requestAnimationFrame(loop);
 </script>
