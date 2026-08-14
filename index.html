@@ -2,63 +2,75 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Tài xế chuẩn GSHT · Vạn Phú Khánh</title>
 <style>
 :root{--bg:#07111f;--panel:#0d1b2d;--line:#29405a;--text:#eef7ff;--muted:#8fa7bf;--cyan:#31d7ff;--ok:#36d399;--warn:#f7c948;--danger:#ff5c6c}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#142942,#050b13 65%);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:var(--text);user-select:none}
-header{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#071321ee;position:sticky;top:0;z-index:5}
-h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-size:11px;color:var(--muted);margin-top:3px}
-.badge{border:1px solid #27556d;border-radius:99px;padding:7px 10px;font-size:11px}
-.layout{max-width:1300px;margin:14px auto;padding:0 12px;display:grid;grid-template-columns:minmax(450px,1fr) 400px;gap:14px}
-.card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px #0006;overflow:hidden}
-.game{position:relative}
-.game canvas{display:block;width:100%;background:#1b2e1e}
-.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}
-.hud span{background:#06101ddd;border:1px solid #34536c;padding:7px 9px;border-radius:9px;font-size:11px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at top,#142942,#050b13 65%);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+header{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#071321ee;position:sticky;top:0;z-index:10}
+h1{font-size:16px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-size:10px;color:var(--muted);margin-top:2px}
+.badge{border:1px solid #27556d;border-radius:99px;padding:4px 8px;font-size:10px}
+.layout{max-width:1300px;margin:10px auto;padding:0 8px;display:grid;grid-template-columns:minmax(400px,1fr) 390px;gap:10px}
+.card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 25px #0006;overflow:hidden}
+.game{position:relative;display:flex;flex-direction:column;align-items:center;background:#1b2e1e}
+.game canvas{display:block;width:100%;max-width:550px;height:auto;aspect-ratio:760/620}
+.hud{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none;z-index:2}
+.hud span{background:#06101ddd;border:1px solid #34536c;padding:5px 8px;border-radius:7px;font-size:10px}
 .hud b{color:var(--cyan)}
-.cockpit{padding:14px}
-.section-title{font-size:14px;font-weight:800;margin:0 0 9px}
-.device{border:1px solid #31516c;background:#06111e;border-radius:13px;padding:12px}
+
+/* CỤM ĐIỀU KHIỂN CẢM ỨNG TRÊN MOBILE */
+.touch-controls{display:none;width:100%;max-width:550px;padding:8px 12px;background:#081320;border-top:1px solid var(--line);justify-content:space-between;align-items:center;touch-action:none}
+.dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,44px);gap:4px}
+.t-btn{background:#162b42;border:1px solid #2c4a6b;color:#fff;font-size:16px;font-weight:900;border-radius:10px;display:flex;justify-content:center;align-items:center;user-select:none;touch-action:none}
+.t-btn:active,.t-btn.active{background:#0284c7;border-color:var(--cyan)}
+.t-horn{background:#e11d48;border-color:#fb7185;width:80px;height:70px;border-radius:12px;font-size:12px;font-weight:900;flex-direction:column;gap:3px}
+.t-horn:active{background:#be123c}
+
+.cockpit{padding:12px}
+.section-title{font-size:13px;font-weight:800;margin:0 0 8px}
+.device{border:1px solid #31516c;background:#06111e;border-radius:12px;padding:10px}
 .device-head{display:flex;justify-content:space-between;align-items:center}
-.led{width:8px;height:8px;background:var(--ok);border-radius:50%;display:inline-block;box-shadow:0 0 10px var(--ok);margin-right:5px}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-.metric{border:1px solid #20374d;border-radius:9px;padding:9px;background:#0a1726}
+.led{width:7px;height:7px;background:var(--ok);border-radius:50%;display:inline-block;box-shadow:0 0 8px var(--ok);margin-right:4px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.metric{border:1px solid #20374d;border-radius:8px;padding:7px;background:#0a1726}
 .metric small{display:block;color:var(--muted);font-size:9px}
-.metric strong{font-size:13px;word-break:break-all}
-.status{padding:9px;margin-top:9px;border-radius:9px;background:#0a2731;border:1px solid #1b5662;color:#c3f4ff;font-size:11px;min-height:36px;display:flex;align-items:center}
+.metric strong{font-size:12px;word-break:break-all}
+.status{padding:8px;margin-top:8px;border-radius:8px;background:#0a2731;border:1px solid #1b5662;color:#c3f4ff;font-size:10.5px;min-height:34px;display:flex;align-items:center}
 .warn{background:#2c2410;border-color:#6d5617;color:#ffe59a}
 .danger{background:#32151c;border-color:#712b37;color:#ffb2ba}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-.btn{border:1px solid #34516a;background:#102238;color:var(--text);padding:9px;border-radius:9px;cursor:pointer;font-size:11px;transition:0.15s}
-.btn:hover{background:#17314d;border-color:var(--cyan)}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.btn{border:1px solid #34516a;background:#102238;color:var(--text);padding:8px;border-radius:8px;cursor:pointer;font-size:10.5px;transition:0.15s}
+.btn:active{transform:scale(0.97)}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 .primary{background:#0b4150;border-color:#16829b}
 .dangerBtn{border-color:#73343c}
-.log{height:125px;overflow-y:auto;background:#040a11;border:1px solid #1b2b3d;border-radius:9px;margin-top:8px;padding:8px;font:10px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#adc2d6}
-.log div{padding:3px 0;border-bottom:1px dashed #172737}
-.score{margin-top:12px;padding:12px;border:1px solid #31516c;border-radius:12px;background:#071421}
+.log{height:100px;overflow-y:auto;background:#040a11;border:1px solid #1b2b3d;border-radius:8px;margin-top:6px;padding:6px;font:9.5px ui-monospace,monospace;color:#adc2d6}
+.log div{padding:2.5px 0;border-bottom:1px dashed #172737}
+.score{margin-top:10px;padding:10px;border:1px solid #31516c;border-radius:10px;background:#071421}
 .scoretop{display:flex;justify-content:space-between;align-items:center}
-.points-box{display:flex;align-items:baseline;gap:4px}
-.points{font-size:28px;font-weight:900;color:var(--cyan)}
-.points-max{font-size:14px;color:var(--muted);font-weight:700}
-.rank{font-weight:800}
-.bar{height:8px;background:#18283a;border-radius:9px;overflow:hidden;margin-top:8px}
+.points-box{display:flex;align-items:baseline;gap:3px}
+.points{font-size:24px;font-weight:900;color:var(--cyan)}
+.points-max{font-size:12px;color:var(--muted);font-weight:700}
+.rank{font-weight:800;font-size:12px}
+.bar{height:6px;background:#18283a;border-radius:8px;overflow:hidden;margin-top:6px}
 .bar i{display:block;height:100%;width:100%;background:var(--ok);transition:.2s}
-.rules{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5}
+.rules{margin-top:8px;color:var(--muted);font-size:9.5px;line-height:1.4}
 .rules b{color:#d9e8f6}
-.help{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.game canvas{min-height:380px}}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .touch-controls{display:flex}
+}
 </style>
 </head>
 <body>
 <header>
   <div>
     <h1><span class="brand">VẠN PHÚ KHÁNH</span> · TÀI XẾ CHUẨN GSHT</h1>
-    <div class="sub">Multi-tasking Driving & Journey Monitoring Simulator</div>
+    <div class="sub">Journey Monitoring Mobile Simulator</div>
   </div>
-  <div class="badge">● LIVE TELEMETRY</div>
+  <div class="badge">● TELEMETRY</div>
 </header>
 
 <main class="layout">
@@ -70,6 +82,19 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
       <span>🪪 GPLX: <b id="scoreHud">12/12</b></span>
       <span>🏁 <b id="routeHud">ĐÔ THỊ · 50</b></span>
     </div>
+
+    <!-- CỤM PHÍM ẢO CẢM ỨNG TRÊN MOBILE -->
+    <div class="touch-controls">
+      <div class="dpad">
+        <div></div>
+        <button class="t-btn" id="t-up">▲</button>
+        <div></div>
+        <button class="t-btn" id="t-left">◀</button>
+        <button class="t-btn" id="t-down">▼</button>
+        <button class="t-btn" id="t-right">▶</button>
+      </div>
+      <button class="t-btn t-horn" id="t-horn">📢<span>CÒI</span></button>
+    </div>
   </section>
 
   <aside class="card cockpit">
@@ -80,8 +105,8 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
         <small id="clock">--:--:--</small>
       </div>
       <div class="metrics">
-        <div class="metric"><small>Tốc độ thực tế</small><strong id="speed">0 km/h</strong></div>
-        <div class="metric"><small>Giới hạn đường</small><strong id="limit">50 km/h</strong></div>
+        <div class="metric"><small>Tốc độ</small><strong id="speed">0 km/h</strong></div>
+        <div class="metric"><small>Giới hạn</small><strong id="limit">50 km/h</strong></div>
         <div class="metric"><small>Định vị GPS</small><strong id="gps">10.77692, 106.70091</strong></div>
         <div class="metric"><small>Thẻ lái xe</small><strong id="driver">CHƯA QUẸT</strong></div>
         <div class="metric"><small>Lái liên tục (Tua nhanh)</small><strong id="driveTime" style="color:var(--cyan)">00:00</strong></div>
@@ -99,7 +124,7 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
       <button class="btn dangerBtn" id="resetBtn">↻ Chuyến mới</button>
     </div>
 
-    <h2 class="section-title" style="margin-top:14px">📋 Nhật ký thiết bị</h2>
+    <h2 class="section-title" style="margin-top:10px">📋 Nhật ký thiết bị</h2>
     <div class="log" id="log"></div>
 
     <div class="score">
@@ -114,11 +139,7 @@ h1{font-size:18px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-si
         </div>
       </div>
       <div class="bar"><i id="bar"></i></div>
-      <div class="rules"><b>Trừ điểm GPLX:</b> Quá tốc độ >5s (-3đ) · Quá 4h liên tục (-2đ) · Chưa quẹt thẻ GSHT (-2đ) · Gây va chạm (-3đ).</div>
-    </div>
-    
-    <div class="help">
-      <b>Điều khiển:</b> W/↑: Tăng tốc · S/↓: Giảm tốc/Phanh (Thả phím sẽ <b>cố định vận tốc</b>) · A/← D/→: Đánh lái · Phím Space: Còi khi buồn ngủ.
+      <div class="rules"><b>Trừ điểm GPLX:</b> Quá tốc độ >5s (-3đ) · Quá 4h liên tục (-2đ) · Chưa quẹt thẻ (-2đ) · Gây va chạm (-3đ). Hết điểm = Tước bằng.</div>
     </div>
   </aside>
 </main>
@@ -155,7 +176,6 @@ const speedLimitPresets = [
   { label: 'CAO TỐC LIÊN TỈNH', limit: 120 }
 ];
 
-// Logo Vạn Phú Khánh link trực tiếp
 const vpkLogo = new Image();
 vpkLogo.crossOrigin = "anonymous";
 vpkLogo.src = 'https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png';
@@ -254,30 +274,23 @@ function drawRoad() {
   ctx.fillStyle = '#1c3322';
   ctx.fillRect(0, 0, W, H);
 
-  // Vỉa hè / Bãi cỏ
   for (let y = -40 + (roadOffset % 80); y < H; y += 80) {
     ctx.fillStyle = '#24452d';
     ctx.fillRect(0, y, road.x - 12, 40);
     ctx.fillRect(road.x + road.w + 12, y, W - road.x - road.w - 12, 40);
   }
 
-  // Rào chắn
   ctx.fillStyle = '#64748b';
   ctx.fillRect(road.x - 12, 0, 6, H);
   ctx.fillRect(road.x + road.w + 6, 0, 6, H);
 
-  // Mặt đường Asphalt
   ctx.fillStyle = '#21262d';
   ctx.fillRect(road.x, 0, road.w, H);
 
-  // Vạch kẻ viền
   ctx.fillStyle = '#fbbf24';
   ctx.fillRect(road.x + 6, 0, 4, H);
   ctx.fillRect(road.x + road.w - 10, 0, 4, H);
 
-  // -------------------------------------------------------------
-  // VẼ LOGO BẰNG HÌNH ẢNH TRỰC TIẾP DƯỚI LÒNG ĐƯỜNG
-  // -------------------------------------------------------------
   roadDecals.forEach(d => {
     ctx.save();
     ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
@@ -295,7 +308,6 @@ function drawRoad() {
     ctx.restore();
   });
 
-  // Vạch đứt quãng phân làn
   ctx.strokeStyle = '#e2e8f0';
   ctx.lineWidth = 4;
   ctx.setLineDash([32, 28]);
@@ -308,7 +320,6 @@ function drawRoad() {
   }
   ctx.setLineDash([]);
 
-  // Biển báo tốc độ 3D
   const curLimit = speedLimitPresets[currentLimitIndex].limit;
   ctx.save();
   ctx.shadowColor = '#0008';
@@ -353,13 +364,13 @@ function carDraw(c, player = false) {
     ctx.globalAlpha = 0.4;
   }
 
-  // 1. Bóng xe
+  // Bóng xe
   ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
   ctx.fill();
 
-  // 2. Bánh xe
+  // Bánh xe
   ctx.fillStyle = '#0f172a';
   const wheelW = 6, wheelH = 16;
   ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH);
@@ -367,21 +378,14 @@ function carDraw(c, player = false) {
   ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);
   ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);
 
-  // Gai lốp
-  ctx.fillStyle = '#475569';
-  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.34, 2, 8);
-  ctx.fillRect(c.w / 2 + 2, -c.h * 0.34, 2, 8);
-  ctx.fillRect(-c.w / 2 - 4, c.h * 0.26, 2, 8);
-  ctx.fillRect(c.w / 2 + 2, c.h * 0.26, 2, 8);
-
-  // 3. Gương chiếu hậu
+  // Gương chiếu hậu
   ctx.fillStyle = player ? '#0284c7' : c.color;
   ctx.beginPath();
   ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
   ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
   ctx.fill();
 
-  // 4. Khung thân xe
+  // Khung thân xe
   const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
   if (player) {
     grad.addColorStop(0, '#0369a1');
@@ -402,7 +406,7 @@ function carDraw(c, player = false) {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // 5. Kính chắn gió trước
+  // Kính chắn gió
   const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
   glassGrad.addColorStop(0, '#091829');
   glassGrad.addColorStop(1, '#1e3a5f');
@@ -412,23 +416,7 @@ function carDraw(c, player = false) {
   ctx.roundRect(-c.w * 0.4, -c.h * 0.42, c.w * 0.8, c.h * 0.22, [6, 6, 2, 2]);
   ctx.fill();
 
-  // Vệt phản quang
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(-c.w * 0.25, -c.h * 0.39);
-  ctx.lineTo(-c.w * 0.05, -c.h * 0.23);
-  ctx.stroke();
-
-  // Kính sau
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.roundRect(-c.w * 0.38, c.h * 0.26, c.w * 0.76, c.h * 0.12, 3);
-  ctx.fill();
-
-  // -------------------------------------------------------------
-  // 6. NÓC XE VẼ ẢNH LOGO TRỰC TIẾP
-  // -------------------------------------------------------------
+  // Nóc xe & Logo
   if (player) {
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
@@ -448,7 +436,7 @@ function carDraw(c, player = false) {
     ctx.fill();
   }
 
-  // 7. Đèn trước
+  // Đèn trước & sau
   ctx.fillStyle = '#fef08a';
   ctx.beginPath();
   ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
@@ -475,7 +463,6 @@ function carDraw(c, player = false) {
     ctx.fill();
   }
 
-  // Đèn hậu
   ctx.fillStyle = '#ef4444';
   ctx.shadowColor = '#ef4444';
   ctx.shadowBlur = 6;
@@ -486,6 +473,15 @@ function carDraw(c, player = false) {
   ctx.restore();
 }
 
+function triggerHorn() {
+  if (doze > 0) {
+    doze = 0;
+    car._doze = false;
+    log('THAO TÁC: Bấm còi đánh thức · Tỉnh táo trở lại');
+    alertStatus('', '🟢 Đã tập trung trở lại! Tiếp tục hành trình.');
+  }
+}
+
 function update(dt) {
   if (!playing) return;
 
@@ -493,9 +489,9 @@ function update(dt) {
   if (invulnerableTimer > 0) invulnerableTimer -= dt;
 
   const k = kName => keys[kName.toLowerCase()] || keys[kName];
-  const gas = k('ArrowUp') || k('w');
-  const brake = k('ArrowDown') || k('s');
-  const steer = (k('ArrowLeft') || k('a') ? -1 : 0) + (k('ArrowRight') || k('d') ? 1 : 0);
+  const gas = k('arrowup') || k('w');
+  const brake = k('arrowdown') || k('s');
+  const steer = (k('arrowleft') || k('a') ? -1 : 0) + (k('arrowright') || k('d') ? 1 : 0);
 
   if (gas) {
     car.speed = Math.min(140, car.speed + 45 * dt);
@@ -504,7 +500,6 @@ function update(dt) {
     car.speed = Math.max(0, car.speed - 75 * dt);
   }
 
-  // Lỗi chưa quẹt thẻ
   if (!driver && car.speed > 2) {
     car.speed = 0;
     if (!car._cardPenalty) {
@@ -520,7 +515,6 @@ function update(dt) {
   car.x = Math.max(road.x + 25, Math.min(road.x + road.w - 25, car.x));
   roadOffset += car.speed * dt * 1.2;
 
-  // Cập nhật vị trí logo sơn trên đường
   roadDecals.forEach(d => {
     d.y += car.speed * dt * 1.2;
   });
@@ -530,7 +524,6 @@ function update(dt) {
   }
   roadDecals = roadDecals.filter(d => d.y < H + 80);
 
-  // GPS Dead Reckoning
   if (gps) {
     if (car.speed > 0) {
       const deltaKm = (car.speed * dt) / 3600;
@@ -551,7 +544,6 @@ function update(dt) {
     displayedGpsStr = 'MẤT TÍN HIỆU (0 VỆ TINH)';
   }
 
-  // Đổi tốc độ giới hạn
   speedChangeTimer -= dt;
   if (speedChangeTimer <= 0) {
     speedChangeTimer = 18 + Math.random() * 6;
@@ -566,7 +558,6 @@ function update(dt) {
     alertStatus('warn', `🏁 BIỂN BÁO: ${cur.label} · Tốc độ tối đa: ${cur.limit} km/h`);
   }
 
-  // Quá tốc độ
   const currentLimit = speedLimitPresets[currentLimitIndex].limit;
   if (car.speed > currentLimit) {
     overspeedSecs += dt;
@@ -581,7 +572,6 @@ function update(dt) {
     if (car.speed <= currentLimit - 2) car._speedPenalty = false;
   }
 
-  // Đếm giờ lái xe liên tục
   if (car.speed > 2 && !resting) {
     driveSecs += dt * TIME_SCALE;
   }
@@ -599,7 +589,6 @@ function update(dt) {
     alertStatus('danger', '🔴 VI PHẠM 4 GIỜ: GSHT ghi nhận lái xe quá thời gian quy định (-2 điểm GPLX)');
   }
 
-  // Xe lưu thông
   objects.forEach(o => {
     o.y += (car.speed - o.speed) * dt * 1.2;
   });
@@ -623,18 +612,16 @@ function update(dt) {
     }
   }
 
-  // Sự kiện ngẫu nhiên
   eventTimer -= dt;
   if (eventTimer <= 0) {
     eventTimer = 16 + Math.random() * 15;
     randomEvent();
   }
 
-  // Buồn ngủ
   if (car.speed > 60) doze += dt * 0.5;
   if (doze > 25 && !car._doze) {
     car._doze = true;
-    alertStatus('warn', '😴 Dấu hiệu mất tập trung! Nhấn SPACE (Còi) để tỉnh táo!');
+    alertStatus('warn', '😴 Dấu hiệu mất tập trung! Bấm nút CÒI ngay để tỉnh táo!');
   }
 }
 
@@ -690,9 +677,9 @@ function draw() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 22px system-ui';
+    ctx.font = 'bold 20px system-ui';
     ctx.textAlign = 'center';
-    ctx.fillText('😴 CẢNH BÁO BUỒN NGỦ! BẤM SPACE ĐỂ BẤM CÒI!', W / 2, H / 2);
+    ctx.fillText('😴 BUỒN NGỦ! BẤM NÚT CÒI NGAY!', W / 2, H / 2);
     ctx.textAlign = 'start';
   }
 }
@@ -706,17 +693,12 @@ function loop(t) {
   requestAnimationFrame(loop);
 }
 
+// Bắt sự kiện bàn phím PC
 window.addEventListener('keydown', e => {
   keys[e.key.toLowerCase()] = true;
   keys[e.key] = true;
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
-
-  if (e.key === ' ' && doze > 0) {
-    doze = 0;
-    car._doze = false;
-    log('THAO TÁC: Bấm còi đánh thức · Tỉnh táo trở lại');
-    alertStatus('', '🟢 Đã tập trung trở lại! Tiếp tục hành trình.');
-  }
+  if (e.key === ' ') triggerHorn();
 });
 
 window.addEventListener('keyup', e => {
@@ -724,6 +706,29 @@ window.addEventListener('keyup', e => {
   keys[e.key] = false;
 });
 
+// XỬ LÝ SỰ KIỆN CẢM ỨNG ĐA ĐIỂM (MULTI-TOUCH) CHO MOBILE
+function bindTouch(btnId, keyName) {
+  const el = $(btnId);
+  const start = e => { e.preventDefault(); keys[keyName] = true; el.classList.add('active'); };
+  const end = e => { e.preventDefault(); keys[keyName] = false; el.classList.remove('active'); };
+  
+  el.addEventListener('touchstart', start, { passive: false });
+  el.addEventListener('touchend', end, { passive: false });
+  el.addEventListener('touchcancel', end, { passive: false });
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mouseup', end);
+  el.addEventListener('mouseleave', end);
+}
+
+bindTouch('t-up', 'arrowup');
+bindTouch('t-down', 'arrowdown');
+bindTouch('t-left', 'arrowleft');
+bindTouch('t-right', 'arrowright');
+
+$('t-horn').addEventListener('touchstart', e => { e.preventDefault(); triggerHorn(); }, { passive: false });
+$('t-horn').addEventListener('click', triggerHorn);
+
+// Nút bấm GSHT
 $('cardBtn').onclick = () => {
   if (!driver) {
     driver = true;
