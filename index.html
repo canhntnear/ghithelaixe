@@ -251,7 +251,7 @@
             display: inline-block;
         }
 
-        /* DANH SÁCH TÍNH NĂNG */
+        /* DANH SÁCH TÍNH NĂNG VỚI HIỆU ỨNG DÂY CHUYỀN */
         .benefits-list {
             display: flex;
             flex-direction: column;
@@ -268,6 +268,34 @@
             background: rgba(13, 17, 23, 0.65);
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            transition: all 0.35s ease;
+        }
+
+        .chain-badge {
+            position: absolute;
+            right: 8px;
+            top: 6px;
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 1px 5px;
+            border-radius: 4px;
+            transition: all 0.35s ease;
+        }
+
+        .benefit-item.chain-active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+            transform: translateX(4px);
+        }
+
+        .benefit-item.chain-active .chain-badge {
+            color: #ffffff;
+            background: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
         }
 
         .benefit-icon {
@@ -309,7 +337,7 @@
             color: #ffffff;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            min-height: 44px; /* Chuẩn touch target Apple/Android */
+            min-height: 44px;
         }
 
         .btn:active {
@@ -490,7 +518,8 @@
         </div>
 
         <div class="benefits-list">
-            <div class="benefit-item">
+            <div class="benefit-item" id="benefit-0">
+                <span class="chain-badge">01</span>
                 <span class="benefit-icon">🏆</span>
                 <div class="benefit-text">
                     <h4>Chuẩn quy chuẩn kỹ thuật</h4>
@@ -498,7 +527,8 @@
                 </div>
             </div>
 
-            <div class="benefit-item">
+            <div class="benefit-item" id="benefit-1">
+                <span class="chain-badge">02</span>
                 <span class="benefit-icon">☁️</span>
                 <div class="benefit-text">
                     <h4>Dữ liệu lưu trữ toàn vẹn</h4>
@@ -506,7 +536,8 @@
                 </div>
             </div>
 
-            <div class="benefit-item">
+            <div class="benefit-item" id="benefit-2">
+                <span class="chain-badge">03</span>
                 <span class="benefit-icon">♾️</span>
                 <div class="benefit-text">
                     <h4>Bảo hành trọn đời xe</h4>
@@ -514,7 +545,8 @@
                 </div>
             </div>
 
-            <div class="benefit-item">
+            <div class="benefit-item" id="benefit-3">
+                <span class="chain-badge">04</span>
                 <span class="benefit-icon">🔧</span>
                 <div class="benefit-text">
                     <h4>Lắp đặt nhanh tận nơi</h4>
@@ -562,26 +594,6 @@
 
     <script>
         const counterEl = document.getElementById('counter-price');
-        let currentVal = 1500000;
-        const finalVal = 888000;
-        
-        function runPriceCounter() {
-            let timer = setInterval(() => {
-                let diff = currentVal - finalVal;
-                if (diff <= 500) {
-                    currentVal = finalVal;
-                    counterEl.innerText = currentVal.toLocaleString('vi-VN');
-                    clearInterval(timer);
-                    startFireworksAndConfetti();
-                    return;
-                }
-                currentVal -= Math.max(Math.floor(diff / 12), 12000);
-                counterEl.innerText = currentVal.toLocaleString('vi-VN');
-            }, 35);
-        }
-
-        setTimeout(runPriceCounter, 700);
-
         const canvas = document.getElementById('fireworks-canvas');
         const ctx = canvas.getContext('2d');
         let elements = [];
@@ -683,6 +695,50 @@
             requestAnimationFrame(renderLoop);
         }
         renderLoop();
+
+        // Chạy hiệu ứng 1 lần duy nhất khi load trang
+        function runOnceAnimation() {
+            let currentVal = 1500000;
+            const finalVal = 888000;
+            counterEl.innerText = currentVal.toLocaleString('vi-VN');
+            const items = document.querySelectorAll('.benefit-item');
+            items.forEach(el => el.classList.remove('chain-active'));
+
+            // 1. Chạy bộ đếm giá
+            let timer = setInterval(() => {
+                let diff = currentVal - finalVal;
+                if (diff <= 500) {
+                    currentVal = finalVal;
+                    counterEl.innerText = currentVal.toLocaleString('vi-VN');
+                    clearInterval(timer);
+                    
+                    // Kích hoạt pháo hoa 1 lần
+                    startFireworksAndConfetti();
+
+                    // 2. Chạy hiệu ứng dây chuyền 4 tính năng kết thúc ở mục cuối
+                    let index = 0;
+                    let chainInterval = setInterval(() => {
+                        if (index > 0) {
+                            items[index - 1].classList.remove('chain-active');
+                        }
+                        if (index < items.length) {
+                            items[index].classList.add('chain-active');
+                            index++;
+                        } else {
+                            clearInterval(chainInterval);
+                            // Giữ sáng tất cả sau khi kết thúc
+                            items.forEach(el => el.classList.add('chain-active'));
+                        }
+                    }, 500);
+
+                    return;
+                }
+                currentVal -= Math.max(Math.floor(diff / 18), 8000);
+                counterEl.innerText = currentVal.toLocaleString('vi-VN');
+            }, 45);
+        }
+
+        setTimeout(runOnceAnimation, 800);
     </script>
 </body>
 </html>
