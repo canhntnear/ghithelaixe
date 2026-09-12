@@ -1,918 +1,688 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Tài xế chuẩn GSHT · Vạn Phú Khánh</title>
-<style>
-:root{--bg:#07111f;--panel:#0d1b2d;--line:#29405a;--text:#eef7ff;--muted:#8fa7bf;--cyan:#31d7ff;--ok:#36d399;--warn:#f7c948;--danger:#ff5c6c}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:radial-gradient(circle at top,#142942,#050b13 65%);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
-header{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#071321ee;position:sticky;top:0;z-index:10}
-h1{font-size:16px;margin:0}.brand{color:var(--cyan);font-weight:900}.sub{font-size:10px;color:var(--muted);margin-top:2px}
-.badge{border:1px solid #27556d;border-radius:99px;padding:4px 8px;font-size:10px}
-.layout{max-width:1300px;margin:10px auto;padding:0 8px;display:grid;grid-template-columns:minmax(400px,1fr) 390px;gap:10px}
-.card{background:linear-gradient(180deg,#0d1b2d,#091321);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 25px #0006;overflow:hidden}
-.game{position:relative;display:flex;flex-direction:column;align-items:center;background:#1b2e1e}
-.game canvas{display:block;width:100%;max-width:550px;height:auto;aspect-ratio:760/620;cursor:pointer}
-.hud{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:5px;flex-wrap:wrap;pointer-events:none;z-index:2}
-.hud span{background:#06101ddd;border:1px solid #34536c;padding:5px 8px;border-radius:7px;font-size:10px}
-.hud b{color:var(--cyan)}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-/* CỤM ĐIỀU KHIỂN CẢM ỨNG MOBILE */
-.touch-controls{display:none;width:100%;max-width:550px;padding:8px 12px;background:#081320;border-top:1px solid var(--line);justify-content:space-between;align-items:center;touch-action:none}
-.dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(2,44px);gap:4px}
-.t-btn{background:#162b42;border:1px solid #2c4a6b;color:#fff;font-size:16px;font-weight:900;border-radius:10px;display:flex;justify-content:center;align-items:center;user-select:none;touch-action:none}
-.t-btn:active,.t-btn.active{background:#0284c7;border-color:var(--cyan)}
-.t-horn{background:#e11d48;border-color:#fb7185;width:80px;height:70px;border-radius:12px;font-size:12px;font-weight:900;flex-direction:column;gap:3px}
-.t-horn:active{background:#be123c}
+    <!-- ================= SEO Meta Tags ================= -->
+    <title>Ưu Đãi 888K - Giám Sát Hành Trình Xe Biển Trắng | Vạn Phú Khánh 114</title>
+    <meta name="description" content="Chương trình trợ giá đặc biệt thiết bị giám sát hành trình GPS xe tải, xe van, xe biển trắng chở hàng nội bộ chuẩn quy chuẩn QCVN06 & QCVN31. Bảo hành trọn đời, tặng thẻ lái xe RFID.">
+    <link rel="icon" href="https://raw.githubusercontent.com/canhntnear/photo/main/Logo114VPK.png" type="image/png">
 
-.cockpit{padding:12px}
-.section-title{font-size:13px;font-weight:800;margin:0 0 8px}
-.device{border:1px solid #31516c;background:#06111e;border-radius:12px;padding:10px}
-.device-head{display:flex;justify-content:space-between;align-items:center}
-.led{width:7px;height:7px;background:var(--ok);border-radius:50%;display:inline-block;box-shadow:0 0 8px var(--ok);margin-right:4px}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.metric{border:1px solid #20374d;border-radius:8px;padding:7px;background:#0a1726}
-.metric small{display:block;color:var(--muted);font-size:9px}
-.metric strong{font-size:12px;word-break:break-all}
-.status{padding:8px;margin-top:8px;border-radius:8px;background:#0a2731;border:1px solid #1b5662;color:#c3f4ff;font-size:10.5px;min-height:34px;display:flex;align-items:center}
-.warn{background:#2c2410;border-color:#6d5617;color:#ffe59a}
-.danger{background:#32151c;border-color:#712b37;color:#ffb2ba}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.btn{border:1px solid #34516a;background:#102238;color:var(--text);padding:8px;border-radius:8px;cursor:pointer;font-size:10.5px;transition:0.15s}
-.btn:active{transform:scale(0.97)}
-.btn:disabled{opacity:0.5;cursor:not-allowed}
-.primary{background:#0b4150;border-color:#16829b}
-.dangerBtn{border-color:#73343c}
-.log{height:100px;overflow-y:auto;background:#040a11;border:1px solid #1b2b3d;border-radius:8px;margin-top:6px;padding:6px;font:9.5px ui-monospace,monospace;color:#adc2d6}
-.log div{padding:2.5px 0;border-bottom:1px dashed #172737}
-.score{margin-top:10px;padding:10px;border:1px solid #31516c;border-radius:10px;background:#071421}
-.scoretop{display:flex;justify-content:space-between;align-items:center}
-.points-box{display:flex;align-items:baseline;gap:3px}
-.points{font-size:24px;font-weight:900;color:var(--cyan)}
-.points-max{font-size:12px;color:var(--muted);font-weight:700}
-.rank{font-weight:800;font-size:12px}
-.bar{height:6px;background:#18283a;border-radius:8px;overflow:hidden;margin-top:6px}
-.bar i{display:block;height:100%;width:100%;background:var(--ok);transition:.2s}
-.rules{margin-top:8px;color:var(--muted);font-size:9.5px;line-height:1.4}
-.rules b{color:#d9e8f6}
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .touch-controls{display:flex}
-}
-</style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0b0f17;
+            color: #f8fafc;
+            text-align: center;
+            padding: 16px 12px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Canvas pháo hoa */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* ---------------------------------------------------- */
+        /* HIỆU ỨNG TRỐNG ĐỒNG & NEON TỐI ƯU MOBILE             */
+        /* ---------------------------------------------------- */
+        .bg-pattern-corner {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .corner-top-left {
+            width: min(100vw, 500px);
+            height: min(100vw, 500px);
+            top: -150px;
+            left: -150px;
+        }
+
+        .corner-bottom-right {
+            width: min(150vw, 800px);
+            height: min(150vw, 800px);
+            bottom: -250px;
+            right: -250px;
+        }
+
+        .bg-neon-aura {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(11, 60, 149, 0.25) 0%,
+                rgba(245, 158, 11, 0.15) 30%,
+                transparent 60%,
+                rgba(11, 60, 149, 0.25) 85%,
+                transparent 100%
+            );
+            filter: blur(40px);
+            animation: neonPulse 14s linear infinite;
+        }
+
+        .bg-neon-ring {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            border: 1.5px solid transparent;
+            border-top: 1.5px solid rgba(59, 130, 246, 0.45);
+            border-bottom: 1.5px solid rgba(245, 158, 11, 0.45);
+            animation: rotateClockwise 25s linear infinite;
+        }
+
+        .bg-trongdong {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: url("https://raw.githubusercontent.com/canhntnear/giamsatxe.net/main/trong-dong-o.png") no-repeat center center;
+            background-size: contain;
+            opacity: 0.12;
+            animation: rotateClockwise 60s linear infinite;
+        }
+
+        @keyframes rotateClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes neonPulse {
+            0% { transform: rotate(0deg) scale(0.95); opacity: 0.7; }
+            50% { transform: rotate(180deg) scale(1.05); opacity: 1; }
+            100% { transform: rotate(360deg) scale(0.95); opacity: 0.7; }
+        }
+
+        /* ---------------------------------------------------- */
+        /* THẺ CHÍNH TỐI ƯU CHO DI ĐỘNG                          */
+        /* ---------------------------------------------------- */
+        .card {
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 20px 14px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.12);
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* RADAR */
+        .radar-box {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 6px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .radar-sweep {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px dashed rgba(59, 130, 246, 0.4);
+        }
+
+        .radar-sweep::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(59, 130, 246, 0.5), rgba(245, 158, 11, 0.2), transparent 60%);
+            animation: radarRotate 2s linear infinite;
+        }
+
+        @keyframes radarRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .app-logo {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+            background: #ffffff;
+            padding: 3px;
+            border-radius: 50%;
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+        }
+
+        h1 {
+            font-size: 16px;
+            color: #ffffff;
+            margin: 0 0 2px 0;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .brand-header {
+            font-size: 10.5px;
+            color: #f59e0b;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* THÔNG BÁO ĐỐI TƯỢNG */
+        .target-notice {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 6px 8px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            line-height: 1.35;
+        }
+
+        /* BỘ ĐẾM GIÁ TO NỔI BẬT */
+        .price-box {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.22) 0%, rgba(15, 23, 42, 0.9) 80%);
+            border: 1.5px solid #ef4444;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: #38bdf8;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .price-val {
+            font-size: 38px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+            margin: 4px 0;
+            text-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+        }
+
+        .gift-tag {
+            font-size: 11px;
+            color: #f59e0b;
+            font-weight: 800;
+            margin-top: 2px;
+            background: rgba(245, 158, 11, 0.12);
+            padding: 3px 6px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* DANH SÁCH TÍNH NĂNG */
+        .benefits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 7px 9px;
+            background: rgba(13, 17, 23, 0.65);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .benefit-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h4 {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 1px;
+        }
+
+        .benefit-text p {
+            font-size: 10.5px;
+            color: #94a3b8;
+            line-height: 1.3;
+        }
+
+        /* NÚT BẤM TỐI ƯU TOUCH MOBILE */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            color: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-height: 44px; /* Chuẩn touch target Apple/Android */
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -150%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(
+                90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg);
+            animation: sweep 1.5s infinite linear;
+        }
+
+        @keyframes sweep {
+            0% { left: -150%; }
+            33.33% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        .btn-zalo { background-color: #0068ff; }
+        .btn-call { background-color: #dc2626; }
+
+        /* KHUNG THÔNG TIN HOTLINE */
+        .info-card-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .neon-wrapper {
+            position: relative;
+            border-radius: 12px;
+            padding: 2px;
+            overflow: hidden;
+        }
+
+        .neon-wrapper::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 400%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0%,
+                #3b82f6 25%,
+                #f59e0b 50%,
+                #1d4ed8 75%,
+                transparent 100%
+            );
+            animation: rotateNeon 5s linear infinite;
+        }
+
+        @keyframes rotateNeon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .contact-box {
+            position: relative;
+            z-index: 1;
+            background-color: #0f172a;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #cbd5e1;
+        }
+
+        .vpk-title {
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 6px;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 10.5px;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-item {
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-item strong {
+            color: #ffffff;
+        }
+
+        .contact-item span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .phone-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #059669;
+            color: #ffffff;
+            text-decoration: none;
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            font-size: 11px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .phone-link:active {
+            transform: scale(0.9);
+        }
+
+        .vpk-web {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 10.5px;
+        }
+
+        .vpk-web a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1><span class="brand">VẠN PHÚ KHÁNH</span> · TÀI XẾ CHUẨN GSHT</h1>
-    <div class="sub">Journey Monitoring Mobile Simulator</div>
-  </div>
-  <div class="badge">● TELEMETRY</div>
-</header>
 
-<main class="layout">
-  <section class="card game">
-    <canvas id="game" width="760" height="620"></canvas>
-    <div class="hud">
-      <span>🚗 <b id="speedHud">0 km/h</b></span>
-      <span>📍 <b id="gpsHud">LOCK (14 SV)</b></span>
-      <span>🪪 GPLX: <b id="scoreHud">12/12</b></span>
-      <span>🏁 <b id="routeHud">ĐÔ THỊ · 50</b></span>
+    <canvas id="fireworks-canvas"></canvas>
+
+    <div class="bg-pattern-corner corner-top-left">
+        <div class="bg-neon-aura"></div>
+        <div class="bg-neon-ring"></div>
+        <div class="bg-trongdong"></div>
     </div>
 
-    <!-- CỤM PHÍM ẢO CẢM ỨNG MOBILE -->
-    <div class="touch-controls">
-      <div class="dpad">
-        <div></div>
-        <button class="t-btn" id="t-up">▲</button>
-        <div></div>
-        <button class="t-btn" id="t-left">◀</button>
-        <button class="t-btn" id="t-down">▼</button>
-        <button class="t-btn" id="t-right">▶</button>
-      </div>
-      <button class="t-btn t-horn" id="t-horn">📢<span>CÒI</span></button>
-    </div>
-  </section>
-
-  <aside class="card cockpit">
-    <h2 class="section-title">📡 Thiết bị GSHT · Hộp đen</h2>
-    <div class="device">
-      <div class="device-head">
-        <strong><span class="led" id="led"></span>DV4G-VPK ONLINE</strong>
-        <small id="clock">--:--:--</small>
-      </div>
-      <div class="metrics">
-        <div class="metric"><small>Tốc độ</small><strong id="speed">0 km/h</strong></div>
-        <div class="metric"><small>Giới hạn</small><strong id="limit">50 km/h</strong></div>
-        <div class="metric"><small>Định vị GPS</small><strong id="gps">10.77692, 106.70091</strong></div>
-        <div class="metric"><small>Thẻ lái xe</small><strong id="driver">CHƯA QUẸT</strong></div>
-        <div class="metric"><small>Lái liên tục (Tua nhanh)</small><strong id="driveTime" style="color:var(--cyan)">00:00</strong></div>
-        <div class="metric"><small>Ca chạy</small><strong id="trip">00:00</strong></div>
-      </div>
-      <div id="status" class="status">Vui lòng quẹt thẻ lái xe trước khi nhấn ga!</div>
+    <div class="bg-pattern-corner corner-bottom-right">
+        <div class="bg-neon-aura"></div>
+        <div class="bg-neon-ring"></div>
+        <div class="bg-trongdong"></div>
     </div>
 
-    <div class="buttons">
-      <button class="btn primary" id="cardBtn">💳 Quẹt thẻ tài xế 1</button>
-      <button class="btn" id="swapBtn">🔄 Đổi sang tài xế 2</button>
-      <button class="btn" id="gpsBtn">📍 Reset ăng-ten GPS</button>
-      <button class="btn" id="restBtn">☕ Tấp vào nghỉ 15 phút</button>
-      <button class="btn" id="printBtn">🧾 Xuất phiếu GSHT</button>
-      <button class="btn dangerBtn" id="resetBtn">↻ Chuyến mới</button>
-    </div>
-
-    <h2 class="section-title" style="margin-top:10px">📋 Nhật ký thiết bị</h2>
-    <div class="log" id="log"></div>
-
-    <div class="score">
-      <div class="scoretop">
-        <div>
-          <div class="rank" id="rank">Bằng lái chuẩn (12đ)</div>
-          <small>Điểm Giấy phép lái xe</small>
+    <div class="card">
+        <div class="radar-box">
+            <div class="radar-sweep"></div>
+            <img src="https://raw.githubusercontent.com/canhntnear/photo/main/Logo114VPK.png" alt="Logo Vạn Phú Khánh" class="app-logo">
         </div>
-        <div class="points-box">
-          <span class="points" id="points">12</span>
-          <span class="points-max">/12</span>
+        
+        <h1>GIÁM SÁT HÀNH TRÌNH XE BIỂN TRẮNG</h1>
+        <div class="brand-header">VẠN PHÚ KHÁNH 114 - GIẢI PHÁP XE NỘI BỘ</div>
+
+        <div class="target-notice">
+            ⚠️ Ưu đãi chỉ dành cho xe vận tải nội bộ (Biển số trắng)
         </div>
-      </div>
-      <div class="bar"><i id="bar"></i></div>
-      <div class="rules"><b>Trừ điểm GPLX:</b> Quá tốc độ >5s (-3đ) · Quá 4h liên tục (-2đ) · Chưa quẹt thẻ (-2đ) · Gây va chạm (-3đ). Hết điểm = Tước bằng.</div>
+
+        <div class="price-box">
+            <div class="price-label">Giá trọn gói ưu đãi sự kiện</div>
+            <div class="price-val"><span id="counter-price">1.500.000</span>đ</div>
+            <div class="gift-tag">🎁 Tặng kèm thẻ định danh lái xe RFID</div>
+        </div>
+
+        <div class="benefits-list">
+            <div class="benefit-item">
+                <span class="benefit-icon">🏆</span>
+                <div class="benefit-text">
+                    <h4>Chuẩn quy chuẩn kỹ thuật</h4>
+                    <p>Hợp chuẩn QCVN06 & QCVN31, đồng bộ dữ liệu.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <span class="benefit-icon">☁️</span>
+                <div class="benefit-text">
+                    <h4>Dữ liệu lưu trữ toàn vẹn</h4>
+                    <p>Quản lý tốc độ, lộ trình trực tiếp trên điện thoại 24/7.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <span class="benefit-icon">♾️</span>
+                <div class="benefit-text">
+                    <h4>Bảo hành trọn đời xe</h4>
+                    <p>Hỗ trợ kỹ thuật liên tục, cam kết 1 đổi 1 phần cứng.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <span class="benefit-icon">🔧</span>
+                <div class="benefit-text">
+                    <h4>Lắp đặt nhanh tận nơi</h4>
+                    <p>Phục vụ tận bãi xe, an toàn hệ thống điện của xe.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a href="https://zalo.me/0585114114" target="_blank" class="btn btn-zalo">
+                💬 Nhắn Zalo Tư Vấn Nhanh
+            </a>
+            <a href="tel:0585114114" class="btn btn-call">
+                📞 Gọi Hotline Đặt Lịch Lắp Tận Nơi
+            </a>
+        </div>
+
+        <div class="info-card-group">
+            <div class="neon-wrapper">
+                <div class="contact-box">
+                    <div class="vpk-title">TỔNG ĐÀI HỖ TRỢ VẠN PHÚ KHÁNH 114</div>
+                    
+                    <div class="contact-item">
+                        <span><strong>TƯ VẤN PCCC:</strong> 0585.114.114</span>
+                        <a href="tel:0585114114" class="phone-link" title="Gọi ngay">📞</a>
+                    </div>
+
+                    <div class="contact-item">
+                        <span><strong>TƯ VẤN GPS:</strong> 0569.058.058</span>
+                        <a href="tel:0569058058" class="phone-link" title="Gọi ngay">📞</a>
+                    </div>
+
+                    <div class="contact-item">
+                        <span><strong>TƯ VẤN GIÁM SÁT:</strong> 0588.588.114</span>
+                        <a href="tel:0588588114" class="phone-link" title="Gọi ngay">📞</a>
+                    </div>
+
+                    <div class="vpk-web">
+                        Website chính thức: <a href="https://giamsatxe.net" target="_blank">giamsatxe.net</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </aside>
-</main>
 
-<script>
-if (!CanvasRenderingContext2D.prototype.roundRect) {
-  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (typeof r === 'undefined') r = 0;
-    this.beginPath();
-    this.moveTo(x + r, y);
-    this.lineTo(x + w - r, y);
-    this.quadraticCurveTo(x + w, y, x + w, y + r);
-    this.lineTo(x + w, y + h - r);
-    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    this.lineTo(x + r, y + h);
-    this.quadraticCurveTo(x, y + h, x, y + h - r);
-    this.lineTo(x, y + r);
-    this.quadraticCurveTo(x, y, x + r, y);
-    this.closePath();
-    return this;
-  };
-}
-
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
-const road = { x: 205, w: 350 };
-
-const speedLimitPresets = [
-  { label: 'ĐÔ THỊ', limit: 50 },
-  { label: 'ĐÔ THỊ THÔNG THOÁNG', limit: 60 },
-  { label: 'NGOÀI ĐÔ THỊ', limit: 80 },
-  { label: 'ĐƯỜNG ĐÔI / CAO TỐC NHỎ', limit: 90 },
-  { label: 'CAO TỐC LIÊN TỈNH', limit: 120 }
-];
-
-const vpkLogo = new Image();
-vpkLogo.crossOrigin = "anonymous";
-vpkLogo.src = 'https://dinhvi.khanhhoa.vn/Images/DinhViKhanhHoa/logo.png';
-
-const $ = id => document.getElementById(id);
-
-let keys = {}, car, objects, roadDecals, score, elapsed, tripTime, driveSecs, playing;
-let driver = false, driverId = 0, gps = true, roadOffset = 0, last = performance.now();
-let overspeedSecs = 0, currentLimitIndex = 0, speedChangeTimer = 20, eventTimer = 12;
-let inspection = false, doze = 0, resting = false, invulnerableTimer = 0;
-
-const TIME_SCALE = 6.0;
-
-let currentLat = 10.776920;
-let currentLng = 106.700910;
-let gpsSatellites = 14;
-let gpsJitterTimer = 0;
-let displayedGpsStr = '10.77692, 106.70091';
-
-// Tọa độ nút Restart trên Canvas
-const restartBtnRect = { x: W / 2 - 130, y: H / 2 + 80, w: 260, h: 54 };
-
-function reset() {
-  car = { x: W / 2, y: H - 120, w: 52, h: 96, speed: 0, angle: 0, _cardPenalty: false, _speedPenalty: false, _warning: false, _four: false };
-  objects = [];
-  roadDecals = [];
-  score = 12;
-  elapsed = 0;
-  tripTime = 0;
-  driveSecs = 0;
-  playing = true;
-  driver = false;
-  driverId = 0;
-  gps = true;
-  roadOffset = 0;
-  last = performance.now();
-  overspeedSecs = 0;
-  currentLimitIndex = 0;
-  speedChangeTimer = 20;
-  eventTimer = 12;
-  inspection = false;
-  doze = 0;
-  resting = false;
-  invulnerableTimer = 0;
-
-  currentLat = 10.776920;
-  currentLng = 106.700910;
-  gpsSatellites = 14;
-  gpsJitterTimer = 0;
-  displayedGpsStr = `${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}`;
-
-  $('driver').textContent = 'CHƯA QUẸT';
-  $('driver').style.color = 'var(--danger)';
-  $('gps').textContent = displayedGpsStr;
-  $('cardBtn').disabled = false;
-  $('cardBtn').textContent = '💳 Quẹt thẻ tài xế 1';
-  alertStatus('', 'Vui lòng quẹt thẻ lái xe trước khi nhấn ga!');
-  $('log').innerHTML = '';
-  log('Hệ thống khởi động · DV4G-VPK ONLINE · GPLX: 12/12 ĐIỂM');
-  spawn(true);
-  spawnRoadDecal(true);
-  updateUI();
-}
-
-function log(t) {
-  const d = document.createElement('div');
-  d.textContent = `[${new Date().toLocaleTimeString('vi-VN')}] ${t}`;
-  $('log').prepend(d);
-}
-
-function alertStatus(type, msg) {
-  $('status').className = 'status ' + type;
-  $('status').textContent = msg;
-}
-
-function spawn(first = false) {
-  const lanes = [road.x + 58, road.x + 175, road.x + 292];
-  objects.push({
-    x: lanes[Math.floor(Math.random() * 3)],
-    y: first ? H - 460 : -100,
-    w: 46,
-    h: 82,
-    color: ['#ef4444', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)],
-    speed: 40 + Math.random() * 45
-  });
-}
-
-function spawnRoadDecal(first = false) {
-  const lanes = [road.x + 58, road.x + 175, road.x + 292];
-  roadDecals.push({
-    x: lanes[Math.floor(Math.random() * 3)],
-    y: first ? H - 300 : -120,
-    w: 80,
-    h: 46
-  });
-}
-
-function drawRoad() {
-  ctx.fillStyle = '#1c3322';
-  ctx.fillRect(0, 0, W, H);
-
-  for (let y = -40 + (roadOffset % 80); y < H; y += 80) {
-    ctx.fillStyle = '#24452d';
-    ctx.fillRect(0, y, road.x - 12, 40);
-    ctx.fillRect(road.x + road.w + 12, y, W - road.x - road.w - 12, 40);
-  }
-
-  ctx.fillStyle = '#64748b';
-  ctx.fillRect(road.x - 12, 0, 6, H);
-  ctx.fillRect(road.x + road.w + 6, 0, 6, H);
-
-  ctx.fillStyle = '#21262d';
-  ctx.fillRect(road.x, 0, road.w, H);
-
-  ctx.fillStyle = '#fbbf24';
-  ctx.fillRect(road.x + 6, 0, 4, H);
-  ctx.fillRect(road.x + road.w - 10, 0, 4, H);
-
-  roadDecals.forEach(d => {
-    ctx.save();
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-    ctx.beginPath();
-    ctx.roundRect(d.x - d.w / 2, d.y - d.h / 2, d.w, d.h, 6);
-    ctx.fill();
-
-    ctx.strokeStyle = 'rgba(14, 165, 233, 0.8)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    if (vpkLogo.complete && vpkLogo.naturalWidth !== 0) {
-      ctx.drawImage(vpkLogo, d.x - d.w / 2 + 4, d.y - d.h / 2 + 4, d.w - 8, d.h - 8);
-    }
-    ctx.restore();
-  });
-
-  ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 4;
-  ctx.setLineDash([32, 28]);
-  ctx.lineDashOffset = -roadOffset;
-  for (let i = 1; i < 3; i++) {
-    ctx.beginPath();
-    ctx.moveTo(road.x + (road.w * i) / 3, 0);
-    ctx.lineTo(road.x + (road.w * i) / 3, H);
-    ctx.stroke();
-  }
-  ctx.setLineDash([]);
-
-  const curLimit = speedLimitPresets[currentLimitIndex].limit;
-  ctx.save();
-  ctx.shadowColor = '#0008';
-  ctx.shadowBlur = 8;
-  ctx.beginPath();
-  ctx.arc(road.x - 36, 75, 25, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffffff';
-  ctx.fill();
-  ctx.lineWidth = 5;
-  ctx.strokeStyle = '#dc2626';
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#0f172a';
-  ctx.font = '900 17px system-ui';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(curLimit, road.x - 36, 75);
-  ctx.restore();
-
-  if (inspection) {
-    ctx.save();
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(18, H - 115, 170, 70);
-    ctx.strokeStyle = '#b45309';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(18, H - 115, 170, 70);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 13px system-ui';
-    ctx.fillText('🚨 CSGT YÊU CẦU KIỂM TRA', 25, H - 88);
-    ctx.font = '11px system-ui';
-    ctx.fillText('Bấm [Xuất phiếu GSHT]!', 25, H - 68);
-    ctx.restore();
-  }
-}
-
-function carDraw(c, player = false) {
-  ctx.save();
-  ctx.translate(c.x, c.y);
-  ctx.rotate(c.angle || 0);
-
-  if (player && invulnerableTimer > 0 && Math.floor(invulnerableTimer * 10) % 2 === 0) {
-    ctx.globalAlpha = 0.4;
-  }
-
-  // 1. Bóng xe
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-  ctx.beginPath();
-  ctx.roundRect(-c.w / 2 - 3, -c.h / 2 + 5, c.w + 6, c.h + 2, 12);
-  ctx.fill();
-
-  // 2. Bánh xe
-  ctx.fillStyle = '#0f172a';
-  const wheelW = 6, wheelH = 16;
-  ctx.fillRect(-c.w / 2 - 4, -c.h * 0.38, wheelW, wheelH);
-  ctx.fillRect(c.w / 2 - 2, -c.h * 0.38, wheelW, wheelH);
-  ctx.fillRect(-c.w / 2 - 4, c.h * 0.22, wheelW, wheelH);
-  ctx.fillRect(c.w / 2 - 2, c.h * 0.22, wheelW, wheelH);
-
-  // 3. Gương chiếu hậu
-  ctx.fillStyle = player ? '#0284c7' : c.color;
-  ctx.beginPath();
-  ctx.roundRect(-c.w / 2 - 6, -c.h * 0.28, 6, 9, 2);
-  ctx.roundRect(c.w / 2, -c.h * 0.28, 6, 9, 2);
-  ctx.fill();
-
-  // 4. Khung thân xe
-  const grad = ctx.createLinearGradient(-c.w / 2, 0, c.w / 2, 0);
-  if (player) {
-    grad.addColorStop(0, '#0369a1');
-    grad.addColorStop(0.5, '#0ea5e9');
-    grad.addColorStop(1, '#0284c7');
-  } else {
-    grad.addColorStop(0, '#1e293b');
-    grad.addColorStop(0.5, c.color);
-    grad.addColorStop(1, '#0f172a');
-  }
-
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.roundRect(-c.w / 2, -c.h / 2, c.w, c.h, 10);
-  ctx.fill();
-
-  ctx.strokeStyle = player ? '#38bdf8' : 'rgba(255,255,255,0.2)';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  // 5. Kính chắn gió
-  const glassGrad = ctx.createLinearGradient(0, -c.h * 0.42, 0, -c.h * 0.2);
-  glassGrad.addColorStop(0, '#091829');
-  glassGrad.addColorStop(1, '#1e3a5f');
-
-  ctx.fillStyle = glassGrad;
-  ctx.beginPath();
-  ctx.roundRect(-c.w * 0.4, -c.h * 0.42, c.w * 0.8, c.h * 0.22, [6, 6, 2, 2]);
-  ctx.fill();
-
-  // 6. Nóc xe & Logo
-  if (player) {
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.roundRect(-c.w * 0.38, -c.h * 0.14, c.w * 0.76, c.h * 0.35, 5);
-    ctx.fill();
-    ctx.strokeStyle = '#cbd5e1';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    if (vpkLogo.complete && vpkLogo.naturalWidth !== 0) {
-      ctx.drawImage(vpkLogo, -c.w * 0.34, -c.h * 0.11, c.w * 0.68, c.h * 0.29);
-    }
-  } else {
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.roundRect(-c.w * 0.3, -c.h * 0.12, c.w * 0.6, c.h * 0.28, 4);
-    ctx.fill();
-  }
-
-  // 7. Đèn trước & sau
-  ctx.fillStyle = '#fef08a';
-  ctx.beginPath();
-  ctx.roundRect(-c.w * 0.44, -c.h / 2 + 1, 10, 5, 2);
-  ctx.roundRect(c.w * 0.44 - 10, -c.h / 2 + 1, 10, 5, 2);
-  ctx.fill();
-
-  if (car.speed > 0 || player) {
-    const lightGlow = ctx.createLinearGradient(0, -c.h / 2, 0, -c.h / 2 - 40);
-    lightGlow.addColorStop(0, 'rgba(254, 240, 138, 0.35)');
-    lightGlow.addColorStop(1, 'rgba(254, 240, 138, 0)');
-    ctx.fillStyle = lightGlow;
-    ctx.beginPath();
-    ctx.moveTo(-c.w * 0.44, -c.h / 2);
-    ctx.lineTo(-c.w * 0.7, -c.h / 2 - 40);
-    ctx.lineTo(-c.w * 0.2, -c.h / 2 - 40);
-    ctx.lineTo(-c.w * 0.24, -c.h / 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(c.w * 0.24, -c.h / 2);
-    ctx.lineTo(c.w * 0.2, -c.h / 2 - 40);
-    ctx.lineTo(c.w * 0.7, -c.h / 2 - 40);
-    ctx.lineTo(c.w * 0.44, -c.h / 2);
-    ctx.fill();
-  }
-
-  ctx.fillStyle = '#ef4444';
-  ctx.shadowColor = '#ef4444';
-  ctx.shadowBlur = 6;
-  ctx.fillRect(-c.w * 0.44, c.h / 2 - 4, 10, 3);
-  ctx.fillRect(c.w * 0.44 - 10, c.h / 2 - 4, 10, 3);
-  ctx.shadowBlur = 0;
-
-  ctx.restore();
-}
-
-// -------------------------------------------------------------
-// VẼ MÀN HÌNH GAME OVER NGAY TRONG CANVAS
-// -------------------------------------------------------------
-function drawGameOver() {
-  ctx.save();
-  // 1. Phủ mờ tối toàn bộ màn hình
-  ctx.fillStyle = 'rgba(5, 11, 19, 0.88)';
-  ctx.fillRect(0, 0, W, H);
-
-  // 2. Khung thông báo trung tâm
-  const boxW = 500, boxH = 340;
-  const boxX = (W - boxW) / 2, boxY = (H - boxH) / 2 - 10;
-
-  ctx.fillStyle = '#0d1b2d';
-  ctx.beginPath();
-  ctx.roundRect(boxX, boxY, boxW, boxH, 16);
-  ctx.fill();
-
-  ctx.strokeStyle = '#ef4444';
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  // 3. Tiêu đề GAME OVER
-  ctx.fillStyle = '#ef4444';
-  ctx.font = '900 32px system-ui';
-  ctx.textAlign = 'center';
-  ctx.fillText('⛔ GAME OVER', W / 2, boxY + 50);
-
-  // Phụ đề
-  ctx.fillStyle = '#fca5a5';
-  ctx.font = 'bold 15px system-ui';
-  ctx.fillText('TƯỚC QUYỀN SỬ DỤNG GIẤY PHÉP LÁI XE', W / 2, boxY + 80);
-
-  // 4. Bảng thống kê vi phạm
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-  ctx.beginPath();
-  ctx.roundRect(boxX + 24, boxY + 105, boxW - 48, 100, 10);
-  ctx.fill();
-
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '13px system-ui';
-  ctx.textAlign = 'left';
-  ctx.fillText('Điểm GPLX còn lại:', boxX + 44, boxY + 135);
-  ctx.fillText('Thời gian điều khiển:', boxX + 44, boxY + 162);
-  ctx.fillText('Tình trạng xử lý:', boxX + 44, boxY + 189);
-
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#ef4444';
-  ctx.font = 'bold 15px system-ui';
-  ctx.fillText('0 / 12 ĐIỂM', boxX + boxW - 44, boxY + 135);
-
-  ctx.fillStyle = '#38bdf8';
-  const tripMin = Math.floor(tripTime / 60);
-  const tripSec = Math.floor(tripTime % 60);
-  ctx.fillText(`${String(tripMin).padStart(2,'0')}:${String(tripSec).padStart(2,'0')} phút`, boxX + boxW - 44, boxY + 162);
-
-  ctx.fillStyle = '#fbbf24';
-  ctx.fillText('Phải thi phục hồi điểm GPLX', boxX + boxW - 44, boxY + 189);
-
-  // 5. Nút bấm Chơi lại (Restart Button)
-  const b = restartBtnRect;
-  const btnGrad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
-  btnGrad.addColorStop(0, '#0284c7');
-  btnGrad.addColorStop(1, '#0369a1');
-
-  ctx.fillStyle = btnGrad;
-  ctx.beginPath();
-  ctx.roundRect(b.x, b.y, b.w, b.h, 12);
-  ctx.fill();
-
-  ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '900 16px system-ui';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('↻ THI LẠI / CHUYẾN MỚI', W / 2, b.y + b.h / 2);
-
-  ctx.restore();
-}
-
-function triggerHorn() {
-  if (doze > 0) {
-    doze = 0;
-    car._doze = false;
-    log('THAO TÁC: Bấm còi đánh thức · Tỉnh táo trở lại');
-    alertStatus('', '🟢 Đã tập trung trở lại! Tiếp tục hành trình.');
-  }
-}
-
-function update(dt) {
-  if (!playing) return;
-
-  tripTime += dt;
-  if (invulnerableTimer > 0) invulnerableTimer -= dt;
-
-  const k = kName => keys[kName.toLowerCase()] || keys[kName];
-  const gas = k('arrowup') || k('w');
-  const brake = k('arrowdown') || k('s');
-  const steer = (k('arrowleft') || k('a') ? -1 : 0) + (k('arrowright') || k('d') ? 1 : 0);
-
-  if (gas) {
-    car.speed = Math.min(140, car.speed + 45 * dt);
-  }
-  if (brake) {
-    car.speed = Math.max(0, car.speed - 75 * dt);
-  }
-
-  if (!driver && car.speed > 2) {
-    car.speed = 0;
-    if (!car._cardPenalty) {
-      score = Math.max(0, score - 2);
-      car._cardPenalty = true;
-      log('VI PHẠM: Xe kinh doanh vận tải không truyền dữ liệu định danh lái xe (-2đ GPLX)');
-      alertStatus('danger', '🚨 CẢNH BÁO GSHT: Chưa quẹt thẻ lái xe! Bị trừ 2 điểm GPLX.');
-    }
-  }
-
-  car.x += steer * (90 + car.speed * 1.1) * dt;
-  car.angle = steer * 0.08;
-  car.x = Math.max(road.x + 25, Math.min(road.x + road.w - 25, car.x));
-  roadOffset += car.speed * dt * 1.2;
-
-  roadDecals.forEach(d => {
-    d.y += car.speed * dt * 1.2;
-  });
-
-  if (roadDecals.length < 2 && Math.random() < dt * 0.18 && car.speed > 5) {
-    spawnRoadDecal();
-  }
-  roadDecals = roadDecals.filter(d => d.y < H + 80);
-
-  if (gps) {
-    if (car.speed > 0) {
-      const deltaKm = (car.speed * dt) / 3600;
-      const deltaLat = deltaKm / 111.32;
-      const deltaLng = deltaKm / (111.32 * Math.cos(currentLat * Math.PI / 180));
-      currentLat += deltaLat * 0.82;
-      currentLng += deltaLng * 0.57;
-    }
-
-    gpsJitterTimer += dt;
-    if (gpsJitterTimer >= 0.25) {
-      gpsJitterTimer = 0;
-      const jitterLat = (Math.random() - 0.5) * 0.00003;
-      const jitterLng = (Math.random() - 0.5) * 0.00003;
-      displayedGpsStr = `${(currentLat + jitterLat).toFixed(5)}, ${(currentLng + jitterLng).toFixed(5)}`;
-    }
-  } else {
-    displayedGpsStr = 'MẤT TÍN HIỆU (0 VỆ TINH)';
-  }
-
-  speedChangeTimer -= dt;
-  if (speedChangeTimer <= 0) {
-    speedChangeTimer = 18 + Math.random() * 6;
-    let newIndex;
-    do {
-      newIndex = Math.floor(Math.random() * speedLimitPresets.length);
-    } while (newIndex === currentLimitIndex);
-    
-    currentLimitIndex = newIndex;
-    const cur = speedLimitPresets[currentLimitIndex];
-    log(`BIỂN BÁO MỚI: [${cur.label}] - Giới hạn ${cur.limit} km/h`);
-    alertStatus('warn', `🏁 BIỂN BÁO: ${cur.label} · Tốc độ tối đa: ${cur.limit} km/h`);
-  }
-
-  const currentLimit = speedLimitPresets[currentLimitIndex].limit;
-  if (car.speed > currentLimit) {
-    overspeedSecs += dt;
-    if (overspeedSecs > 5 && !car._speedPenalty) {
-      score = Math.max(0, score - 3);
-      car._speedPenalty = true;
-      log(`VI PHẠM: Điều khiển xe chạy quá tốc độ quy định (${Math.round(car.speed)}/${currentLimit} km/h) (-3đ GPLX)`);
-      alertStatus('danger', '🔴 QUÁ TỐC ĐỘ: GSHT ghi nhận dữ liệu vi phạm tốc độ (-3 điểm GPLX)!');
-    }
-  } else {
-    overspeedSecs = 0;
-    if (car.speed <= currentLimit - 2) car._speedPenalty = false;
-  }
-
-  if (car.speed > 2 && !resting) {
-    driveSecs += dt * TIME_SCALE;
-  }
-
-  if (driveSecs >= 225 && !car._warning) {
-    car._warning = true;
-    log('CẢNH BÁO: Lái xe liên tục chạm mốc 3h45m');
-    alertStatus('warn', '🟡 CẢNH BÁO GSHT: Đã lái 3h45m liên tục! Hãy chuẩn bị nghỉ hoặc đổi tài.');
-  }
-
-  if (driveSecs >= 240 && !car._four) {
-    car._four = true;
-    score = Math.max(0, score - 2);
-    log('VI PHẠM: Điều khiển xe chạy quá thời gian quy định liên tục > 4 giờ (-2đ GPLX)');
-    alertStatus('danger', '🔴 VI PHẠM 4 GIỜ: GSHT ghi nhận lái xe quá thời gian quy định (-2 điểm GPLX)');
-  }
-
-  objects.forEach(o => {
-    o.y += (car.speed - o.speed) * dt * 1.2;
-  });
-
-  if (objects.length < 4 && Math.random() < dt * 0.75) spawn();
-
-  for (let i = objects.length - 1; i >= 0; i--) {
-    const o = objects[i];
-    if (o.y > H + 120 || o.y < -200) {
-      objects.splice(i, 1);
-      continue;
-    }
-
-    if (invulnerableTimer <= 0 && Math.abs(o.x - car.x) < (o.w + car.w) / 2 - 6 && Math.abs(o.y - car.y) < (o.h + car.h) / 2 - 8) {
-      score = Math.max(0, score - 3);
-      invulnerableTimer = 2.0;
-      car.speed = Math.max(0, car.speed - 30);
-      log('TAI NẠN: Không giữ khoảng cách an toàn gây va chạm (-3đ GPLX)');
-      alertStatus('danger', '💥 VA CHẠM! Ghi nhận sự cố va chạm giao thông (-3 điểm GPLX).');
-      objects.splice(i, 1);
-    }
-  }
-
-  eventTimer -= dt;
-  if (eventTimer <= 0) {
-    eventTimer = 16 + Math.random() * 15;
-    randomEvent();
-  }
-
-  if (car.speed > 60) doze += dt * 0.5;
-  if (doze > 25 && !car._doze) {
-    car._doze = true;
-    alertStatus('warn', '😴 Dấu hiệu mất tập trung! Bấm nút CÒI ngay để tỉnh táo!');
-  }
-}
-
-function randomEvent() {
-  const r = Math.random();
-  if (r < 0.45) {
-    gps = false;
-    log('SỰ KIỆN: Mất tín hiệu vệ tinh GNSS/GPS');
-    alertStatus('warn', '📍 MẤT TÍN HIỆU GPS: Hãy nhấn [Reset ăng-ten GPS].');
-  } else if (!inspection) {
-    inspection = true;
-    log('SỰ KIỆN: Trạm CSGT ra hiệu kiểm tra hành trình');
-    alertStatus('warn', '🚨 YÊU CẦU KIỂM TRA: Bấm [Xuất phiếu GSHT] ngay!');
-  }
-}
-
-function updateUI() {
-  const h = Math.floor(driveSecs / 60);
-  const m = Math.floor(driveSecs % 60);
-  const cur = speedLimitPresets[currentLimitIndex];
-
-  $('speed').textContent = Math.round(car.speed) + ' km/h';
-  $('speedHud').textContent = Math.round(car.speed) + ' km/h';
-  $('limit').textContent = cur.limit + ' km/h';
-  $('routeHud').textContent = cur.label + ' · ' + cur.limit;
-  $('scoreHud').textContent = `${score}/12`;
-  $('points').textContent = score;
-  $('driveTime').textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
-  $('trip').textContent = Math.floor(tripTime / 60).toString().padStart(2, '0') + ':' + String(Math.floor(tripTime % 60)).padStart(2, '0');
-  
-  $('gps').textContent = displayedGpsStr;
-  $('gpsHud').textContent = gps ? `LOCK (${gpsSatellites} SV)` : 'NO GPS';
-  $('clock').textContent = new Date().toLocaleTimeString('vi-VN');
-
-  const rank = score >= 10 ? 'Bằng lái chuẩn (Tốt)' : score >= 6 ? 'Cảnh báo điểm GPLX' : score > 0 ? 'Nguy cơ tước bằng' : 'Tước quyền sử dụng GPLX';
-  $('rank').textContent = rank;
-  $('bar').style.width = Math.max(0, (score / 12) * 100) + '%';
-  $('bar').style.background = score <= 3 ? 'var(--danger)' : score <= 8 ? 'var(--warn)' : 'var(--ok)';
-
-  if (score <= 0 && playing) {
-    playing = false;
-    car.speed = 0;
-    alertStatus('danger', '⛔ TƯỚC GPLX: GPLX đã bị trừ hết 12/12 điểm. Phải thi phục hồi điểm!');
-    log('GAME OVER: Giấy phép lái xe đã hết điểm hiệu lực theo quy định.');
-  }
-}
-
-function draw() {
-  drawRoad();
-  objects.forEach(o => carDraw(o));
-  carDraw(car, true);
-
-  if (doze > 25 && playing) {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 20px system-ui';
-    ctx.textAlign = 'center';
-    ctx.fillText('😴 BUỒN NGỦ! BẤM NÚT CÒI NGAY!', W / 2, H / 2);
-    ctx.textAlign = 'start';
-  }
-
-  // HIỂN THỊ MÀN HÌNH GAME OVER TRỰC TIẾP TRÊN CANVAS
-  if (!playing) {
-    drawGameOver();
-  }
-}
-
-function loop(t) {
-  const dt = Math.min(0.035, (t - last) / 1000);
-  last = t;
-  update(dt);
-  updateUI();
-  draw();
-  requestAnimationFrame(loop);
-}
-
-// Bắt sự kiện Click / Touch vào nút Chơi Lại trên Canvas khi Game Over
-function handleCanvasClick(clientX, clientY) {
-  if (playing) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-
-  const canvasX = (clientX - rect.left) * scaleX;
-  const canvasY = (clientY - rect.top) * scaleY;
-
-  const b = restartBtnRect;
-  if (canvasX >= b.x && canvasX <= b.x + b.w && canvasY >= b.y && canvasY <= b.y + b.h) {
-    reset();
-  }
-}
-
-canvas.addEventListener('click', e => handleCanvasClick(e.clientX, e.clientY));
-canvas.addEventListener('touchstart', e => {
-  if (!playing && e.touches.length > 0) {
-    e.preventDefault();
-    handleCanvasClick(e.touches[0].clientX, e.touches[0].clientY);
-  }
-}, { passive: false });
-
-window.addEventListener('keydown', e => {
-  keys[e.key.toLowerCase()] = true;
-  keys[e.key] = true;
-  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
-  if (e.key === ' ') triggerHorn();
-  if (e.key.toLowerCase() === 'r' && !playing) reset();
-});
-
-window.addEventListener('keyup', e => {
-  keys[e.key.toLowerCase()] = false;
-  keys[e.key] = false;
-});
-
-function bindTouch(btnId, keyName) {
-  const el = $(btnId);
-  const start = e => { e.preventDefault(); keys[keyName] = true; el.classList.add('active'); };
-  const end = e => { e.preventDefault(); keys[keyName] = false; el.classList.remove('active'); };
-  
-  el.addEventListener('touchstart', start, { passive: false });
-  el.addEventListener('touchend', end, { passive: false });
-  el.addEventListener('touchcancel', end, { passive: false });
-  el.addEventListener('mousedown', start);
-  el.addEventListener('mouseup', end);
-  el.addEventListener('mouseleave', end);
-}
-
-bindTouch('t-up', 'arrowup');
-bindTouch('t-down', 'arrowdown');
-bindTouch('t-left', 'arrowleft');
-bindTouch('t-right', 'arrowright');
-
-$('t-horn').addEventListener('touchstart', e => { e.preventDefault(); triggerHorn(); }, { passive: false });
-$('t-horn').addEventListener('click', triggerHorn);
-
-// Nút bấm GSHT
-$('cardBtn').onclick = () => {
-  if (!driver) {
-    driver = true;
-    driverId = 1;
-    $('driver').textContent = 'TÀI XẾ 1 (ĐÃ ĐĂNG NHẬP)';
-    $('driver').style.color = 'var(--ok)';
-    $('cardBtn').disabled = true;
-    log('CHECK-IN: Tài xế 1 quẹt thẻ thành công (TÍT!)');
-    alertStatus('', '🟢 Đăng nhập thành công! Bắt đầu chuyến đi an toàn.');
-  }
-};
-
-$('swapBtn').onclick = () => {
-  if (!driver) {
-    alertStatus('warn', 'Hãy quẹt thẻ tài xế ban đầu trước!');
-    return;
-  }
-  driverId = driverId === 1 ? 2 : 1;
-  $('driver').textContent = `TÀI XẾ ${driverId} (ĐÃ ĐĂNG NHẬP)`;
-  driveSecs = 0;
-  car._four = false;
-  car._warning = false;
-  log(`ĐỔI TÀI: Chuyển giao ca sang Tài xế ${driverId} · Đặt lại bộ đếm 4h`);
-  alertStatus('', `🔄 Đã đổi sang Tài xế ${driverId}. Bộ đếm lái liên tục đã về 00:00.`);
-};
-
-$('gpsBtn').onclick = () => {
-  if (!gps) {
-    gps = true;
-    gpsSatellites = 12 + Math.floor(Math.random() * 4);
-    log(`GPS FIX: Khôi phục tín hiệu GNSS (${gpsSatellites} vệ tinh) · Toạ độ hợp lệ`);
-    alertStatus('', `🟢 GPS LOCK (${gpsSatellites} vệ tinh) · Tín hiệu đã ổn định.`);
-  } else {
-    alertStatus('', 'Tín hiệu GPS hiện tại đang rất tốt.');
-  }
-};
-
-$('restBtn').onclick = () => {
-  if (car.speed > 5) {
-    alertStatus('warn', 'Phải dừng hẳn xe (về 0 km/h) trước khi nghỉ ngơi!');
-    return;
-  }
-  resting = true;
-  driveSecs = 0;
-  car._four = false;
-  car._warning = false;
-  log('NGHỈ NGƠI: Dừng xe nghỉ 15 phút theo quy định');
-  alertStatus('', '☕ Đang nghỉ 15 phút... Bộ đếm lái xe liên tục đã reset.');
-  setTimeout(() => {
-    resting = false;
-    alertStatus('', '🟢 Kết thúc thời gian nghỉ. Sẵn sàng tiếp tục lộ trình!');
-  }, 2500);
-};
-
-$('printBtn').onclick = () => {
-  if (inspection) {
-    inspection = false;
-    log('KIỂM TRA GSHT: Xuất dữ liệu thành công · CSGT xác nhận hợp lệ');
-    alertStatus('', '🧾 Đã xuất phiếu dữ liệu. Kiểm tra đạt chuẩn!');
-  } else {
-    log('THAO TÁC: Xuất phiếu dữ liệu GSHT thủ công');
-    alertStatus('', '🧾 Phiếu giám sát hành trình đã được in.');
-  }
-};
-
-$('resetBtn').onclick = reset;
-
-reset();
-requestAnimationFrame(loop);
-</script>
+    <script>
+        const counterEl = document.getElementById('counter-price');
+        let currentVal = 1500000;
+        const finalVal = 888000;
+        
+        function runPriceCounter() {
+            let timer = setInterval(() => {
+                let diff = currentVal - finalVal;
+                if (diff <= 500) {
+                    currentVal = finalVal;
+                    counterEl.innerText = currentVal.toLocaleString('vi-VN');
+                    clearInterval(timer);
+                    startFireworksAndConfetti();
+                    return;
+                }
+                currentVal -= Math.max(Math.floor(diff / 12), 12000);
+                counterEl.innerText = currentVal.toLocaleString('vi-VN');
+            }, 35);
+        }
+
+        setTimeout(runPriceCounter, 700);
+
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let elements = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class CelebrationParticle {
+            constructor(x, y, isConfetti = false) {
+                this.x = x;
+                this.y = y;
+                this.isConfetti = isConfetti;
+                const colors = ['#ef4444', '#38bdf8', '#f59e0b', '#4ade80', '#ec4899', '#ffffff', '#fbbf24'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+
+                if (isConfetti) {
+                    this.vx = (Math.random() - 0.5) * 8;
+                    this.vy = Math.random() * -10 - 3;
+                    this.width = Math.random() * 10 + 5;
+                    this.height = Math.random() * 5 + 2;
+                    this.rotation = Math.random() * 360;
+                    this.rotSpeed = (Math.random() - 0.5) * 12;
+                    this.gravity = 0.15;
+                } else {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 6 + 2;
+                    this.vx = Math.cos(angle) * speed;
+                    this.vy = Math.sin(angle) * speed;
+                    this.radius = Math.random() * 3 + 1;
+                    this.gravity = 0.08;
+                }
+                this.alpha = 1;
+                this.decay = Math.random() * 0.012 + 0.008;
+            }
+
+            update() {
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+                if (this.isConfetti) {
+                    this.rotation += this.rotSpeed;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(this.alpha, 0);
+                if (this.isConfetti) {
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate((this.rotation * Math.PI) / 180);
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function triggerExplosion(x, y) {
+            for (let i = 0; i < 40; i++) {
+                elements.push(new CelebrationParticle(x, y, false));
+            }
+            for (let i = 0; i < 25; i++) {
+                elements.push(new CelebrationParticle(x, y, true));
+            }
+        }
+
+        function startFireworksAndConfetti() {
+            let burstCount = 0;
+            let fireworkLoop = setInterval(() => {
+                let randomX = Math.random() * (window.innerWidth * 0.7) + window.innerWidth * 0.15;
+                let randomY = Math.random() * (window.innerHeight * 0.45) + window.innerHeight * 0.15;
+                triggerExplosion(randomX, randomY);
+                burstCount++;
+                if (burstCount >= 5) {
+                    clearInterval(fireworkLoop);
+                }
+            }, 300);
+        }
+
+        function renderLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            elements.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    elements.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(renderLoop);
+        }
+        renderLoop();
+    </script>
 </body>
 </html>
