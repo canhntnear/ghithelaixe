@@ -10,11 +10,10 @@
   <meta property="og:description" content="Thương nhân phân phối thiết bị VGPS (VNTECH24H sản xuất - VMAKE phát triển phần mềm) chuẩn QCVN 06:2024/BCA tại TP. Tuy Hòa, Phú Yên." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="vi_VN" />
+  <meta name="theme-color" content="#0b0f17" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -67,7 +66,7 @@
       --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
       --shadow-md: 0 12px 32px rgba(2, 6, 23, 0.55);
       --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.7);
-      --hdr: 74px;
+      --hdr: 72px;
     }
 
     * {
@@ -172,14 +171,15 @@
     /* Ảnh mặt Trống Đồng xoay chậm */
     .bg-trongdong {
       position: absolute;
-      width: 80%;
-      height: 80%;
+      width: 82%;
+      height: 82%;
       background: url("https://raw.githubusercontent.com/canhntnear/giamsatxe.net/main/trong-dong-o.png") no-repeat center center;
       background-size: contain;
-      opacity: 0.26;
-      filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.35));
+      opacity: 0.36;
+      filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.45));
+      transform-origin: center center;
       will-change: transform;
-      animation: rotateClockwise 45s linear infinite !important;
+      animation: rotateClockwise 30s linear infinite !important;
     }
 
     /* Keyframes chuyển động */
@@ -200,7 +200,7 @@
     }
 
     /* Ensure all foreground sections sit cleanly above the rotating Trống Đồng background */
-    .topbar, .site-header, .hero, .sec, .site-footer {
+    .hero, .sec, .site-footer {
       position: relative;
       z-index: 1;
     }
@@ -228,75 +228,44 @@
       padding: 0 20px;
     }
 
-    /* Top Bar */
-    .topbar {
-      background: rgba(7, 11, 20, 0.9);
-      backdrop-filter: blur(10px);
-      color: #cbd5e1;
-      font-size: 13px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .topbar .wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .topbar-badge {
-      background: linear-gradient(135deg, var(--red-vgps), #b90327);
-      color: #fff;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 5px;
-      font-size: 11px;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      box-shadow: 0 0 12px rgba(237, 4, 51, 0.35);
-    }
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-    .topbar-right a:hover {
-      color: var(--cyan);
-    }
-
-    /* Header */
+    /* ==================================================== */
+    /* HEADER – MENU CANH GIỮA, CÂN ĐỐI 3 CỘT               */
+    /* [Logo] ——— [Menu canh giữa tuyệt đối] ——— [Nút CTA]  */
+    /* ==================================================== */
     .site-header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(11, 15, 23, 0.85);
+      background: rgba(11, 15, 23, 0.86);
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--line);
       height: var(--hdr);
       display: flex;
       align-items: center;
+      transition: box-shadow 0.25s ease, background 0.25s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(9, 13, 21, 0.95);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
     }
     .site-header .wrap {
       width: 100%;
-      display: flex;
+      display: grid;
+      /* 2 cột bên co giãn bằng nhau => menu ở giữa luôn nằm chính giữa trang */
+      grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      gap: 20px;
     }
     .brand {
+      justify-self: start;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
     }
     .brand-logo {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 11px;
       background: linear-gradient(135deg, var(--red-vgps) 0%, #b90327 100%);
       display: flex;
@@ -304,7 +273,7 @@
       justify-content: center;
       color: #fff;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 17px;
       box-shadow: 0 6px 18px rgba(237, 4, 51, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.2);
       flex-shrink: 0;
@@ -312,37 +281,55 @@
     .brand-text {
       display: flex;
       flex-direction: column;
-      line-height: 1.2;
+      line-height: 1.22;
     }
     .brand-name {
       font-weight: 800;
-      font-size: 16px;
+      font-size: 15.5px;
       color: #f8fafc;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
     }
     .brand-sub {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--cyan);
       font-weight: 600;
+      white-space: nowrap;
+    }
+    .site-nav {
+      justify-self: center;
     }
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 2px;
       list-style: none;
+      padding: 4px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 12px;
     }
     .nav-links a {
-      padding: 8px 13px;
+      display: block;
+      padding: 7px 13px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--ink-2);
+      white-space: nowrap;
+      line-height: 1.4;
     }
-    .nav-links a:hover, .nav-links a.active {
-      background: rgba(56, 189, 248, 0.14);
+    .nav-links a:hover {
+      background: rgba(56, 189, 248, 0.12);
       color: var(--cyan);
     }
+    .nav-links a.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.28), rgba(56, 189, 248, 0.14));
+      color: #fff;
+      box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4);
+    }
     .hdr-actions {
+      justify-self: end;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -402,6 +389,15 @@
       color: var(--cyan);
       background: rgba(14, 165, 233, 0.14);
     }
+    .btn-zalo {
+      background: #0068ff;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(0, 104, 255, 0.3);
+    }
+    .btn-zalo:hover {
+      background: #1a7bff;
+      transform: translateY(-1px);
+    }
     .mobile-toggle {
       display: none;
       background: rgba(15, 23, 42, 0.8);
@@ -414,6 +410,49 @@
       justify-content: center;
       cursor: pointer;
       color: var(--ink);
+    }
+
+    /* Màn hình 1121px–1260px: thu gọn nhẹ menu để vẫn cân đối 1 hàng */
+    @media (max-width: 1260px) {
+      .nav-links a { padding: 7px 10px; font-size: 13px; }
+      .site-header .wrap { gap: 14px; }
+    }
+
+    /* <=1120px: chuyển sang menu thả xuống (hamburger) */
+    @media (max-width: 1120px) {
+      .site-header .wrap {
+        display: flex;
+        justify-content: space-between;
+      }
+      .site-nav { position: static; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 12px 16px 16px;
+        background: rgba(11, 15, 23, 0.98);
+        border: none;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        box-shadow: var(--shadow-md);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 12px 14px; font-size: 15px; text-align: center; }
+      .mobile-toggle { display: inline-flex; }
+    }
+
+    @media (max-width: 520px) {
+      :root { --hdr: 64px; }
+      .brand-logo { width: 38px; height: 38px; font-size: 15px; }
+      .brand-name { font-size: 14px; }
+      .brand-sub { font-size: 10.5px; }
+      .hdr-zalo-txt { display: none; }
+      .hdr-actions .btn-zalo { min-width: 44px; padding: 7px 10px; }
     }
 
     /* Hero Section */
@@ -450,6 +489,7 @@
       background: #ff2a55;
       box-shadow: 0 0 10px #ff2a55;
       animation: pulseDot 1.6s infinite;
+      flex-shrink: 0;
     }
     @keyframes pulseDot {
       0%, 100% { transform: scale(1); opacity: 1; }
@@ -466,6 +506,7 @@
     .hero h1 span {
       background: linear-gradient(90deg, #38bdf8 0%, #fbbf24 55%, #ff4d6d 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     .hero-lead {
@@ -530,6 +571,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
       padding-bottom: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       margin-bottom: 14px;
@@ -546,6 +589,7 @@
       font-weight: 700;
       font-size: 12px;
       border: 1px solid rgba(16, 185, 129, 0.35);
+      white-space: nowrap;
     }
     .hero-mini-map {
       background: #0b192c;
@@ -726,243 +770,8 @@
       flex-shrink: 0;
       margin-top: 3px;
     }
-  </style>
-</head>
-<body>
-  <!-- HIỆU ỨNG TRỐNG ĐỒNG & NEON GÓC TRÊN TRÁI VÀ GÓC DƯỚI PHẢI -->
-  <div class="bg-pattern-corner corner-top-left" aria-hidden="true">
-    <div class="bg-neon-aura"></div>
-    <div class="bg-neon-ring"></div>
-    <div class="bg-trongdong"></div>
-  </div>
-  <div class="bg-pattern-corner corner-bottom-right" aria-hidden="true">
-    <div class="bg-neon-aura"></div>
-    <div class="bg-neon-ring"></div>
-    <div class="bg-trongdong"></div>
-  </div>
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
-    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="14" height="10" rx="2"/><path d="M16 11l6-3v8l-6-3"/></symbol>
-    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7"/><circle cx="6.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 5-5"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z"/></symbol>
-    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
-    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
-    <symbol id="i-fuel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22L15 22"/><path d="M4 9L14 9"/><path d="M14 22L14 4A2 2 0 0 0 12 2L6 2A2 2 0 0 0 4 4L4 22"/><path d="M14 13L16 13A2 2 0 0 1 18 15L18 19A2 2 0 0 0 20 21L20 21A2 2 0 0 0 22 19L22 9.83A2 2 0 0 0 21.41 8.41L18 5"/></symbol>
-    <symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></symbol>
-    <symbol id="i-zalo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
-  </svg>
-
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="wrap">
-      <div class="topbar-left">
-        <span class="topbar-badge">Nhà Phân Phối Chính Thức VGPS</span>
-        <span><strong>CÔNG TY TNHH TM &amp; DV TIẾN PHÁT PHÚ YÊN</strong> &bull; MST: <strong>4401095020</strong></span>
-        <span style="display:inline-flex;align-items:center;gap:4px;"><svg width="14" height="14" style="color:var(--cyan)"><use href="#i-pin"/></svg> 11/6 Phạm Hồng Thái, Phường 4, TP. Tuy Hoà, Tỉnh Phú Yên</span>
-      </div>
-      <div class="topbar-right">
-        <a href="tel:0358771234" style="display:inline-flex;align-items:center;gap:5px;"><svg width="14" height="14" style="color:#ff4d6d"><use href="#i-phone"/></svg> Hotline Tiến Phát: <strong>0358.771.234</strong></a>
-        <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;"><svg width="14" height="14" style="color:#38bdf8"><use href="#i-zalo"/></svg> Zalo tư vấn</a>
-        <a href="https://vgps.vn" target="_blank" rel="noopener">Server VGPS.VN &rarr;</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="wrap">
-      <a href="#" class="brand">
-        <div class="brand-logo">TP</div>
-        <div class="brand-text">
-          <span class="brand-name">TIẾN PHÁT PHÚ YÊN</span>
-          <span class="brand-sub">Phân phối VGPS &bull; VNTECH24H &times; VMAKE</span>
-        </div>
-      </a>
-
-      <nav>
-        <ul class="nav-links" id="navLinks">
-          <li><a href="#giai-phap">Giải pháp</a></li>
-          <li><a href="#demo">Mô phỏng trực tuyến</a></li>
-          <li><a href="#san-pham">Sản phẩm VGPS</a></li>
-          <li><a href="#huong-dan-ky-thuat">Kỹ thuật &amp; Chẩn đoán LED</a></li>
-          <li><a href="#phan-mem-roi">Phần mềm &amp; Tiết kiệm dầu</a></li>
-          <li><a href="#phap-ly">QCVN 06:2024/BCA</a></li>
-          <li><a href="#lien-he">Liên hệ</a></li>
-        </ul>
-      </nav>
-
-      <div class="hdr-actions">
-        <a href="#demo" class="btn btn-line btn-sm">Xem Demo Xe</a>
-        <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Zalo: 0358.771.234</a>
-        <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Mở menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-grid">
-        <div>
-          <div class="eyebrow">
-            <span class="dot"></span>
-            <span>Chuẩn QCVN 06:2024/BCA (Bộ Công An) &amp; QCVN 117:2023/BTTTT</span>
-          </div>
-          <h1>
-            Số hóa mọi hành trình cùng <span>Hệ sinh thái VGPS</span> tại Phú Yên &amp; Toàn quốc
-          </h1>
-          <p class="hero-lead">
-            <strong>Công ty TNHH TM &amp; DV Tiến Phát Phú Yên</strong> phân phối chính hãng thiết bị giám sát hành trình &amp; Camera AI <strong>VGPS</strong> do <strong>VNTECH24H</strong> nghiên cứu sản xuất và <strong>VMAKE</strong> phát triển phần mềm điều hành thông minh.
-          </p>
-
-          <div class="alliance-strip">
-            <div class="alliance-item">
-              <div class="alliance-role">Sản xuất Phần cứng</div>
-              <div class="alliance-org">VNTECH24H JSC</div>
-            </div>
-            <div class="alliance-item">
-              <div class="alliance-role">Phát triển Phần mềm</div>
-              <div class="alliance-org">VMAKE (VGPS.VN)</div>
-            </div>
-            <div class="alliance-item">
-              <div class="alliance-role">Phân phối &amp; Lắp đặt</div>
-              <div class="alliance-org">TIẾN PHÁT PHÚ YÊN</div>
-            </div>
-          </div>
-
-          <div class="hero-ctas">
-            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary">
-              <svg width="18" height="18"><use href="#i-zalo"/></svg>
-              Tư vấn qua Zalo: 0358.771.234
-            </a>
-            <a href="#demo" class="btn btn-blue">
-              <svg width="18" height="18"><use href="#i-truck"/></svg>
-              Trải nghiệm màn hình giám sát
-            </a>
-            <a href="#huong-dan-ky-thuat" class="btn btn-line">
-              <svg width="18" height="18"><use href="#i-cpu"/></svg>
-              Mô phỏng Đèn LED &amp; Đấu nối VGPS-2CAM
-            </a>
-          </div>
-        </div>
-
-        <!-- Hero Interactive Preview -->
-        <div class="hero-card">
-          <div class="hero-card-top">
-            <div>
-              <strong>VGPS Fleet Cloud</strong> &bull; <span style="color:#94a3b8">OpenStreetMap TP. Tuy Hòa (13.09804, 109.29530)</span>
-            </div>
-            <span class="live-pill">● 8 xe đang di chuyển</span>
-          </div>
-
-          <div class="hero-mini-map" id="heroOsmMap" style="z-index:1;">
-            <iframe width="100%" height="100%" src="https://www.openstreetmap.org/export/embed?bbox=109.2594623565674%2C13.079854494895411%2C109.33113098144533%2C13.116219491231579&amp;layer=mapnik" style="border: 1px solid black; width:100%; height:100%; display:block; pointer-events:none;" title="Bản đồ OpenStreetMap TP Tuy Hòa"></iframe>
-            <svg id="heroRouteSvg" viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;"></svg>
-            <div id="heroVehOverlay" style="position:absolute;inset:0;z-index:3;pointer-events:none;"></div>
-          </div>
-
-          <div class="hero-alert-ticker" id="heroTicker">
-            <div>
-              <strong style="color:#fbbf24">Cảnh báo tức thì VGPS-2CAM:</strong>
-              <span id="heroTickerText" style="color:#e2e8f0; margin-left:4px;">78H-018.88 &bull; Tài xế đã đăng nhập thẻ RFID (3 tiếng bíp) tại TP. Tuy Hòa</span>
-            </div>
-            <a href="#demo" style="color:#38bdf8; font-weight:700; white-space:nowrap;">Mở bản đồ &rarr;</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trust Metrics -->
-      <div class="metrics-bar">
-        <div class="metric-card">
-          <div class="metric-icon"><svg width="24" height="24"><use href="#i-shield"/></svg></div>
-          <div>
-            <div class="metric-num">QCVN 06:2024</div>
-            <div class="metric-lbl">Đạt chuẩn Bộ Công An &amp; BTTTT</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon"><svg width="24" height="24"><use href="#i-truck"/></svg></div>
-          <div>
-            <div class="metric-num">80.000+</div>
-            <div class="metric-lbl">Thiết bị online trên hệ thống VMAKE</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon"><svg width="24" height="24"><use href="#i-fuel"/></svg></div>
-          <div>
-            <div class="metric-num">&plusmn;0,5%</div>
-            <div class="metric-lbl">Độ chính xác cảm biến dầu Ligo Pro</div>
-          </div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon"><svg width="24" height="24"><use href="#i-phone"/></svg></div>
-          <div>
-            <div class="metric-num">0358.771.234</div>
-            <div class="metric-lbl">Hotline Tiến Phát Phú Yên hỗ trợ 24/7</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3 PILLARS SECTION -->
-  <section class="sec" id="giai-phap">
-    <div class="wrap">
-      <div class="sechead">
-        <span class="sec-tag">Hệ sinh thái đồng bộ Make in Vietnam</span>
-        <h2>Ba mảng giải pháp VGPS trên cùng một nền tảng dữ liệu</h2>
-        <p class="lede">
-          Kết hợp thiết bị phần cứng chuẩn công nghiệp do <strong>VNTECH24H</strong> sản xuất và nền tảng phần mềm <strong>VGPS (VMAKE)</strong>, Tiến Phát Phú Yên mang đến giải pháp quản trị phương tiện trọn gói.
-        </p>
-      </div>
-
-      <div class="pillars-grid">
-        <div class="pillar-card highlight">
-          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-cam"/></svg></div>
-          <h3>1. Camera Nghị Định &amp; AI DMS (VGPS-2CAM)</h3>
-          <p>Thiết bị giám sát hành trình tích hợp ghi nhận hình ảnh người lái xe Model VGPS-03 đạt chuẩn QCVN 06:2024/BCA.</p>
-          <ul class="check-list">
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Livestream &amp; chụp ảnh tự động 3 phút/ảnh, hồng ngoại ban đêm rõ nét</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Tích hợp Camera AI DMS cảnh báo buồn ngủ, mất tập trung, dùng điện thoại</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Đầu đọc thẻ lái xe RFID kèm còi bíp cảnh báo quá tốc độ &amp; quá giờ lái liên tục</span></li>
-          </ul>
-          <a href="#san-pham" class="btn btn-primary btn-sm" style="margin-top:auto; align-self:flex-start;">Xem VGPS-2CAM &rarr;</a>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-truck"/></svg></div>
-          <h3>2. Định Vị Ô Tô, Xe Máy &amp; Cảm Biến Dầu</h3>
-          <p>Đa dạng dòng thiết bị định vị 4G LTE lọc nhiễu trôi GPS và cảm biến nhiên liệu độ chính xác 99,5%.</p>
-          <ul class="check-list">
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>VGPS-CAR4G:</strong> Định vị ô tô hợp chuẩn đăng kiểm, xin cấp phù hiệu vận tải</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Cảm biến dầu Ligo Pro:</strong> Chuẩn IP69K, phát hiện rút trộm dầu tức thì</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>VGPS-MOTO PRO / MAG4G:</strong> Định vị xe máy, xe điện (9–100V) &amp; định vị pin từ tính</span></li>
-          </ul>
-          <a href="#san-pham" class="btn btn-line btn-sm" style="margin-top:auto; align-self:flex-start;">Xem danh mục 6 thiết bị &rarr;</a>
-        </div>
-
-        <div class="pillar-card">
-          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-cpu"/></svg></div>
-          <h3>3. Phần Mềm Quản Lý Đội Xe VGPS.VN</h3>
-          <p>Nền tảng Web &amp; App Mobile 100% tiếng Việt do đội ngũ kỹ sư VMAKE phát triển, lưu trữ dữ liệu 12 tháng.</p>
-          <ul class="check-list">
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Giám sát vị trí, vận tốc, trạng thái động cơ (ACC) &amp; điều hòa theo thời gian thực</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Khoanh vùng an toàn (Geofence) đa giác, cảnh báo ra/vào vùng tức thì</span></li>
-            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Trích xuất báo cáo chuẩn Bộ Công An / Bộ GTVT và biểu đồ nhiên liệu chi tiết</span></li>
-          </ul>
-          <a href="#demo" class="btn btn-line btn-sm" style="margin-top:auto; align-self:flex-start;">Dùng thử màn hình giám sát &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INTERACTIVE FLEET DEMO SECTION (KIMCAT1688 STYLE LOCALIZED FOR PHU YEN & VGPS) -->
-  <style>
+    /* ===================== DEMO GIÁM SÁT ===================== */
     .demo-shell {
       background: rgba(11, 18, 32, 0.92);
       backdrop-filter: blur(18px);
@@ -986,6 +795,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
     .demo-badge-red {
       background: var(--red-vgps);
@@ -1004,6 +814,7 @@
     }
     .filter-pills {
       display: flex;
+      flex-wrap: wrap;
       background: rgba(255,255,255,0.06);
       padding: 4px;
       border-radius: 8px;
@@ -1110,17 +921,20 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      min-width: 0;
     }
     .map-canvas {
       position: relative;
       flex: 1;
-      min-height: 410px;
+      min-height: 420px;
       overflow: hidden;
     }
     .map-overlay-hud {
       position: absolute;
       top: 12px;
       left: 12px;
+      right: 12px;
+      max-width: max-content;
       background: rgba(11, 15, 23, 0.9);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(56, 189, 248, 0.3);
@@ -1130,6 +944,17 @@
       color: #e2e8f0;
       pointer-events: none;
       box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    }
+    .map-footer-bar {
+      background: #08101e;
+      padding: 5px 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
     }
     .demo-alert-bar {
       background: #0b1526;
@@ -1145,6 +970,8 @@
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .alert-feed {
       display: flex;
@@ -1157,6 +984,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       background: rgba(255,255,255,0.03);
       padding: 6px 10px;
       border-radius: 6px;
@@ -1177,6 +1005,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      gap: 10px;
       padding-bottom: 12px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
@@ -1267,187 +1096,6 @@
       border-radius: 4px;
     }
 
-    /* Product Section Styles (Dark Mode Glassmorphism) */
-    .cat-bar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 34px;
-    }
-    .cat-btn {
-      min-height: 44px;
-      padding: 9px 18px;
-      border-radius: 999px;
-      border: 1.5px solid var(--line);
-      background: var(--bg-surface);
-      backdrop-filter: blur(10px);
-      color: var(--ink-2);
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-    .cat-btn.active, .cat-btn:hover {
-      background: linear-gradient(135deg, var(--red-vgps), #b90327);
-      color: #fff;
-      border-color: var(--red-vgps);
-      box-shadow: 0 6px 18px rgba(237, 4, 51, 0.35);
-    }
-    .prod-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .prod-card {
-      background: var(--bg-surface);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      border-radius: var(--r-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
-    }
-    .prod-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md), 0 0 26px rgba(14, 165, 233, 0.2);
-      border-color: var(--cyan);
-    }
-    .prod-top-tags {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: rgba(11, 15, 23, 0.9);
-      border-bottom: 1px solid var(--line);
-      position: relative;
-      z-index: 3;
-    }
-    .prod-thumb {
-      height: 225px;
-      background: radial-gradient(circle at center, #ffffff 0%, #dbeafe 100%);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      border-bottom: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .prod-thumb img {
-      max-width: 100%;
-      max-height: 192px;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
-      filter: drop-shadow(0 8px 16px rgba(15,23,42,0.18));
-      transition: transform 0.3s ease;
-    }
-    .prod-card:hover .prod-thumb img {
-      transform: scale(1.03);
-    }
-    .prod-badge {
-      display: inline-flex;
-      align-items: center;
-      background: linear-gradient(135deg, var(--red-vgps), #b90327);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      box-shadow: 0 2px 8px rgba(237, 4, 51, 0.35);
-      position: relative;
-      z-index: 4;
-    }
-    .prod-std {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(14, 165, 233, 0.16);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.45);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
-      position: relative;
-      z-index: 4;
-    }
-    .prod-body {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .prod-maker {
-      font-size: 12px;
-      color: var(--cyan);
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .prod-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #f8fafc;
-      margin-bottom: 8px;
-    }
-    .prod-desc {
-      font-size: 14px;
-      color: #cbd5e1;
-      margin-bottom: 14px;
-    }
-    .prod-price-row {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 16px;
-      margin-top: auto;
-    }
-    .prod-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    /* Specs Comparison Table */
-    .comp-wrap {
-      margin-top: 52px;
-      background: var(--bg-surface);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      border-radius: var(--r-lg);
-      overflow-x: auto;
-      box-shadow: var(--shadow-sm);
-    }
-    .comp-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 780px;
-      font-size: 14px;
-      color: #e2e8f0;
-    }
-    .comp-table th, .comp-table td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--line);
-    }
-    .comp-table thead th {
-      background: rgba(11, 60, 149, 0.55);
-      color: #f8fafc;
-      font-weight: 700;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.35);
-    }
-    .comp-table tbody tr:hover {
-      background: rgba(56, 189, 248, 0.08);
-    }
-
     /* Live Vehicle Markers over OpenStreetMap Embed */
     .osm-live-pin {
       position: absolute;
@@ -1534,15 +1182,1046 @@
       background: #64748b;
       box-shadow: none;
     }
-  </style>
 
+    /* ===================== SẢN PHẨM ===================== */
+    .cat-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
+    }
+    .cat-btn {
+      min-height: 44px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--line);
+      background: var(--bg-surface);
+      backdrop-filter: blur(10px);
+      color: var(--ink-2);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .cat-btn.active, .cat-btn:hover {
+      background: linear-gradient(135deg, var(--red-vgps), #b90327);
+      color: #fff;
+      border-color: var(--red-vgps);
+      box-shadow: 0 6px 18px rgba(237, 4, 51, 0.35);
+    }
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .prod-card {
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .prod-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md), 0 0 26px rgba(14, 165, 233, 0.2);
+      border-color: var(--cyan);
+    }
+    .prod-top-tags {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(11, 15, 23, 0.9);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      z-index: 3;
+    }
+    .prod-thumb {
+      height: 225px;
+      background: radial-gradient(circle at center, #ffffff 0%, #dbeafe 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .prod-thumb img {
+      max-width: 100%;
+      max-height: 192px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 8px 16px rgba(15,23,42,0.18));
+      transition: transform 0.3s ease;
+    }
+    .prod-card:hover .prod-thumb img {
+      transform: scale(1.03);
+    }
+    .prod-badge {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, var(--red-vgps), #b90327);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(237, 4, 51, 0.35);
+      position: relative;
+      z-index: 4;
+    }
+    .prod-std {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(14, 165, 233, 0.16);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      position: relative;
+      z-index: 4;
+    }
+    .prod-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .prod-maker {
+      font-size: 12px;
+      color: var(--cyan);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .prod-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .prod-desc {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+    .prod-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 16px;
+      margin-top: auto;
+    }
+    .prod-genuine {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+      background: var(--cyan-soft);
+      border: 1px solid rgba(56,189,248,0.28);
+      padding: 5px 10px;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .prod-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Specs Comparison Table */
+    .comp-wrap {
+      margin-top: 52px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+    .comp-table th, .comp-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .comp-table thead th {
+      background: rgba(11, 60, 149, 0.55);
+      color: #f8fafc;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .comp-table tbody tr:hover {
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .comp-zalo {
+      color: #ff4d6d;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ===================== KỸ THUẬT VGPS-2CAM ===================== */
+    .tech-grid-top {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .tech-panel {
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--red-vgps), #b90327);
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      box-shadow: 0 4px 14px rgba(237, 4, 51, 0.35);
+    }
+    .step-badge span {
+      background: #fff;
+      color: var(--red-vgps);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .conn-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .conn-item {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      border-left: 4px solid var(--cyan);
+    }
+    .conn-item h4 {
+      font-size: 15px;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+    .conn-item p {
+      font-size: 13.5px;
+      color: var(--ink-2);
+    }
+    .port-diagram {
+      margin-top: 18px;
+      background: #09101d;
+      color: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+    }
+    .port-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .port-row span {
+      background: #1e293b;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    /* Wiring Table */
+    .table-scroll { overflow-x: auto; }
+    .wire-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+    }
+    .wire-table th, .wire-table td {
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      text-align: left;
+    }
+    .wire-table th {
+      background: rgba(237, 4, 51, 0.85);
+      color: #fff;
+      font-weight: 700;
+    }
+    .wire-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+    .w-red { background: rgba(239, 68, 68, 0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
+    .w-black { background: rgba(148, 163, 184, 0.22); color: #f8fafc; border: 1px solid rgba(148,163,184,0.4); }
+    .w-yellow { background: rgba(245, 158, 11, 0.22); color: #fde68a; border: 1px solid rgba(245,158,11,0.4); }
+    .w-green { background: rgba(16, 185, 129, 0.22); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
+    .w-txrx { background: rgba(14, 165, 233, 0.22); color: #7dd3fc; border: 1px solid rgba(14,165,233,0.4); white-space: normal; }
+
+    /* Vehicle Mounting Positions */
+    .mount-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .mount-card {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .mount-card h4 {
+      color: #38bdf8;
+      font-weight: 800;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .mount-card p {
+      font-size: 13.5px;
+      color: #cbd5e1;
+    }
+
+    /* Hardware LED & Audio Simulator */
+    .hw-sim-box {
+      background: rgba(11, 19, 34, 0.92);
+      backdrop-filter: blur(16px);
+      color: #f8fafc;
+      border-radius: var(--r-lg);
+      padding: 28px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: var(--shadow-lg);
+    }
+    .hw-preset-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 24px;
+    }
+    .hw-preset-btn {
+      min-height: 42px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #e2e8f0;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .hw-preset-btn:hover, .hw-preset-btn.active {
+      background: var(--red-vgps);
+      border-color: var(--red-vgps);
+      color: #fff;
+    }
+    .hw-devices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 22px;
+    }
+    .hw-unit {
+      background: #131f33;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .hw-unit-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .led-row-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .led-row {
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .led-indicator-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .led-bulb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #334155;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+      flex-shrink: 0;
+    }
+    .led-bulb.on-green {
+      background: #10b981;
+      box-shadow: 0 0 12px #10b981, 0 0 4px #6ee7b7;
+    }
+    .led-bulb.on-red {
+      background: #ef4444;
+      box-shadow: 0 0 12px #ef4444, 0 0 4px #fca5a5;
+    }
+    .led-bulb.blink-warn {
+      background: #f59e0b;
+      animation: ledBlink1s 1s infinite;
+    }
+    @keyframes ledBlink1s {
+      0%, 49% { background: #f59e0b; box-shadow: 0 0 12px #f59e0b; opacity: 1; }
+      50%, 100% { background: #334155; box-shadow: none; opacity: 0.35; }
+    }
+    .rfid-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .rfid-grid .led-row > .led-indicator-wrap span:last-child { font-size: 12.5px; font-weight: 700; }
+    .rfid-grid .led-row > span { font-size: 11.5px; text-align: right; }
+    .led-row-list .led-row > span { font-size: 13px; font-weight: 600; text-align: right; }
+    .beep-banner {
+      margin-top: 22px;
+      background: linear-gradient(90deg, #991b1b 0%, #ed0433 50%, #991b1b 100%);
+      border-radius: 12px;
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      text-align: center;
+    }
+    .beep-col {
+      background: rgba(0,0,0,0.22);
+      border-radius: 10px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .beep-col h4 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .beep-col p {
+      font-size: 13px;
+      color: #ffe4e6;
+      margin-bottom: 10px;
+    }
+    .beep-play-btn {
+      background: #fff;
+      color: var(--red-vgps);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 36px;
+      transition: transform 0.15s;
+    }
+    .beep-play-btn:hover {
+      background: #fef2f2;
+      transform: scale(1.03);
+    }
+
+    /* ROI & Software Section */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+    .roi-card {
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      color: #f8fafc;
+    }
+    .slider-group {
+      margin-bottom: 18px;
+    }
+    .slider-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .slider-input {
+      width: 100%;
+      accent-color: var(--red-vgps);
+      cursor: pointer;
+    }
+    .roi-result-box {
+      background: linear-gradient(135deg, #0b3c95 0%, #091d3a 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #fff;
+      border-radius: 14px;
+      padding: 22px;
+      margin-top: 18px;
+    }
+    .roi-big-num {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: #34d399;
+      margin: 6px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .vgps-access {
+      background: rgba(15, 23, 42, 0.85);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Checklist & Legal */
+    .legal-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+    }
+    .chk-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.85);
+      transition: all 0.2s;
+    }
+    .chk-item.checked {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: var(--ok);
+    }
+    .chk-item input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--ok);
+      flex-shrink: 0;
+    }
+    .chk-sub {
+      font-size: 12.5px;
+      color: var(--mute);
+    }
+
+    /* Contact & Footer */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .form-lbl {
+      font-size: 12.5px;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .form-ctrl {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14.5px;
+      background: rgba(11, 15, 23, 0.85);
+      color: #f8fafc;
+    }
+    .form-ctrl:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .quote-msg {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--ok-soft);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+    .contact-map {
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid var(--line);
+    }
+    .contact-map iframe {
+      display: block;
+      width: 100%;
+      height: 300px;
+      border: 0;
+    }
+    .site-footer {
+      background: rgba(7, 11, 20, 0.94);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+      color: #94a3b8;
+      padding: 56px 0 90px;
+      font-size: 14px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 28px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-grid h4 {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 16, 0.82);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: var(--r-lg);
+      max-width: 880px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(14, 165, 233, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .modal-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      z-index: 10;
+    }
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--line);
+      padding: 0 24px;
+      background: #0b1120;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .modal-tab-btn {
+      padding: 13px 16px;
+      background: none;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--mute);
+      cursor: pointer;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .modal-tab-btn.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+    }
+    .modal-body {
+      padding: 24px;
+    }
+    body.modal-open { overflow: hidden; }
+
+    /* Sticky Action Bar */
+    .sticky-cta {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 1500;
+      display: flex;
+      gap: 10px;
+      background: rgba(11, 15, 23, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 980px) {
+      .hero-grid, .pillars-grid, .demo-body, .prod-grid, .tech-grid-top,
+      .mount-grid, .hw-devices-grid, .beep-banner, .roi-grid, .legal-grid,
+      .contact-grid, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+      .demo-list { max-height: 280px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .demo-detail { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); }
+      .prod-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .sec { padding: 52px 0; }
+      .hero { padding: 34px 0 36px; }
+      .wrap { padding: 0 16px; }
+      .metrics-bar, .prod-grid, .alliance-strip, .conn-list, .form-row,
+      .rfid-grid, .form-actions {
+        grid-template-columns: 1fr;
+      }
+      .hero-ctas .btn { width: 100%; }
+      .pillar-card, .tech-panel, .hw-sim-box, .roi-card { padding: 20px; }
+      .map-canvas, .map-canvas iframe { min-height: 360px !important; }
+      .hero-mini-map { height: 210px; }
+      .alert-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .site-footer { padding-bottom: 110px; }
+      .sticky-cta {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        gap: 6px;
+        padding: 7px;
+        border-radius: 14px;
+      }
+      .sticky-cta .btn { flex: 1; padding: 7px 6px; font-size: 12px; min-height: 40px; }
+      .modal-head, .modal-body { padding: 16px; }
+      .modal-tabs { padding: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HIỆU ỨNG TRỐNG ĐỒNG & NEON GÓC TRÊN TRÁI VÀ GÓC DƯỚI PHẢI -->
+  <div class="bg-pattern-corner corner-top-left" aria-hidden="true">
+    <div class="bg-neon-aura"></div>
+    <div class="bg-neon-ring"></div>
+    <div class="bg-trongdong"></div>
+  </div>
+  <div class="bg-pattern-corner corner-bottom-right" aria-hidden="true">
+    <div class="bg-neon-aura"></div>
+    <div class="bg-neon-ring"></div>
+    <div class="bg-trongdong"></div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="14" height="10" rx="2"/><path d="M16 11l6-3v8l-6-3"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7"/><circle cx="6.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 5-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-fuel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22L15 22"/><path d="M4 9L14 9"/><path d="M14 22L14 4A2 2 0 0 0 12 2L6 2A2 2 0 0 0 4 4L4 22"/><path d="M14 13L16 13A2 2 0 0 1 18 15L18 19A2 2 0 0 0 20 21L20 21A2 2 0 0 0 22 19L22 9.83A2 2 0 0 0 21.41 8.41L18 5"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></symbol>
+    <symbol id="i-zalo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  </svg>
+
+  <!-- HEADER: Logo trái • Menu canh giữa • CTA phải (đã bỏ thanh topbar) -->
+  <header class="site-header" id="siteHeader">
+    <div class="wrap">
+      <a href="#" class="brand" aria-label="Tiến Phát Phú Yên - Về đầu trang">
+        <div class="brand-logo">TP</div>
+        <div class="brand-text">
+          <span class="brand-name">TIẾN PHÁT PHÚ YÊN</span>
+          <span class="brand-sub">Thiết bị giám sát xe</span>
+        </div>
+      </a>
+
+      <nav class="site-nav" aria-label="Menu chính">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#giai-phap" title="Giải pháp VGPS">Giải pháp</a></li>
+          <li><a href="#demo" title="Mô phỏng giám sát trực tuyến">Demo giám sát</a></li>
+          <li><a href="#san-pham" title="Sản phẩm VGPS">Sản phẩm</a></li>
+          <li><a href="#huong-dan-ky-thuat" title="Kỹ thuật &amp; Chẩn đoán LED">Kỹ thuật &amp; LED</a></li>
+          <li><a href="#phan-mem-roi" title="Phần mềm &amp; Tiết kiệm dầu">Phần mềm</a></li>
+          <li><a href="#phap-ly" title="Pháp lý QCVN 06:2024/BCA">Pháp lý</a></li>
+          <li><a href="#lien-he" title="Liên hệ Tiến Phát Phú Yên">Liên hệ</a></li>
+        </ul>
+      </nav>
+
+      <div class="hdr-actions">
+        <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-zalo btn-sm" aria-label="Chat Zalo 0358.771.234">
+          <svg width="16" height="16"><use href="#i-zalo"/></svg>
+          <span class="hdr-zalo-txt">Zalo 0358.771.234</span>
+        </a>
+        <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Mở menu" aria-expanded="false" aria-controls="navLinks">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span class="dot"></span>
+            <span>Chuẩn QCVN 06:2024/BCA (Bộ Công An) &amp; QCVN 117:2023/BTTTT</span>
+          </div>
+          <h1>
+            Số hóa mọi hành trình cùng <span>Hệ sinh thái VGPS</span> tại Phú Yên &amp; Toàn quốc
+          </h1>
+          <p class="hero-lead">
+            <strong>Công ty TNHH TM &amp; DV Tiến Phát Phú Yên</strong> phân phối chính hãng thiết bị giám sát hành trình &amp; Camera AI <strong>VGPS</strong> do <strong>VNTECH24H</strong> nghiên cứu sản xuất và <strong>VMAKE</strong> phát triển phần mềm điều hành thông minh.
+          </p>
+
+          <div class="alliance-strip">
+            <div class="alliance-item">
+              <div class="alliance-role">Sản xuất Phần cứng</div>
+              <div class="alliance-org">VNTECH24H JSC</div>
+            </div>
+            <div class="alliance-item">
+              <div class="alliance-role">Phát triển Phần mềm</div>
+              <div class="alliance-org">VMAKE (VGPS.VN)</div>
+            </div>
+            <div class="alliance-item">
+              <div class="alliance-role">Phân phối &amp; Lắp đặt</div>
+              <div class="alliance-org">TIẾN PHÁT PHÚ YÊN</div>
+            </div>
+          </div>
+
+          <div class="hero-ctas">
+            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary">
+              <svg width="18" height="18"><use href="#i-zalo"/></svg>
+              Tư vấn qua Zalo: 0358.771.234
+            </a>
+            <a href="#demo" class="btn btn-blue">
+              <svg width="18" height="18"><use href="#i-truck"/></svg>
+              Trải nghiệm màn hình giám sát
+            </a>
+            <a href="#huong-dan-ky-thuat" class="btn btn-line">
+              <svg width="18" height="18"><use href="#i-cpu"/></svg>
+              Mô phỏng Đèn LED &amp; Đấu nối VGPS-2CAM
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Interactive Preview -->
+        <div class="hero-card">
+          <div class="hero-card-top">
+            <div>
+              <strong>VGPS Fleet Cloud</strong> &bull; <span style="color:#94a3b8">OpenStreetMap Phú Yên (13.04319, 109.11587)</span>
+            </div>
+            <span class="live-pill">● 8 xe đang di chuyển</span>
+          </div>
+
+          <div class="hero-mini-map" id="heroOsmMap">
+            <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed?bbox=108.97253036499023%2C12.970434639348912%2C109.25920486450197%2C13.115926920746379&amp;layer=mapnik" style="border: 1px solid black; width:100%; height:100%; display:block; pointer-events:none;" title="Bản đồ OpenStreetMap Phú Yên" loading="lazy"></iframe>
+            <svg id="heroRouteSvg" viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;"></svg>
+            <div id="heroVehOverlay" style="position:absolute;inset:0;z-index:3;pointer-events:none;"></div>
+          </div>
+
+          <div class="hero-alert-ticker" id="heroTicker">
+            <div>
+              <strong style="color:#fbbf24">Cảnh báo tức thì VGPS-2CAM:</strong>
+              <span id="heroTickerText" style="color:#e2e8f0; margin-left:4px;">78H-018.88 &bull; Tài xế đã đăng nhập thẻ RFID (3 tiếng bíp) tại TP. Tuy Hòa</span>
+            </div>
+            <a href="#demo" style="color:#38bdf8; font-weight:700; white-space:nowrap;">Mở bản đồ &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust Metrics -->
+      <div class="metrics-bar">
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="24" height="24"><use href="#i-shield"/></svg></div>
+          <div>
+            <div class="metric-num">QCVN 06:2024</div>
+            <div class="metric-lbl">Đạt chuẩn Bộ Công An &amp; BTTTT</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="24" height="24"><use href="#i-truck"/></svg></div>
+          <div>
+            <div class="metric-num">80.000+</div>
+            <div class="metric-lbl">Thiết bị online trên hệ thống VMAKE</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="24" height="24"><use href="#i-fuel"/></svg></div>
+          <div>
+            <div class="metric-num">&plusmn;0,5%</div>
+            <div class="metric-lbl">Độ chính xác cảm biến dầu Ligo Pro</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon"><svg width="24" height="24"><use href="#i-phone"/></svg></div>
+          <div>
+            <div class="metric-num"><a href="tel:0358771234">0358.771.234</a></div>
+            <div class="metric-lbl">Hotline Tiến Phát Phú Yên hỗ trợ 24/7</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 PILLARS SECTION -->
+  <section class="sec" id="giai-phap">
+    <div class="wrap">
+      <div class="sechead">
+        <span class="sec-tag">Hệ sinh thái đồng bộ Make in Vietnam</span>
+        <h2>Ba mảng giải pháp VGPS trên cùng một nền tảng dữ liệu</h2>
+        <p class="lede">
+          Kết hợp thiết bị phần cứng chuẩn công nghiệp do <strong>VNTECH24H</strong> sản xuất và nền tảng phần mềm <strong>VGPS (VMAKE)</strong>, Tiến Phát Phú Yên mang đến giải pháp quản trị phương tiện trọn gói.
+        </p>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card highlight">
+          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-cam"/></svg></div>
+          <h3>1. Camera Nghị Định &amp; AI DMS (VGPS-2CAM)</h3>
+          <p>Thiết bị giám sát hành trình tích hợp ghi nhận hình ảnh người lái xe Model VGPS-03 đạt chuẩn QCVN 06:2024/BCA.</p>
+          <ul class="check-list">
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Livestream &amp; chụp ảnh tự động 3 phút/ảnh, hồng ngoại ban đêm rõ nét</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Tích hợp Camera AI DMS cảnh báo buồn ngủ, mất tập trung, dùng điện thoại</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Đầu đọc thẻ lái xe RFID kèm còi bíp cảnh báo quá tốc độ &amp; quá giờ lái liên tục</span></li>
+          </ul>
+          <a href="#san-pham" class="btn btn-primary btn-sm" style="margin-top:auto; align-self:flex-start;">Xem VGPS-2CAM &rarr;</a>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-truck"/></svg></div>
+          <h3>2. Định Vị Ô Tô, Xe Máy &amp; Cảm Biến Dầu</h3>
+          <p>Đa dạng dòng thiết bị định vị 4G LTE lọc nhiễu trôi GPS và cảm biến nhiên liệu độ chính xác 99,5%.</p>
+          <ul class="check-list">
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>VGPS-CAR4G:</strong> Định vị ô tô hợp chuẩn đăng kiểm, xin cấp phù hiệu vận tải</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Cảm biến dầu Ligo Pro:</strong> Chuẩn IP69K, phát hiện rút trộm dầu tức thì</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>VGPS-MOTO PRO / MAG4G:</strong> Định vị xe máy, xe điện (9–100V) &amp; định vị pin từ tính</span></li>
+          </ul>
+          <a href="#san-pham" class="btn btn-line btn-sm" style="margin-top:auto; align-self:flex-start;">Xem danh mục 6 thiết bị &rarr;</a>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon"><svg width="26" height="26"><use href="#i-cpu"/></svg></div>
+          <h3>3. Phần Mềm Quản Lý Đội Xe VGPS.VN</h3>
+          <p>Nền tảng Web &amp; App Mobile 100% tiếng Việt do đội ngũ kỹ sư VMAKE phát triển, lưu trữ dữ liệu 12 tháng.</p>
+          <ul class="check-list">
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Giám sát vị trí, vận tốc, trạng thái động cơ (ACC) &amp; điều hòa theo thời gian thực</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Khoanh vùng an toàn (Geofence) đa giác, cảnh báo ra/vào vùng tức thì</span></li>
+            <li><svg width="18" height="18"><use href="#i-check"/></svg><span>Trích xuất báo cáo chuẩn Bộ Công An / Bộ GTVT và biểu đồ nhiên liệu chi tiết</span></li>
+          </ul>
+          <a href="#demo" class="btn btn-line btn-sm" style="margin-top:auto; align-self:flex-start;">Dùng thử màn hình giám sát &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE FLEET DEMO SECTION -->
   <section class="sec alt" id="demo">
     <div class="wrap">
       <div class="sechead">
         <span class="sec-tag">Trải nghiệm trực tiếp (OpenStreetMap Live Demo)</span>
         <h2>Dùng thử màn hình giám sát đội xe VGPS ngay trên trang này</h2>
         <p class="lede">
-          Bản đồ nền thực tế <strong>OpenStreetMap TP. Tuy Hòa – Tỉnh Phú Yên (13.09804, 109.29530)</strong> mô phỏng 8 phương tiện đang nhích dần liên tục theo thời gian thực. Bấm chọn từng xe bên trái hoặc trực tiếp trên bản đồ để theo dõi lộ trình, mức nhiên liệu và Camera AI.
+          Bản đồ nền thực tế <strong>OpenStreetMap Phú Yên (13.04319, 109.11587)</strong> mô phỏng 8 phương tiện đang nhích dần liên tục theo thời gian thực. Bấm chọn từng xe bên trái hoặc trực tiếp trên bản đồ để theo dõi lộ trình, mức nhiên liệu và Camera AI.
         </p>
       </div>
 
@@ -1560,7 +2239,7 @@
               <button class="filter-pill" data-filter="stop">Đang dừng (1)</button>
               <button class="filter-pill" data-filter="alert">Cảnh báo (1)</button>
             </div>
-            <a href="https://www.openstreetmap.org/#map=15/13.09804/109.29530" target="_blank" rel="noopener" class="sim-btn">View Larger Map &nearr;</a>
+            <a href="https://www.openstreetmap.org/#map=13/13.04319/109.11587" target="_blank" rel="noopener" class="sim-btn">View Larger Map &nearr;</a>
             <button class="sim-btn" id="toggleSimBtn">⏸ Tạm dừng mô phỏng</button>
           </div>
         </div>
@@ -1569,11 +2248,10 @@
           <!-- Left: Vehicle List -->
           <div class="demo-list" id="demoVehList"></div>
 
-          <!-- Center: Real OpenStreetMap Embed of TP Tuy Hoa + 60fps Live Vehicle Layer -->
+          <!-- Center: OpenStreetMap Embed + Live Vehicle Layer -->
           <div class="demo-map-col">
-            <div class="map-canvas" id="mainOsmMap" style="min-height:420px;">
-              <!-- Exact OpenStreetMap Embed provided by user (expanded to fill canvas) -->
-              <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed?bbox=109.2594623565674%2C13.079854494895411%2C109.33113098144533%2C13.116219491231579&amp;layer=mapnik" style="border: 1px solid black; width:100%; height:100%; min-height:420px; display:block;" title="OpenStreetMap TP Tuy Hòa Phú Yên"></iframe>
+            <div class="map-canvas" id="mainOsmMap">
+              <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed?bbox=108.97253036499023%2C12.970434639348912%2C109.25920486450197%2C13.115926920746379&amp;layer=mapnik" style="border: 1px solid black; width:100%; height:100%; min-height:420px; display:block;" title="OpenStreetMap Phú Yên" loading="lazy"></iframe>
 
               <!-- Route Polylines SVG Overlay -->
               <svg id="mainRouteSvg" viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:20;"></svg>
@@ -1583,12 +2261,12 @@
 
               <div class="map-overlay-hud" style="z-index:50;">
                 <div><strong>Trụ sở:</strong> 11/6 Phạm Hồng Thái, P.4, TP. Tuy Hòa &bull; <strong>MST:</strong> 4401095020</div>
-                <div><strong>Bản đồ nền:</strong> OpenStreetMap (13.09804, 109.29530) &bull; <strong>Chuẩn:</strong> QCVN 06:2024/BCA</div>
+                <div><strong>Bản đồ nền:</strong> OpenStreetMap (13.04319, 109.11587) &bull; <strong>Chuẩn:</strong> QCVN 06:2024/BCA</div>
               </div>
             </div>
 
-            <div style="background:#08101e; padding:5px 14px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-              <small><a href="https://www.openstreetmap.org/#map=15/13.09804/109.29530" target="_blank" rel="noopener" style="color:#38bdf8; font-weight:700;">View Larger Map (OpenStreetMap TP. Tuy Hòa #map=15/13.09804/109.29530) &rarr;</a></small>
+            <div class="map-footer-bar">
+              <small><a href="https://www.openstreetmap.org/#map=13/13.04319/109.11587" target="_blank" rel="noopener" style="color:#38bdf8; font-weight:700;">View Larger Map</a></small>
               <span style="color:#34d399; font-weight:600;">● Đang mô phỏng chuyển động thời gian thực (60fps)</span>
             </div>
 
@@ -1661,7 +2339,7 @@
                 </div>
                 <div class="cam-osd-bottom">
                   <span id="osdPlate">78H-018.88</span>
-                  <span id="osdGps">13.09068°N, 109.31693°E &bull; 54 km/h</span>
+                  <span id="osdGps">13.04319°N, 109.11587°E &bull; 54 km/h</span>
                 </div>
               </div>
             </div>
@@ -1669,12 +2347,12 @@
         </div>
       </div>
       <p style="text-align:center; font-size:13px; color:var(--mute); margin-top:12px;">
-        * Bản đồ sử dụng dữ liệu nền <a href="https://www.openstreetmap.org/#map=15/13.09068/109.31693" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700;">OpenStreetMap TP. Tuy Hòa (13.09068, 109.31693)</a> mô phỏng các xe di chuyển theo thời gian thực.
+        * Bản đồ sử dụng dữ liệu nền <a href="https://www.openstreetmap.org/#map=13/13.04319/109.11587" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700;">OpenStreetMap (13.04319, 109.11587)</a> mô phỏng các xe di chuyển theo thời gian thực.
       </p>
     </div>
   </section>
 
-  <!-- PRODUCTS CATALOG SECTION (VMAKE VGPS DATA - NO PRICE DISPLAY) -->
+  <!-- PRODUCTS CATALOG SECTION (NO PRICE DISPLAY) -->
   <section class="sec" id="san-pham">
     <div class="wrap">
       <div class="sechead">
@@ -1718,8 +2396,8 @@
             </tr>
             <tr>
               <td><strong>Quy chuẩn chứng nhận</strong></td>
-              <td><strong style="color:var(--red-vgps)">QCVN 06:2024/BCA</strong></td>
-              <td><strong style="color:var(--red-vgps)">QCVN 06:2024/BCA</strong></td>
+              <td><strong style="color:#ff4d6d">QCVN 06:2024/BCA</strong></td>
+              <td><strong style="color:#ff4d6d">QCVN 06:2024/BCA</strong></td>
               <td>QCVN 117:2023/BTTTT</td>
               <td>QCVN 117:2023/BTTTT</td>
               <td>4G LTE CAT1 / GPS</td>
@@ -1758,11 +2436,11 @@
             </tr>
             <tr>
               <td><strong>Tư vấn giải pháp &amp; Lắp đặt</strong></td>
-              <td><a href="https://zalo.me/0358771234" target="_blank" style="color:var(--red-vgps);font-weight:700;">💬 Liên hệ Zalo</a></td>
-              <td><a href="https://zalo.me/0358771234" target="_blank" style="color:var(--red-vgps);font-weight:700;">💬 Liên hệ Zalo</a></td>
-              <td><a href="https://zalo.me/0358771234" target="_blank" style="color:var(--red-vgps);font-weight:700;">💬 Liên hệ Zalo</a></td>
-              <td><a href="https://zalo.me/0358771234" target="_blank" style="color:var(--red-vgps);font-weight:700;">💬 Liên hệ Zalo</a></td>
-              <td><a href="https://zalo.me/0358771234" target="_blank" style="color:var(--red-vgps);font-weight:700;">💬 Liên hệ Zalo</a></td>
+              <td><a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="comp-zalo">💬 Liên hệ Zalo</a></td>
+              <td><a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="comp-zalo">💬 Liên hệ Zalo</a></td>
+              <td><a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="comp-zalo">💬 Liên hệ Zalo</a></td>
+              <td><a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="comp-zalo">💬 Liên hệ Zalo</a></td>
+              <td><a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="comp-zalo">💬 Liên hệ Zalo</a></td>
             </tr>
           </tbody>
         </table>
@@ -1770,512 +2448,7 @@
     </div>
   </section>
 
-  <!-- SECTION: VGPS-2CAM TECHNICAL GUIDE & INTERACTIVE LED/BEEP DIAGNOSTIC SIMULATOR (FROM ATTACHED PDF) -->
-  <style>
-    .tech-grid-top {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 24px;
-      margin-bottom: 28px;
-    }
-    .tech-panel {
-      background: var(--bg-surface);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      border-radius: var(--r-lg);
-      padding: 26px;
-      box-shadow: var(--shadow-sm);
-    }
-    .step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, var(--red-vgps), #b90327);
-      color: #fff;
-      font-weight: 800;
-      font-size: 14px;
-      padding: 6px 16px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      box-shadow: 0 4px 14px rgba(237, 4, 51, 0.35);
-    }
-    .step-badge span {
-      background: #fff;
-      color: var(--red-vgps);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
-    .conn-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .conn-item {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 14px;
-      border-left: 4px solid var(--cyan);
-    }
-    .conn-item h4 {
-      font-size: 15px;
-      color: #38bdf8;
-      margin-bottom: 6px;
-      font-weight: 800;
-    }
-    .conn-item p {
-      font-size: 13.5px;
-      color: var(--ink-2);
-    }
-
-    /* Wiring Table */
-    .wire-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin-bottom: 16px;
-      color: #e2e8f0;
-    }
-    .wire-table th, .wire-table td {
-      padding: 11px 14px;
-      border: 1px solid var(--line);
-      text-align: left;
-    }
-    .wire-table th {
-      background: rgba(237, 4, 51, 0.85);
-      color: #fff;
-      font-weight: 700;
-    }
-    .wire-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 99px;
-      font-size: 12.5px;
-    }
-    .w-red { background: rgba(239, 68, 68, 0.22); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
-    .w-black { background: rgba(148, 163, 184, 0.22); color: #f8fafc; border: 1px solid rgba(148,163,184,0.4); }
-    .w-yellow { background: rgba(245, 158, 11, 0.22); color: #fde68a; border: 1px solid rgba(245,158,11,0.4); }
-    .w-green { background: rgba(16, 185, 129, 0.22); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
-    .w-txrx { background: rgba(14, 165, 233, 0.22); color: #7dd3fc; border: 1px solid rgba(14,165,233,0.4); }
-
-    /* Vehicle Mounting Positions */
-    .mount-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-bottom: 28px;
-    }
-    .mount-card {
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid var(--line);
-      border-radius: var(--r-md);
-      padding: 20px;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .mount-card h4 {
-      color: #38bdf8;
-      font-weight: 800;
-      margin-top: 10px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-
-    /* Hardware LED & Audio Simulator */
-    .hw-sim-box {
-      background: rgba(11, 19, 34, 0.92);
-      backdrop-filter: blur(16px);
-      color: #f8fafc;
-      border-radius: var(--r-lg);
-      padding: 28px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      box-shadow: var(--shadow-lg);
-    }
-    .hw-preset-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0 24px;
-    }
-    .hw-preset-btn {
-      min-height: 42px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.16);
-      color: #e2e8f0;
-      padding: 9px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-    .hw-preset-btn:hover, .hw-preset-btn.active {
-      background: var(--red-vgps);
-      border-color: var(--red-vgps);
-      color: #fff;
-    }
-    .hw-devices-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      gap: 22px;
-    }
-    .hw-unit {
-      background: #131f33;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
-      padding: 20px;
-    }
-    .hw-unit-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #38bdf8;
-      margin-bottom: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .led-row-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .led-row {
-      background: rgba(0,0,0,0.28);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .led-indicator-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .led-bulb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #334155;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
-      flex-shrink: 0;
-    }
-    .led-bulb.on-green {
-      background: #10b981;
-      box-shadow: 0 0 12px #10b981, 0 0 4px #6ee7b7;
-    }
-    .led-bulb.on-red {
-      background: #ef4444;
-      box-shadow: 0 0 12px #ef4444, 0 0 4px #fca5a5;
-    }
-    .led-bulb.blink-warn {
-      background: #f59e0b;
-      animation: ledBlink1s 1s infinite;
-    }
-    @keyframes ledBlink1s {
-      0%, 49% { background: #f59e0b; box-shadow: 0 0 12px #f59e0b; opacity: 1; }
-      50%, 100% { background: #334155; box-shadow: none; opacity: 0.35; }
-    }
-    .rfid-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .beep-banner {
-      margin-top: 22px;
-      background: linear-gradient(90deg, #991b1b 0%, #ed0433 50%, #991b1b 100%);
-      border-radius: 12px;
-      padding: 18px 22px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      text-align: center;
-    }
-    .beep-col {
-      background: rgba(0,0,0,0.22);
-      border-radius: 10px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,0.16);
-    }
-    .beep-col h4 {
-      font-size: 16px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    .beep-col p {
-      font-size: 13px;
-      color: #ffe4e6;
-      margin-bottom: 10px;
-    }
-    .beep-play-btn {
-      background: #fff;
-      color: var(--red-vgps);
-      border: none;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .beep-play-btn:hover {
-      background: #fef2f2;
-      transform: scale(1.03);
-    }
-
-    /* ROI & Software Section */
-    .roi-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 28px;
-      align-items: stretch;
-    }
-    .roi-card {
-      background: var(--bg-surface);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--line);
-      border-radius: var(--r-lg);
-      padding: 28px;
-      box-shadow: var(--shadow-sm);
-      color: #f8fafc;
-    }
-    .slider-group {
-      margin-bottom: 18px;
-    }
-    .slider-head {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    .slider-input {
-      width: 100%;
-      accent-color: var(--red-vgps);
-      cursor: pointer;
-    }
-    .roi-result-box {
-      background: linear-gradient(135deg, #0b3c95 0%, #091d3a 100%);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      color: #fff;
-      border-radius: 14px;
-      padding: 22px;
-      margin-top: 18px;
-    }
-    .roi-big-num {
-      font-size: 30px;
-      font-weight: 800;
-      color: #34d399;
-      margin: 6px 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Checklist & Legal */
-    .legal-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 28px;
-    }
-    .chk-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 13px 14px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      background: rgba(15, 23, 42, 0.85);
-      transition: all 0.2s;
-    }
-    .chk-item.checked {
-      background: rgba(16, 185, 129, 0.16);
-      border-color: var(--ok);
-    }
-    .chk-item input {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: var(--ok);
-    }
-
-    /* Contact & Footer */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.1fr;
-      gap: 32px;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .form-ctrl {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 14.5px;
-      background: rgba(11, 15, 23, 0.85);
-      color: #f8fafc;
-    }
-    .form-ctrl:focus {
-      outline: none;
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-    }
-    .site-footer {
-      background: rgba(7, 11, 20, 0.94);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid var(--line);
-      color: #94a3b8;
-      padding: 56px 0 90px;
-      font-size: 14px;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 28px;
-      padding-bottom: 36px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .footer-grid h4 {
-      color: #fff;
-      font-size: 15px;
-      margin-bottom: 14px;
-    }
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .footer-links a:hover { color: var(--cyan); }
-
-    /* Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 8, 16, 0.82);
-      backdrop-filter: blur(8px);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .modal-backdrop.open {
-      display: flex;
-    }
-    .modal-card {
-      background: #0f172a;
-      color: #f8fafc;
-      border-radius: var(--r-lg);
-      max-width: 880px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg), 0 0 40px rgba(14, 165, 233, 0.2);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-    .modal-head {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      background: #0f172a;
-      z-index: 10;
-    }
-    .modal-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--line);
-      padding: 0 24px;
-      background: #0b1120;
-      gap: 8px;
-      overflow-x: auto;
-    }
-    .modal-tab-btn {
-      padding: 13px 16px;
-      background: none;
-      border: none;
-      border-bottom: 2.5px solid transparent;
-      font-family: inherit;
-      font-weight: 700;
-      font-size: 13.5px;
-      color: var(--mute);
-      cursor: pointer;
-      white-space: nowrap;
-      text-transform: uppercase;
-    }
-    .modal-tab-btn.active {
-      color: var(--cyan);
-      border-bottom-color: var(--cyan);
-    }
-    .modal-body {
-      padding: 24px;
-    }
-
-    /* Sticky Action Bar */
-    .sticky-cta {
-      position: fixed;
-      bottom: 16px;
-      right: 16px;
-      z-index: 1500;
-      display: flex;
-      gap: 10px;
-      background: rgba(11, 15, 23, 0.92);
-      backdrop-filter: blur(12px);
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      box-shadow: var(--shadow-lg);
-    }
-
-    @media (max-width: 980px) {
-      .hero-grid, .pillars-grid, .demo-body, .prod-grid, .tech-grid-top,
-      .mount-grid, .hw-devices-grid, .beep-banner, .roi-grid, .legal-grid,
-      .contact-grid, .footer-grid, .metrics-bar {
-        grid-template-columns: 1fr;
-      }
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: var(--hdr);
-        left: 0;
-        right: 0;
-        background: rgba(11, 15, 23, 0.98);
-        flex-direction: column;
-        padding: 16px;
-        border-bottom: 1px solid var(--line);
-        box-shadow: var(--shadow-md);
-      }
-      .nav-links.open { display: flex; }
-      .mobile-toggle { display: inline-flex; }
-    }
-  </style>
-
+  <!-- SECTION: VGPS-2CAM TECHNICAL GUIDE & INTERACTIVE LED/BEEP DIAGNOSTIC SIMULATOR -->
   <section class="sec alt" id="huong-dan-ky-thuat">
     <div class="wrap">
       <div class="sechead">
@@ -2311,50 +2484,52 @@
           </div>
 
           <!-- Visual Port Diagram of VGPS-2CAM -->
-          <div style="margin-top:18px; background:#09101d; color:#fff; padding:16px; border-radius:12px; border:1px solid #334155;">
+          <div class="port-diagram">
             <div style="font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:700;">SƠ ĐỒ CỔNG MẶT SAU THIẾT BỊ VGPS-2CAM (MODEL: VGPS-03):</div>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px;">
-              <span style="background:#1e293b; padding:6px 10px; border-radius:6px; border:1px solid #ef4444;">POWER (Nguồn 24/24h)</span>
-              <span style="background:#1e293b; padding:6px 10px; border-radius:6px; border:1px solid #f59e0b;">RFID</span>
-              <span style="background:#1e293b; padding:6px 10px; border-radius:6px; border:1px solid #38bdf8;">LTE / GPS / WIFI</span>
-              <span style="background:#1e293b; padding:6px 10px; border-radius:6px; border:1px solid #10b981;">CAM 1 &bull; CAM 2</span>
+            <div class="port-row">
+              <span style="border-color:#ef4444;">POWER (Nguồn 24/24h)</span>
+              <span style="border-color:#f59e0b;">RFID</span>
+              <span style="border-color:#38bdf8;">LTE / GPS / WIFI</span>
+              <span style="border-color:#10b981;">CAM 1 &bull; CAM 2</span>
             </div>
           </div>
         </div>
 
         <!-- Step 2 -->
         <div class="tech-panel">
-          <div class="step-badge"><span>2</span> Đấu nguồn và dây tín hiệu (Cấp nguồn thường trực 24/24h)</div>
-          <table class="wire-table">
-            <thead>
-              <tr>
-                <th>Chân / Màu dây</th>
-                <th>Chức năng đấu nối chuẩn</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="wire-pill w-red">● Dây Đỏ</span></td>
-                <td><strong>Nguồn (+) ắc quy</strong> — Cấp nguồn dương thường trực 24/24h (12–36 VDC)</td>
-              </tr>
-              <tr>
-                <td><span class="wire-pill w-black">● Dây Đen</span></td>
-                <td><strong>Nguồn (-) ắc quy / mass xe</strong> — Nối âm ắc quy hoặc khung sườn mass xe</td>
-              </tr>
-              <tr>
-                <td><span class="wire-pill w-yellow">● Dây Vàng</span></td>
-                <td><strong>Động cơ (ACC)</strong> — Nhận biết trạng thái bật/tắt chìa khóa nổ máy xe</td>
-              </tr>
-              <tr>
-                <td><span class="wire-pill w-green">● Dây Xanh lá</span></td>
-                <td><strong>Input Digital / Analog</strong> — Tín hiệu đầu vào mở rộng (cửa xe, điều hòa, bồn trộn...)</td>
-              </tr>
-              <tr>
-                <td><span class="wire-pill w-txrx">● Trắng (TX), Xanh dương (RX)</span></td>
-                <td><strong>Kết nối cảm biến nhiên liệu (Ligo Pro)</strong><br/><span style="font-size:12.5px; color:#fda4af; font-weight:600;">* Lưu ý: Đấu chéo dây TX của cảm biến dầu vào dây RX của thiết bị VGPS-2CAM.</span></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="step-badge"><span>2</span> Đấu nguồn và dây tín hiệu (Nguồn thường trực 24/24h)</div>
+          <div class="table-scroll">
+            <table class="wire-table">
+              <thead>
+                <tr>
+                  <th>Chân / Màu dây</th>
+                  <th>Chức năng đấu nối chuẩn</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="wire-pill w-red">● Dây Đỏ</span></td>
+                  <td><strong>Nguồn (+) ắc quy</strong> — Cấp nguồn dương thường trực 24/24h (12–36 VDC)</td>
+                </tr>
+                <tr>
+                  <td><span class="wire-pill w-black">● Dây Đen</span></td>
+                  <td><strong>Nguồn (-) ắc quy / mass xe</strong> — Nối âm ắc quy hoặc khung sườn mass xe</td>
+                </tr>
+                <tr>
+                  <td><span class="wire-pill w-yellow">● Dây Vàng</span></td>
+                  <td><strong>Động cơ (ACC)</strong> — Nhận biết trạng thái bật/tắt chìa khóa nổ máy xe</td>
+                </tr>
+                <tr>
+                  <td><span class="wire-pill w-green">● Dây Xanh lá</span></td>
+                  <td><strong>Input Digital / Analog</strong> — Tín hiệu đầu vào mở rộng (cửa xe, điều hòa, bồn trộn...)</td>
+                </tr>
+                <tr>
+                  <td><span class="wire-pill w-txrx">● Trắng (TX), Xanh dương (RX)</span></td>
+                  <td><strong>Kết nối cảm biến nhiên liệu (Ligo Pro)</strong><br/><span style="font-size:12.5px; color:#fda4af; font-weight:600;">* Lưu ý: Đấu chéo dây TX của cảm biến dầu vào dây RX của thiết bị VGPS-2CAM.</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div style="font-size:13px; color:#cbd5e1; background:rgba(14,165,233,0.12); padding:10px 14px; border-radius:8px; border-left:3px solid var(--cyan);">
             <strong>Khuyến nghị kỹ thuật từ Tiến Phát Phú Yên:</strong> Luôn kiểm tra điện áp ắc quy ổn định (12V–36V) và bọc gen cách điện chống cháy tại toàn bộ mối nối trước khi cố định thiết bị.
           </div>
@@ -2368,30 +2543,28 @@
           <div class="mount-card">
             <div class="pillar-icon" style="margin:0 auto 10px;"><svg width="28" height="28"><use href="#i-truck"/></svg></div>
             <h4>Xe Tải (Thùng kín / Mui bạt / Đông lạnh)</h4>
-            <p style="font-size:13.5px; color:#cbd5e1;">Hộp thiết bị VGPS-2CAM &amp; đầu đọc RFID đặt tại taplo buồng lái; CAM 1 hướng quan sát người lái xe; CAM 2 hướng phía trước hoặc thùng hàng; cảm biến Ligo Pro gắn tại bình dầu.</p>
+            <p>Hộp thiết bị VGPS-2CAM &amp; đầu đọc RFID đặt tại taplo buồng lái; CAM 1 hướng quan sát người lái xe; CAM 2 hướng phía trước hoặc thùng hàng; cảm biến Ligo Pro gắn tại bình dầu.</p>
           </div>
           <div class="mount-card">
             <div class="pillar-icon" style="margin:0 auto 10px;"><svg width="28" height="28"><use href="#i-shield"/></svg></div>
             <h4>Xe Đầu Kéo Container</h4>
-            <p style="font-size:13.5px; color:#cbd5e1;">Lắp đặt cố định chống rung trong khoang cabin đầu kéo; Anten 4G/GPS kéo lên vị trí kính chắn gió thoáng sóng; giám sát toàn diện tài xế chạy đường dài Bắc – Nam.</p>
+            <p>Lắp đặt cố định chống rung trong khoang cabin đầu kéo; Anten 4G/GPS kéo lên vị trí kính chắn gió thoáng sóng; giám sát toàn diện tài xế chạy đường dài Bắc – Nam.</p>
           </div>
           <div class="mount-card">
             <div class="pillar-icon" style="margin:0 auto 10px;"><svg width="28" height="28"><use href="#i-cam"/></svg></div>
             <h4>Xe Khách (16 – 45 chỗ / Giường nằm)</h4>
-            <p style="font-size:13.5px; color:#cbd5e1;">CAM 1 ghi nhận hình ảnh tài xế &amp; cửa lên xuống; CAM 2/3/4 quan sát khoang hành khách theo đúng quy chuẩn QCVN 06:2024/BCA.</p>
+            <p>CAM 1 ghi nhận hình ảnh tài xế &amp; cửa lên xuống; CAM 2/3/4 quan sát khoang hành khách theo đúng quy chuẩn QCVN 06:2024/BCA.</p>
           </div>
         </div>
       </div>
 
       <!-- Step 4, Step 5 & Audio Alerts: Interactive Diagnostic Simulator -->
       <div class="hw-sim-box">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
-          <div>
-            <div class="step-badge" style="margin-bottom:8px;"><span>4</span> &amp; <span>5</span> Trình mô phỏng Chẩn đoán Đèn báo &amp; Âm thanh VGPS-2CAM / VGPS-RFID</div>
-            <p style="color:#cbd5e1; font-size:14px;">
-              Bấm chọn một kịch bản bên dưới để xem trạng thái đèn trên hộp <strong>VGPS-2CAM</strong> và đầu đọc <strong>VGPS-RFID</strong>, hoặc bấm nút loa để nghe thử tiếng còi bíp thực tế.
-            </p>
-          </div>
+        <div>
+          <div class="step-badge" style="margin-bottom:8px;"><span>4</span> &amp; <span>5</span> Mô phỏng Chẩn đoán Đèn báo &amp; Âm thanh VGPS-2CAM / VGPS-RFID</div>
+          <p style="color:#cbd5e1; font-size:14px;">
+            Bấm chọn một kịch bản bên dưới để xem trạng thái đèn trên hộp <strong>VGPS-2CAM</strong> và đầu đọc <strong>VGPS-RFID</strong>, hoặc bấm nút loa để nghe thử tiếng còi bíp thực tế.
+          </p>
         </div>
 
         <div class="hw-preset-bar" id="hwPresetBar">
@@ -2412,32 +2585,20 @@
             </div>
             <div class="led-row-list" id="vgps2camLeds">
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_main_pwr"></span>
-                  <strong>PWR – Nguồn</strong>
-                </div>
-                <span id="txt_main_pwr" style="font-size:13px; color:#34d399; font-weight:600;">Sáng liên tục: Nguồn bình thường</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_main_pwr"></span><strong>PWR – Nguồn</strong></div>
+                <span id="txt_main_pwr" style="color:#34d399;">Sáng liên tục: Nguồn bình thường</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_main_mem"></span>
-                  <strong>MEM – Bộ nhớ</strong>
-                </div>
-                <span id="txt_main_mem" style="font-size:13px; color:#34d399; font-weight:600;">Sáng liên tục: Bộ nhớ bình thường</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_main_mem"></span><strong>MEM – Bộ nhớ</strong></div>
+                <span id="txt_main_mem" style="color:#34d399;">Sáng liên tục: Bộ nhớ bình thường</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_main_gps"></span>
-                  <strong>GPS – Định vị</strong>
-                </div>
-                <span id="txt_main_gps" style="font-size:13px; color:#34d399; font-weight:600;">Sáng liên tục: Có kết nối GPS</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_main_gps"></span><strong>GPS – Định vị</strong></div>
+                <span id="txt_main_gps" style="color:#34d399;">Sáng liên tục: Có kết nối GPS</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_main_4g"></span>
-                  <strong>4G – Máy chủ</strong>
-                </div>
-                <span id="txt_main_4g" style="font-size:13px; color:#34d399; font-weight:600;">Sáng liên tục: Có 4G, kết nối máy chủ</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_main_4g"></span><strong>4G – Máy chủ</strong></div>
+                <span id="txt_main_4g" style="color:#34d399;">Sáng liên tục: Có 4G, kết nối máy chủ</span>
               </div>
             </div>
           </div>
@@ -2450,74 +2611,44 @@
             </div>
             <div class="rfid-grid">
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_pwr"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Trạng thái Nguồn</span>
-                </div>
-                <span id="txt_rf_pwr" style="font-size:11.5px; color:#34d399;">Sáng đứng (Bình thường)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_pwr"></span><span>Trạng thái Nguồn</span></div>
+                <span id="txt_rf_pwr" style="color:#34d399;">Sáng đứng (Bình thường)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_mem"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Trạng thái Bộ nhớ</span>
-                </div>
-                <span id="txt_rf_mem" style="font-size:11.5px; color:#34d399;">Sáng đứng (Bình thường)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_mem"></span><span>Trạng thái Bộ nhớ</span></div>
+                <span id="txt_rf_mem" style="color:#34d399;">Sáng đứng (Bình thường)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_4g"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Trạng thái 4G</span>
-                </div>
-                <span id="txt_rf_4g" style="font-size:11.5px; color:#34d399;">Sáng đứng (Có 4G)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_4g"></span><span>Trạng thái 4G</span></div>
+                <span id="txt_rf_4g" style="color:#34d399;">Sáng đứng (Có 4G)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb" id="led_rf_spd"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Quá tốc độ</span>
-                </div>
-                <span id="txt_rf_spd" style="font-size:11.5px; color:#94a3b8;">Tắt (Bình thường)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb" id="led_rf_spd"></span><span>Quá tốc độ</span></div>
+                <span id="txt_rf_spd" style="color:#94a3b8;">Tắt (Bình thường)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_gps"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Trạng thái GPS</span>
-                </div>
-                <span id="txt_rf_gps" style="font-size:11.5px; color:#34d399;">Sáng đứng (Có GPS)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_gps"></span><span>Trạng thái GPS</span></div>
+                <span id="txt_rf_gps" style="color:#34d399;">Sáng đứng (Có GPS)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb" id="led_rf_time"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Quá thời gian lái</span>
-                </div>
-                <span id="txt_rf_time" style="font-size:11.5px; color:#94a3b8;">Tắt (Bình thường)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb" id="led_rf_time"></span><span>Quá thời gian lái</span></div>
+                <span id="txt_rf_time" style="color:#94a3b8;">Tắt (Bình thường)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_drv"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Đăng nhập Lái xe</span>
-                </div>
-                <span id="txt_rf_drv" style="font-size:11.5px; color:#34d399;">Sáng đứng (Đã đăng nhập)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_drv"></span><span>Đăng nhập Lái xe</span></div>
+                <span id="txt_rf_drv" style="color:#34d399;">Sáng đứng (Đã đăng nhập)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_link"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Đầu đọc &harr; Thiết bị</span>
-                </div>
-                <span id="txt_rf_link" style="font-size:11.5px; color:#34d399;">Sáng đứng (Kết nối tốt)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_link"></span><span>Đầu đọc &harr; Thiết bị</span></div>
+                <span id="txt_rf_link" style="color:#34d399;">Sáng đứng (Kết nối tốt)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_cam1"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Camera 1 &amp; 3</span>
-                </div>
-                <span id="txt_rf_cam1" style="font-size:11.5px; color:#34d399;">Sáng đứng (Kết nối tốt)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_cam1"></span><span>Camera 1 &amp; 3</span></div>
+                <span id="txt_rf_cam1" style="color:#34d399;">Sáng đứng (Kết nối tốt)</span>
               </div>
               <div class="led-row">
-                <div class="led-indicator-wrap">
-                  <span class="led-bulb on-green" id="led_rf_cam2"></span>
-                  <span style="font-size:12.5px; font-weight:700;">Camera 2 &amp; 4</span>
-                </div>
-                <span id="txt_rf_cam2" style="font-size:11.5px; color:#34d399;">Sáng đứng (Kết nối tốt)</span>
+                <div class="led-indicator-wrap"><span class="led-bulb on-green" id="led_rf_cam2"></span><span>Camera 2 &amp; 4</span></div>
+                <span id="txt_rf_cam2" style="color:#34d399;">Sáng đứng (Kết nối tốt)</span>
               </div>
             </div>
           </div>
@@ -2567,15 +2698,15 @@
           <h3 style="font-size:20px; font-weight:800; margin-bottom:16px;">🧮 Công cụ tính toán chi phí nhiên liệu tiết kiệm được</h3>
           <div class="slider-group">
             <div class="slider-head">
-              <span>Số lượng xe của doanh nghiệp:</span>
-              <span id="roiVehCountLbl" style="color:var(--red-vgps)">10 xe</span>
+              <label for="roiVehInput">Số lượng xe của doanh nghiệp:</label>
+              <span id="roiVehCountLbl" style="color:#ff4d6d">10 xe</span>
             </div>
             <input type="range" min="1" max="100" value="10" class="slider-input" id="roiVehInput" />
           </div>
 
           <div class="slider-group">
             <div class="slider-head">
-              <span>Chi phí dầu trung bình mỗi xe / tháng:</span>
+              <label for="roiFuelInput">Chi phí dầu trung bình mỗi xe / tháng:</label>
               <span id="roiFuelCostLbl" style="color:var(--blue-deep)">35.000.000 ₫</span>
             </div>
             <input type="range" min="5" max="120" value="35" step="5" class="slider-input" id="roiFuelInput" />
@@ -2583,7 +2714,7 @@
 
           <div class="slider-group">
             <div class="slider-head">
-              <span>Tỷ lệ giảm hao hụt nhờ VGPS + Cảm biến Ligo Pro:</span>
+              <label for="roiRateInput">Tỷ lệ giảm hao hụt nhờ VGPS + Cảm biến Ligo Pro:</label>
               <span id="roiRateLbl" style="color:var(--ok)">9%</span>
             </div>
             <input type="range" min="5" max="18" value="9" class="slider-input" id="roiRateInput" />
@@ -2598,7 +2729,7 @@
           </div>
         </div>
 
-        <div class="roi-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="roi-card" style="display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
           <div>
             <h3 style="font-size:20px; font-weight:800; margin-bottom:12px;">📱 Hệ thống Phần mềm VGPS (Web &amp; App Mobile)</h3>
             <p style="color:var(--mute); font-size:14.5px; margin-bottom:18px;">
@@ -2612,12 +2743,12 @@
             </ul>
           </div>
 
-          <div style="background:rgba(15, 23, 42, 0.85); padding:16px; border-radius:12px; border:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div class="vgps-access">
             <div>
               <div style="font-weight:800; font-size:14px; color:#f8fafc;">Truy cập Hệ thống Giám sát VGPS</div>
               <div style="font-size:12.5px; color:var(--mute);">Hỗ trợ trình duyệt Web, iOS &amp; Android</div>
             </div>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
               <a href="https://vgps.vn" target="_blank" rel="noopener" class="btn btn-blue btn-sm">Mở Web VGPS.VN</a>
               <a href="#lien-he" class="btn btn-primary btn-sm">Cấp tài khoản Demo</a>
             </div>
@@ -2640,7 +2771,7 @@
 
       <div class="legal-grid">
         <div class="roi-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
             <h3 style="font-size:19px; font-weight:800;">Checklist sẵn sàng kiểm tra thiết bị GSHT</h3>
             <span class="sec-tag" id="chkProgressBadge" style="margin:0;">Đã hoàn thành 0/5</span>
           </div>
@@ -2652,40 +2783,40 @@
             <input type="checkbox" class="legal-chk" />
             <div>
               <strong>1. Thiết bị có chứng nhận hợp quy QCVN 06:2024/BCA &amp; QCVN 117:2023/BTTTT</strong>
-              <div style="font-size:12.5px; color:var(--mute);">VGPS-2CAM và VGPS-CAR4G được cấp đầy đủ giấy chứng nhận hợp chuẩn, hợp quy.</div>
+              <div class="chk-sub">VGPS-2CAM và VGPS-CAR4G được cấp đầy đủ giấy chứng nhận hợp chuẩn, hợp quy.</div>
             </div>
           </label>
           <label class="chk-item">
             <input type="checkbox" class="legal-chk" />
             <div>
               <strong>2. Camera ghi nhận rõ nét hình ảnh người lái xe (kể cả ban đêm)</strong>
-              <div style="font-size:12.5px; color:var(--mute);">Truyền ảnh định kỳ trung bình 3 phút/ảnh về máy chủ, không bị che khuất tầm nhìn.</div>
+              <div class="chk-sub">Truyền ảnh định kỳ trung bình 3 phút/ảnh về máy chủ, không bị che khuất tầm nhìn.</div>
             </div>
           </label>
           <label class="chk-item">
             <input type="checkbox" class="legal-chk" />
             <div>
               <strong>3. Đầu đọc thẻ RFID và thẻ lái xe hoạt động bình thường</strong>
-              <div style="font-size:12.5px; color:var(--mute);">Tài xế quẹt thẻ đăng nhập (3 tiếng bíp) trước khi lăn bánh và đăng xuất (1 tiếng bíp) khi đổi ca.</div>
+              <div class="chk-sub">Tài xế quẹt thẻ đăng nhập (3 tiếng bíp) trước khi lăn bánh và đăng xuất (1 tiếng bíp) khi đổi ca.</div>
             </div>
           </label>
           <label class="chk-item">
             <input type="checkbox" class="legal-chk" />
             <div>
               <strong>4. Còi cảnh báo âm thanh hoạt động khi quá tốc độ / quá giờ lái</strong>
-              <div style="font-size:12.5px; color:var(--mute);">Phát âm thanh bíp liên tục cảnh báo khi chạy quá tốc độ hoặc lái xe liên tục quá 4 giờ.</div>
+              <div class="chk-sub">Phát âm thanh bíp liên tục cảnh báo khi chạy quá tốc độ hoặc lái xe liên tục quá 4 giờ.</div>
             </div>
           </label>
           <label class="chk-item">
             <input type="checkbox" class="legal-chk" />
             <div>
               <strong>5. Đấu nguồn thường trực 24/24h &amp; Tài khoản truy xuất dữ liệu sẵn sàng</strong>
-              <div style="font-size:12.5px; color:var(--mute);">Đèn PWR, MEM, GPS, 4G sáng liên tục; đăng nhập được ngay trên ứng dụng VGPS.</div>
+              <div class="chk-sub">Đèn PWR, MEM, GPS, 4G sáng liên tục; đăng nhập được ngay trên ứng dụng VGPS.</div>
             </div>
           </label>
         </div>
 
-        <!-- News / Insights from VMAKE -->
+        <!-- News / Insights -->
         <div style="display:flex; flex-direction:column; gap:14px;">
           <div class="roi-card" style="padding:20px;">
             <span style="font-size:11.5px; font-weight:700; color:#ff4d6d;">CẢNH BÁO VẬN HÀNH &bull; VGPS</span>
@@ -2715,13 +2846,13 @@
     </div>
   </section>
 
-  <!-- SECTION: CONTACT & ZALO CONSULTATION (TIEN PHAT PHU YEN) -->
+  <!-- SECTION: CONTACT & ZALO CONSULTATION -->
   <section class="sec" id="lien-he">
     <div class="wrap">
       <div class="contact-grid">
         <div>
           <span class="sec-tag">Liên hệ Nhà phân phối tại Phú Yên</span>
-          <h2 style="font-size:30px; font-weight:800; margin-bottom:12px;">Tư vấn Giải pháp &amp; Lắp đặt tận nơi trong ngày</h2>
+          <h2 style="font-size:clamp(24px, 3vw, 30px); font-weight:800; margin-bottom:12px;">Tư vấn Giải pháp &amp; Lắp đặt tận nơi trong ngày</h2>
           <p style="color:#cbd5e1; margin-bottom:22px;">
             <strong>Công ty TNHH Thương mại và Dịch vụ Tiến Phát Phú Yên</strong> cung cấp, lắp đặt tận nơi thiết bị giám sát hành trình, camera nghị định <strong>VGPS-2CAM</strong>, định vị ô tô/xe máy và cảm biến dầu tại TP. Tuy Hòa, toàn tỉnh Phú Yên và khu vực Nam Trung Bộ – Tây Nguyên.
           </p>
@@ -2734,23 +2865,23 @@
               <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Mã số thuế:</strong> 4401095020</span></li>
               <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Địa chỉ trụ sở:</strong> 11/6 Phạm Hồng Thái, Phường 4, TP Tuy Hoà, Tỉnh Phú Yên, Việt Nam</span></li>
               <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Vai trò:</strong> Thương nhân phân phối thiết bị VGPS (VNTECH24H sản xuất &bull; VMAKE phát triển phần mềm)</span></li>
-              <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Hotline / Zalo Tiến Phát Phú Yên:</strong> <a href="tel:0358771234" style="color:#ff4d6d;font-weight:800;">0358.771.234</a> &bull; Website phần mềm: <a href="https://vgps.vn" target="_blank" style="color:var(--cyan);font-weight:700;">vgps.vn</a></span></li>
+              <li><svg width="18" height="18"><use href="#i-check"/></svg><span><strong>Hotline / Zalo Tiến Phát Phú Yên:</strong> <a href="tel:0358771234" style="color:#ff4d6d;font-weight:800;">0358.771.234</a> &bull; Website phần mềm: <a href="https://vgps.vn" target="_blank" rel="noopener" style="color:var(--cyan);font-weight:700;">vgps.vn</a></span></li>
             </ul>
 
-            <!-- Exact OpenStreetMap Iframe provided by user -->
-            <div style="border-radius:10px; overflow:hidden; margin-top:8px;">
-              <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed?bbox=109.2594623565674%2C13.079854494895411%2C109.33113098144533%2C13.116219491231579&amp;layer=mapnik" style="border: 1px solid black; max-width:100%;"></iframe><br/><small><a href="https://www.openstreetmap.org/#map=15/13.09804/109.29530" target="_blank" rel="noopener" style="color:var(--cyan);font-weight:700;">View Larger Map</a></small>
+            <div class="contact-map">
+              <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed?bbox=108.97253036499023%2C12.970434639348912%2C109.25920486450197%2C13.115926920746379&amp;layer=mapnik" style="border: 1px solid black" title="Bản đồ trụ sở Tiến Phát Phú Yên" loading="lazy"></iframe>
             </div>
+            <small><a href="https://www.openstreetmap.org/#map=13/13.04319/109.11587" target="_blank" rel="noopener" style="color:var(--cyan);font-weight:700;">View Larger Map</a></small>
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <a href="https://www.openstreetmap.org/#map=15/13.09804/109.29530" target="_blank" rel="noopener" class="btn btn-line btn-sm">
-              <svg width="16" height="16"><use href="#i-pin"/></svg> Xem bản đồ lớn OpenStreetMap
+            <a href="https://www.openstreetmap.org/#map=13/13.04319/109.11587" target="_blank" rel="noopener" class="btn btn-line btn-sm">
+              <svg width="16" height="16"><use href="#i-pin"/></svg> Xem bản đồ lớn
             </a>
             <a href="tel:0358771234" class="btn btn-blue btn-sm">
               <svg width="16" height="16"><use href="#i-phone"/></svg> Gọi Hotline: 0358.771.234
             </a>
-            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-zalo btn-sm">
               <svg width="16" height="16"><use href="#i-zalo"/></svg> Chat Zalo: 0358.771.234
             </a>
           </div>
@@ -2759,23 +2890,23 @@
         <div class="roi-card">
           <h3 style="font-size:20px; font-weight:800; margin-bottom:6px;">💬 Gửi yêu cầu tư vấn &amp; Báo giá theo số lượng xe qua Zalo</h3>
           <p style="font-size:13.5px; color:var(--mute); margin-bottom:18px;">
-            Chọn dòng thiết bị và số lượng phương tiện bên dưới rồi bấm nút <strong>Chuyển qua Zalo (0358.771.234)</strong> để kết nối trực tiếp với Tiến Phát Phú Yên (trang web không lưu trữ dữ liệu cá nhân).
+            Chọn dòng thiết bị và số lượng phương tiện bên dưới rồi bấm nút <strong>Nhắn Zalo (0358.771.234)</strong> để kết nối trực tiếp với Tiến Phát Phú Yên (trang web không lưu trữ dữ liệu cá nhân).
           </p>
           <form id="quoteForm" onsubmit="handleQuoteSubmit(event)">
             <div class="form-row">
               <div>
-                <label style="font-size:12.5px; font-weight:700; display:block; margin-bottom:4px;">Họ và tên / Tên doanh nghiệp</label>
+                <label class="form-lbl" for="qName">Họ và tên / Tên doanh nghiệp</label>
                 <input type="text" class="form-ctrl" id="qName" placeholder="VD: Vận tải Phú Yên / Anh Nam" />
               </div>
               <div>
-                <label style="font-size:12.5px; font-weight:700; display:block; margin-bottom:4px;">Số điện thoại liên hệ</label>
+                <label class="form-lbl" for="qPhone">Số điện thoại liên hệ</label>
                 <input type="tel" class="form-ctrl" id="qPhone" placeholder="VD: 09xx xxx xxx" />
               </div>
             </div>
 
             <div class="form-row">
               <div>
-                <label style="font-size:12.5px; font-weight:700; display:block; margin-bottom:4px;">Sản phẩm quan tâm</label>
+                <label class="form-lbl" for="qProduct">Sản phẩm quan tâm</label>
                 <select class="form-ctrl" id="qProduct">
                   <option value="VGPS-2CAM (GSHT + Camera Nghị định QCVN 06:2024/BCA)">VGPS-2CAM (GSHT + Camera Nghị định QCVN 06:2024/BCA)</option>
                   <option value="VGPS-CAR4G (Thiết bị GSHT Ô tô 4G hợp chuẩn)">VGPS-CAR4G (Thiết bị GSHT Ô tô 4G hợp chuẩn)</option>
@@ -2787,25 +2918,21 @@
                 </select>
               </div>
               <div>
-                <label style="font-size:12.5px; font-weight:700; display:block; margin-bottom:4px;">Số lượng xe &amp; Loại phương tiện</label>
+                <label class="form-lbl" for="qFleet">Số lượng xe &amp; Loại phương tiện</label>
                 <input type="text" class="form-ctrl" id="qFleet" placeholder="VD: 5 xe tải + 2 đầu kéo tại Tuy Hòa" />
               </div>
             </div>
 
             <div style="margin-bottom:16px;">
-              <label style="font-size:12.5px; font-weight:700; display:block; margin-bottom:4px;">Ghi chú nhu cầu lắp đặt (Khu vực, loại xe, thời gian...)</label>
+              <label class="form-lbl" for="qNote">Ghi chú nhu cầu lắp đặt (Khu vực, loại xe, thời gian...)</label>
               <textarea class="form-ctrl" id="qNote" rows="2" placeholder="Nhập yêu cầu cụ thể của quý khách..."></textarea>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-              <button type="submit" class="btn btn-primary" style="width:100%; background:#0068ff; box-shadow:0 6px 18px rgba(0,104,255,0.28);">
-                💬 Nhắn Zalo: 0358.771.234
-              </button>
-              <a href="tel:0358771234" class="btn btn-line" style="width:100%;">
-                📞 Gọi trực tiếp: 0358.771.234
-              </a>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-zalo" style="width:100%;">💬 Nhắn Zalo: 0358.771.234</button>
+              <a href="tel:0358771234" class="btn btn-line" style="width:100%;">📞 Gọi trực tiếp: 0358.771.234</a>
             </div>
-            <div id="quoteSuccessMsg" style="display:none; margin-top:12px; padding:12px; border-radius:8px; background:var(--ok-soft); color:#065f46; font-weight:700; font-size:13.5px;"></div>
+            <div id="quoteSuccessMsg" class="quote-msg" role="status"></div>
           </form>
         </div>
       </div>
@@ -2827,7 +2954,7 @@
           <p style="font-size:13px; color:#cbd5e1;">
             &bull; <strong>Mã số thuế:</strong> 4401095020<br/>
             &bull; <strong>Địa chỉ:</strong> 11/6 Phạm Hồng Thái, Phường 4, TP Tuy Hoà, Tỉnh Phú Yên, Việt Nam<br/>
-            &bull; <strong>Hotline / Zalo:</strong> <a href="https://zalo.me/0358771234" target="_blank" style="color:#fff;font-weight:700;">0358.771.234</a>
+            &bull; <strong>Hotline / Zalo:</strong> <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" style="color:#fff;font-weight:700;">0358.771.234</a>
           </p>
         </div>
 
@@ -2867,14 +2994,14 @@
       </div>
 
       <div style="padding-top:22px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:13px;">
-        <span>&copy; 2026 CÔNG TY TNHH THƯƠNG MẠI VÀ DỊCH VỤ TIẾN PHÁT PHÚ YÊN (MST: 4401095020). All rights reserved.</span>
+        <span>&copy; <span id="yearNow">2026</span> CÔNG TY TNHH THƯƠNG MẠI VÀ DỊCH VỤ TIẾN PHÁT PHÚ YÊN (MST: 4401095020). All rights reserved.</span>
         <span>Hotline / Zalo hỗ trợ: 0358.771.234</span>
       </div>
     </div>
   </footer>
 
   <!-- PRODUCT DETAIL 4-TAB MODAL -->
-  <div class="modal-backdrop" id="prodModal" onclick="if(event.target===this) closeProductModal()">
+  <div class="modal-backdrop" id="prodModal" role="dialog" aria-modal="true" aria-labelledby="modTitle" onclick="if(event.target===this) closeProductModal()">
     <div class="modal-card">
       <div class="modal-head">
         <div>
@@ -2897,21 +3024,21 @@
   <div class="sticky-cta">
     <a href="#demo" class="btn btn-blue btn-sm">🛰️ Bản đồ Demo</a>
     <a href="tel:0358771234" class="btn btn-line btn-sm">📞 0358.771.234</a>
-    <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="background:#0068ff;">💬 Chat Zalo</a>
+    <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-zalo btn-sm">💬 Chat Zalo</a>
   </div>
 
   <!-- INTERACTIVE JAVASCRIPT ENGINE -->
   <script>
     // =========================================================================
     // 1. DATA: 8 SAMPLE VEHICLES MOVING SMOOTHLY (60FPS) OVER OPENSTREETMAP EMBED
-    // Bounding Box from user's iframe:
-    // bbox = 109.2594623565674, 13.079854494895411, 109.33113098144533, 13.116219491231579
+    // Bounding Box from iframe:
+    // bbox = 108.97253036499023, 12.970434639348912, 109.25920486450197, 13.115926920746379
     // =========================================================================
     const OSM_BBOX = {
-      minLon: 109.2594623565674,
-      minLat: 13.079854494895411,
-      maxLon: 109.33113098144533,
-      maxLat: 13.116219491231579
+      minLon: 108.97253036499023,
+      minLat: 12.970434639348912,
+      maxLon: 109.25920486450197,
+      maxLat: 13.115926920746379
     };
 
     function latLngToPercent(lat, lng) {
@@ -2925,220 +3052,92 @@
 
     const fleetVehicles = [
       {
-        id: 'v1',
-        plate: '78H-018.88',
-        name: 'Đầu kéo Container',
-        device: 'VGPS-2CAM + Ligo Pro',
-        driver: 'Nguyễn Văn Hùng (RFID: Đã đăng nhập)',
-        speed: 54,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 248,
-        fuelPct: 76,
-        acc: 'Mở (ON) • 24.2V',
-        route: 'Đại lộ Hùng Vương (TP. Tuy Hòa) → Cảng Vũng Rô (142 km)',
-        lat: 13.10650, lng: 109.30520,
-        waypoints: [
-          [13.11120, 109.29950],
-          [13.10350, 109.30620],
-          [13.09520, 109.31380],
-          [13.08650, 109.32080],
-          [13.09520, 109.31380],
-          [13.10350, 109.30620]
-        ],
-        wpIndex: 0,
-        stepProgress: 0.25,
-        speedFactor: 0.22,
+        id: 'v1', plate: '78H-018.88', name: 'Đầu kéo Container', device: 'VGPS-2CAM + Ligo Pro',
+        driver: 'Nguyễn Văn Hùng (RFID: Đã đăng nhập)', speed: 54, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 248, fuelPct: 76, acc: 'Mở (ON) • 24.2V',
+        route: 'QL25 (Phú Hòa – TP. Tuy Hòa) → Cảng Vũng Rô (142 km)',
+        lat: 13.05250, lng: 109.16520,
+        waypoints: [[13.03520, 109.06950], [13.04650, 109.13620], [13.05920, 109.19380], [13.07650, 109.23580], [13.05920, 109.19380], [13.04650, 109.13620]],
+        wpIndex: 0, stepProgress: 0.25, speedFactor: 0.22,
         cam1Ai: 'AI DMS: Tài xế tỉnh táo • Đã thắt dây an toàn',
-        cam2Road: 'Đang di chuyển trên Đại lộ Hùng Vương, TP. Tuy Hòa'
+        cam2Road: 'Đang di chuyển trên trục QL25 hướng về TP. Tuy Hòa'
       },
       {
-        id: 'v2',
-        plate: '78C-082.45',
-        name: 'Xe tải đông lạnh 8 tấn',
-        device: 'VGPS-2CAM (Model VGPS-03)',
-        driver: 'Trần Minh Tâm (RFID: Đã đăng nhập)',
-        speed: 48,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 118,
-        fuelPct: 65,
-        acc: 'Mở (ON) • 24.0V',
-        route: 'Trần Hưng Đạo (Phường 4) → Chợ Tuy Hòa → QL1A',
-        lat: 13.09120, lng: 109.29550,
-        waypoints: [
-          [13.08910, 109.27650],
-          [13.09050, 109.29250],
-          [13.09180, 109.30850],
-          [13.09320, 109.32100],
-          [13.09180, 109.30850],
-          [13.09050, 109.29250]
-        ],
-        wpIndex: 1,
-        stepProgress: 0.1,
-        speedFactor: 0.20,
+        id: 'v2', plate: '78C-082.45', name: 'Xe tải đông lạnh 8 tấn', device: 'VGPS-2CAM (Model VGPS-03)',
+        driver: 'Trần Minh Tâm (RFID: Đã đăng nhập)', speed: 48, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 118, fuelPct: 65, acc: 'Mở (ON) • 24.0V',
+        route: 'Trần Hưng Đạo (Phường 4) → Phú Hòa → QL1A',
+        lat: 13.06120, lng: 109.14550,
+        waypoints: [[13.07910, 109.08650], [13.06650, 109.13250], [13.05480, 109.17850], [13.04320, 109.22100], [13.05480, 109.17850], [13.06650, 109.13250]],
+        wpIndex: 1, stepProgress: 0.1, speedFactor: 0.20,
         cam1Ai: 'AI DMS: Bình thường • Hồng ngoại IR tự động cân bằng sáng',
-        cam2Road: 'Đang di chuyển qua đường Trần Hưng Đạo, P.4, TP. Tuy Hòa'
+        cam2Road: 'Đang di chuyển qua tuyến Phú Hòa – TP. Tuy Hòa'
       },
       {
-        id: 'v3',
-        plate: '78B-009.12',
-        name: 'Xe khách giường nằm 40 chỗ',
-        device: 'VGPS-2CAM (4 Kênh Camera)',
-        driver: 'Lê Hoàng Nam (RFID: Sắp chạm 4h lái)',
-        speed: 74,
-        status: 'alert',
-        statusText: 'Cảnh báo tốc độ',
-        fuelLiters: 195,
-        fuelPct: 58,
-        acc: 'Mở (ON) • 24.5V',
-        route: 'Nguyễn Tất Thành / QL1A → Cầu Đà Rằng (TP. Tuy Hòa)',
-        lat: 13.10280, lng: 109.28150,
-        waypoints: [
-          [13.11150, 109.27200],
-          [13.10280, 109.28150],
-          [13.09420, 109.29120],
-          [13.08580, 109.30080],
-          [13.09420, 109.29120],
-          [13.10280, 109.28150]
-        ],
-        wpIndex: 1,
-        stepProgress: 0.35,
-        speedFactor: 0.28,
-        cam1Ai: 'CẢNH BÁO: Xe chạy 74 km/h • Còi RFID phát tiếng BÍP LIÊN TỤC',
-        cam2Road: 'Đường Nguyễn Tất Thành • Đề nghị giảm tốc độ trong đô thị'
+        id: 'v3', plate: '78B-009.12', name: 'Xe khách giường nằm 40 chỗ', device: 'VGPS-2CAM (4 Kênh Camera)',
+        driver: 'Lê Hoàng Nam (RFID: Sắp chạm 4h lái)', speed: 74, status: 'alert', statusText: 'Cảnh báo tốc độ',
+        fuelLiters: 195, fuelPct: 58, acc: 'Mở (ON) • 24.5V',
+        route: 'Tuyến tránh QL1A → Cầu Đà Rằng (Phú Yên)',
+        lat: 13.08280, lng: 109.18150,
+        waypoints: [[13.10150, 109.15200], [13.08280, 109.18150], [13.05420, 109.20120], [13.01580, 109.21880], [13.05420, 109.20120], [13.08280, 109.18150]],
+        wpIndex: 1, stepProgress: 0.35, speedFactor: 0.28,
+        cam1Ai: 'CẢNH BÁO: Xe chạy quá tốc độ • Còi RFID phát tiếng BÍP LIÊN TỤC',
+        cam2Road: 'Trục QL1A qua Phú Yên • Đề nghị giảm tốc độ an toàn'
       },
       {
-        id: 'v4',
-        plate: '78C-115.60',
-        name: 'Xe tải Hyundai 5 tấn',
-        device: 'VGPS-CAR4G + Ligo Pro',
-        driver: 'Phạm Quốc Bảo (RFID: Đã đăng nhập)',
-        speed: 42,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 84,
-        fuelPct: 70,
-        acc: 'Mở (ON) • 13.8V',
-        route: 'Đường Nguyễn Huệ → Bệnh viện Đa khoa Phú Yên',
-        lat: 13.09820, lng: 109.29880,
-        waypoints: [
-          [13.09750, 109.28380],
-          [13.09820, 109.29880],
-          [13.09910, 109.31280],
-          [13.09980, 109.32380],
-          [13.09910, 109.31280],
-          [13.09820, 109.29880]
-        ],
-        wpIndex: 1,
-        stepProgress: 0.4,
-        speedFactor: 0.19,
+        id: 'v4', plate: '78C-115.60', name: 'Xe tải Hyundai 5 tấn', device: 'VGPS-CAR4G + Ligo Pro',
+        driver: 'Phạm Quốc Bảo (RFID: Đã đăng nhập)', speed: 42, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 84, fuelPct: 70, acc: 'Mở (ON) • 13.8V',
+        route: 'Tây Hòa → Phú Hòa → TP. Tuy Hòa',
+        lat: 13.02820, lng: 109.11880,
+        waypoints: [[13.00750, 109.04380], [13.02820, 109.11880], [13.04910, 109.17280], [13.06980, 109.22380], [13.04910, 109.17280], [13.02820, 109.11880]],
+        wpIndex: 1, stepProgress: 0.4, speedFactor: 0.19,
         cam1Ai: 'Thiết bị VGPS-CAR4G: Truyền dữ liệu định vị & nhiên liệu 4G chuẩn xác',
-        cam2Road: 'Đang lưu thông trên trục đường Nguyễn Huệ, TP. Tuy Hòa'
+        cam2Road: 'Đang lưu thông trên trục Tây Hòa – Tuy Hòa'
       },
       {
-        id: 'v5',
-        plate: '78A-168.79',
-        name: 'Xe du lịch 7 chỗ cho thuê',
-        device: 'VGPS-CAR4G',
-        driver: 'Khách thuê tự lái (Khoanh vùng Phú Yên)',
-        speed: 45,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 42,
-        fuelPct: 82,
-        acc: 'Mở (ON) • 12.6V',
-        route: 'Đường Lê Duẩn ven biển → Quảng trường 1/4 – Tháp Nghinh Phong',
-        lat: 13.09410, lng: 109.32150,
-        waypoints: [
-          [13.08550, 109.32620],
-          [13.09410, 109.32150],
-          [13.10250, 109.31650],
-          [13.11080, 109.31100],
-          [13.10250, 109.31650],
-          [13.09410, 109.32150]
-        ],
-        wpIndex: 0,
-        stepProgress: 0.5,
-        speedFactor: 0.21,
+        id: 'v5', plate: '78A-168.79', name: 'Xe du lịch 7 chỗ cho thuê', device: 'VGPS-CAR4G',
+        driver: 'Khách thuê tự lái (Khoanh vùng Phú Yên)', speed: 45, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 42, fuelPct: 82, acc: 'Mở (ON) • 12.6V',
+        route: 'TP. Tuy Hòa → Cao nguyên Vân Hòa (Sơn Hòa)',
+        lat: 13.08410, lng: 109.09150,
+        waypoints: [[13.09850, 109.02620], [13.08410, 109.09150], [13.07250, 109.15650], [13.06080, 109.21100], [13.07250, 109.15650], [13.08410, 109.09150]],
+        wpIndex: 0, stepProgress: 0.5, speedFactor: 0.21,
         cam1Ai: 'Nằm trong vùng an toàn (Geofence) đã thiết lập trên VGPS.VN',
-        cam2Road: 'Tuyến đường ven biển Lê Duẩn – TP. Tuy Hòa'
+        cam2Road: 'Tuyến đường ĐT643 – Phú Yên'
       },
       {
-        id: 'v6',
-        plate: '78C-054.33',
-        name: 'Xe bồn chở nhiên liệu',
-        device: 'VGPS-2CAM + 02 Cảm biến Ligo Pro',
-        driver: 'Đặng Văn Lợi (RFID: Đã đăng xuất)',
-        speed: 0,
-        status: 'stop',
-        statusText: 'Đang dừng',
-        fuelLiters: 290,
-        fuelPct: 92,
-        acc: 'Tắt (OFF) • 24.0V',
-        route: 'Đang dừng đỗ tại Phường 4, TP. Tuy Hòa (0 km/h)',
-        lat: 13.08720, lng: 109.30880,
-        waypoints: [[13.08720, 109.30880]],
-        wpIndex: 0,
-        stepProgress: 0,
-        speedFactor: 0,
+        id: 'v6', plate: '78C-054.33', name: 'Xe bồn chở nhiên liệu', device: 'VGPS-2CAM + 02 Cảm biến Ligo Pro',
+        driver: 'Đặng Văn Lợi (RFID: Đã đăng xuất)', speed: 0, status: 'stop', statusText: 'Đang dừng',
+        fuelLiters: 290, fuelPct: 92, acc: 'Tắt (OFF) • 24.0V',
+        route: 'Đang dừng đỗ tại Trạm trung chuyển Phú Yên (0 km/h)',
+        lat: 13.01720, lng: 109.16880,
+        waypoints: [[13.01720, 109.16880]],
+        wpIndex: 0, stepProgress: 0, speedFactor: 0,
         cam1Ai: 'Xe đang dừng đỗ • Cảm biến Ligo Pro giám sát chống rút trộm dầu 24/24h',
-        cam2Road: 'Bãi đỗ xe khu vực Phường 4 – TP. Tuy Hòa'
+        cam2Road: 'Bãi đỗ xe khu vực Phú Yên'
       },
       {
-        id: 'v7',
-        plate: '78G1-452.19',
-        name: 'Xe máy giao nhận nội thành',
-        device: 'VGPS-MOTO PRO 4G (9-100VDC)',
-        driver: 'Nhân viên giao hàng Tuy Hòa',
-        speed: 34,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 4,
-        fuelPct: 85,
-        acc: 'Mở (ON) • 12.4V',
-        route: '11/6 Phạm Hồng Thái, P.4 → Lê Lợi → Đại lộ Hùng Vương',
-        lat: 13.09068, lng: 109.31693,
-        waypoints: [
-          [13.09068, 109.31693],
-          [13.09620, 109.30650],
-          [13.10180, 109.31420],
-          [13.09450, 109.32220],
-          [13.08850, 109.31290]
-        ],
-        wpIndex: 0,
-        stepProgress: 0.15,
-        speedFactor: 0.18,
+        id: 'v7', plate: '78G1-452.19', name: 'Xe máy giao nhận nội tỉnh', device: 'VGPS-MOTO PRO 4G (9-100VDC)',
+        driver: 'Nhân viên giao hàng Tuy Hòa', speed: 34, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 4, fuelPct: 85, acc: 'Mở (ON) • 12.4V',
+        route: '11/6 Phạm Hồng Thái, P.4 → Phú Hòa → Đông Hòa',
+        lat: 13.04319, lng: 109.11587,
+        waypoints: [[13.04319, 109.11587], [13.06620, 109.15650], [13.08180, 109.20420], [13.03450, 109.19220], [13.01850, 109.13290]],
+        wpIndex: 0, stepProgress: 0.15, speedFactor: 0.18,
         cam1Ai: 'VGPS-MOTO PRO: Đã bật chế độ chống trộm & sẵn sàng khóa nguồn từ xa',
-        cam2Road: 'Nội thành TP. Tuy Hòa (Phạm Hồng Thái – Phường 4)'
+        cam2Road: 'Tuyến giao nhận Phú Hòa – Tuy Hòa'
       },
       {
-        id: 'v8',
-        plate: '78C-099.01',
-        name: 'Xe tải công trình Phú Yên',
-        device: 'VGPS-CAR4G + VGPS-MAG4G dự phòng',
-        driver: 'Võ Thanh Tùng (RFID: Đã đăng nhập)',
-        speed: 39,
-        status: 'run',
-        statusText: 'Đang chạy',
-        fuelLiters: 135,
-        fuelPct: 61,
-        acc: 'Mở (ON) • 24.1V',
-        route: 'Đường Điện Biên Phủ → Khu đô thị Nam Tuy Hòa',
-        lat: 13.10720, lng: 109.28820,
-        waypoints: [
-          [13.10720, 109.27120],
-          [13.10720, 109.28820],
-          [13.10720, 109.30450],
-          [13.10720, 109.31900],
-          [13.10720, 109.30450],
-          [13.10720, 109.28820]
-        ],
-        wpIndex: 1,
-        stepProgress: 0.2,
-        speedFactor: 0.20,
+        id: 'v8', plate: '78C-099.01', name: 'Xe tải công trình Phú Yên', device: 'VGPS-CAR4G + VGPS-MAG4G dự phòng',
+        driver: 'Võ Thanh Tùng (RFID: Đã đăng nhập)', speed: 39, status: 'run', statusText: 'Đang chạy',
+        fuelLiters: 135, fuelPct: 61, acc: 'Mở (ON) • 24.1V',
+        route: 'Khu công nghiệp Hòa Hiệp → Tây Hòa',
+        lat: 13.00520, lng: 109.09820,
+        waypoints: [[12.99520, 109.03120], [13.00520, 109.09820], [13.01520, 109.15450], [13.02520, 109.21900], [13.01520, 109.15450], [13.00520, 109.09820]],
+        wpIndex: 1, stepProgress: 0.2, speedFactor: 0.20,
         cam1Ai: 'Hoạt động ổn định • Chống rung lắc công trình chuẩn IP69K',
-        cam2Road: 'Trục đường Điện Biên Phủ, TP. Tuy Hòa'
+        cam2Road: 'Trục đường công trình Nam Phú Yên'
       }
     ];
 
@@ -3159,6 +3158,10 @@
       { plate: '78C-115.60', msg: 'Động cơ ACC Mở • Điện áp ắc quy ổn định 13.8V', loc: 'Đường Nguyễn Huệ, Tuy Hòa' }
     ];
 
+    function statusClass(v) {
+      return v.status === 'alert' ? 'alert' : (v.status === 'stop' ? 'stop' : '');
+    }
+
     function initOsmOverlayPins() {
       const mainOverlay = document.getElementById('mainVehOverlay');
       const heroOverlay = document.getElementById('heroVehOverlay');
@@ -3167,8 +3170,8 @@
       mainOverlay.innerHTML = '';
       if (heroOverlay) heroOverlay.innerHTML = '';
 
-      // Headquarters Pin at 11/6 Phạm Hồng Thái (13.09068, 109.31693)
-      const hqPos = latLngToPercent(13.09068, 109.31693);
+      // Headquarters Pin at map center (13.04319, 109.11587)
+      const hqPos = latLngToPercent(13.04319, 109.11587);
       const hqEl = document.createElement('div');
       hqEl.className = 'osm-live-pin';
       hqEl.style.left = hqPos.x + '%';
@@ -3182,13 +3185,14 @@
 
       fleetVehicles.forEach(v => {
         const pos = latLngToPercent(v.lat, v.lng);
-        const stCls = v.status === 'alert' ? 'alert' : (v.status === 'stop' ? 'stop' : '');
+        const stCls = statusClass(v);
 
         // Main map pin
         const pin = document.createElement('div');
         pin.className = 'osm-live-pin ' + (v.id === selectedVehId ? 'selected' : '');
         pin.style.left = pos.x + '%';
         pin.style.top = pos.y + '%';
+        pin.title = `${v.plate} – ${v.name}`;
         pin.onclick = () => selectVehicle(v.id);
         pin.innerHTML = `
           <div class="osm-veh-label ${stCls}" id="lbl_main_${v.id}">${v.plate} • ${v.speed}km/h</div>
@@ -3210,7 +3214,7 @@
             <div class="osm-veh-label ${stCls}" id="lbl_hero_${v.id}" style="font-size:9.5px;padding:1px 5px;">${v.plate}</div>
             <div class="osm-veh-dot-wrap" style="width:16px;height:16px;">
               ${v.status !== 'stop' ? `<span class="osm-veh-pulse ${stCls}"></span>` : ''}
-              <div class="osm-veh-dot ${stCls}" id="dot_hero_${v.id}" style="width:12px;height:12px;font-size:7px;">▲</div>
+              <div class="osm-veh-dot ${stCls}" id="dot_hero_${v.id}" style="width:12px;height:12px;font-size:7px;">${v.status === 'stop' ? 'P' : '▲'}</div>
             </div>
           `;
           heroOverlay.appendChild(hPin);
@@ -3229,6 +3233,7 @@
       let svgContent = '';
       fleetVehicles.forEach(v => {
         if (!v.waypoints || v.waypoints.length < 2) return;
+        if (currentFilter !== 'all' && v.status !== currentFilter) return;
         const pts = v.waypoints.map(wp => {
           const p = latLngToPercent(wp[0], wp[1]);
           return `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
@@ -3237,7 +3242,7 @@
         const strokeColor = v.status === 'alert' ? '#ef4444' : (isSel ? '#0ea5e9' : 'rgba(15, 23, 42, 0.35)');
         const strokeW = isSel ? '0.9' : '0.45';
         const dash = isSel ? '1.8, 1.2' : '1, 1.5';
-        svgContent += `<polyline points="${pts}" fill="none" stroke="${strokeColor}" stroke-width="${strokeW}" stroke-dasharray="${dash}" stroke-linecap="round" stroke-linejoin="round" />`;
+        svgContent += `<polyline points="${pts}" fill="none" stroke="${strokeColor}" stroke-width="${strokeW}" stroke-dasharray="${dash}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />`;
       });
 
       if (mainSvg) mainSvg.innerHTML = svgContent;
@@ -3254,7 +3259,7 @@
         const badgeCls = v.status === 'run' ? 'st-run' : (v.status === 'stop' ? 'st-stop' : 'st-alert');
         const activeCls = v.id === selectedVehId ? 'active' : '';
         return `
-          <div class="veh-item ${activeCls}" onclick="selectVehicle('${v.id}')">
+          <div class="veh-item ${activeCls}" onclick="selectVehicle('${v.id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectVehicle('${v.id}')">
             <div>
               <div class="veh-plate">${v.plate}</div>
               <div class="veh-type">${v.name}</div>
@@ -3268,10 +3273,11 @@
       }).join('');
 
       fleetVehicles.forEach(v => {
+        const visible = currentFilter === 'all' || v.status === currentFilter;
         const pin = mainPinDom[v.id];
         if (pin) {
           pin.classList.toggle('selected', v.id === selectedVehId);
-          pin.style.display = (currentFilter === 'all' || v.status === currentFilter) ? 'flex' : 'none';
+          pin.style.display = visible ? 'flex' : 'none';
           const lbl = document.getElementById('lbl_main_' + v.id);
           if (lbl) lbl.textContent = `${v.plate} • ${v.speed}km/h`;
         }
@@ -3309,8 +3315,7 @@
     function renderAlertFeed() {
       const feedEl = document.getElementById('demoAlertFeed');
       if (!feedEl) return;
-      const now = new Date();
-      const timeStr = now.toTimeString().slice(0, 8);
+      const timeStr = new Date().toTimeString().slice(0, 8);
       feedEl.innerHTML = sampleAlerts.slice(0, 3).map(a => `
         <div class="alert-row">
           <div><strong style="color:#fff">${a.plate}</strong> &bull; <span style="color:#e2e8f0">${a.msg}</span></div>
@@ -3325,7 +3330,7 @@
       }
     }
 
-    // 60FPS Continuous Vehicle Movement Engine (vehicles visibly glide across OpenStreetMap)
+    // 60FPS Continuous Vehicle Movement Engine
     let lastAnimTs = performance.now();
     function animateFleet60Fps(nowTs) {
       const dt = Math.min(0.1, (nowTs - lastAnimTs) / 1000);
@@ -3333,48 +3338,38 @@
 
       if (simRunning) {
         fleetVehicles.forEach(v => {
-          if (v.status !== 'stop' && v.waypoints && v.waypoints.length > 1) {
-            const startWp = v.waypoints[v.wpIndex];
-            const nextIdx = (v.wpIndex + 1) % v.waypoints.length;
-            const endWp = v.waypoints[nextIdx];
+          if (v.status === 'stop' || !v.waypoints || v.waypoints.length < 2) return;
+          const startWp = v.waypoints[v.wpIndex];
+          const nextIdx = (v.wpIndex + 1) % v.waypoints.length;
+          const endWp = v.waypoints[nextIdx];
 
-            v.stepProgress += (v.speedFactor || 0.2) * dt;
-            if (v.stepProgress >= 1) {
-              v.stepProgress = 0;
-              v.wpIndex = nextIdx;
-              v.lat = endWp[0];
-              v.lng = endWp[1];
-            } else {
-              v.lat = startWp[0] + (endWp[0] - startWp[0]) * v.stepProgress;
-              v.lng = startWp[1] + (endWp[1] - startWp[1]) * v.stepProgress;
-            }
-
-            // Compute heading angle for arrow rotation
-            const dLat = endWp[0] - startWp[0];
-            const dLng = endWp[1] - startWp[1];
-            const angleDeg = Math.atan2(dLng, dLat) * (180 / Math.PI);
-
-            const pos = latLngToPercent(v.lat, v.lng);
-            const pin = mainPinDom[v.id];
-            if (pin) {
-              pin.style.left = pos.x.toFixed(3) + '%';
-              pin.style.top = pos.y.toFixed(3) + '%';
-            }
-            const dot = document.getElementById('dot_main_' + v.id);
-            if (dot) {
-              dot.style.transform = `rotate(${angleDeg.toFixed(1)}deg)`;
-            }
-
-            const hPin = heroPinDom[v.id];
-            if (hPin) {
-              hPin.style.left = pos.x.toFixed(3) + '%';
-              hPin.style.top = pos.y.toFixed(3) + '%';
-            }
-            const hDot = document.getElementById('dot_hero_' + v.id);
-            if (hDot) {
-              hDot.style.transform = `rotate(${angleDeg.toFixed(1)}deg)`;
-            }
+          v.stepProgress += (v.speedFactor || 0.2) * dt;
+          if (v.stepProgress >= 1) {
+            v.stepProgress = 0;
+            v.wpIndex = nextIdx;
+            v.lat = endWp[0];
+            v.lng = endWp[1];
+          } else {
+            v.lat = startWp[0] + (endWp[0] - startWp[0]) * v.stepProgress;
+            v.lng = startWp[1] + (endWp[1] - startWp[1]) * v.stepProgress;
           }
+
+          // Heading angle for arrow rotation
+          const angleDeg = Math.atan2(endWp[1] - startWp[1], endWp[0] - startWp[0]) * (180 / Math.PI);
+          const pos = latLngToPercent(v.lat, v.lng);
+          const left = pos.x.toFixed(3) + '%';
+          const top = pos.y.toFixed(3) + '%';
+          const rot = `rotate(${angleDeg.toFixed(1)}deg)`;
+
+          const pin = mainPinDom[v.id];
+          if (pin) { pin.style.left = left; pin.style.top = top; }
+          const dot = document.getElementById('dot_main_' + v.id);
+          if (dot) dot.style.transform = rot;
+
+          const hPin = heroPinDom[v.id];
+          if (hPin) { hPin.style.left = left; hPin.style.top = top; }
+          const hDot = document.getElementById('dot_hero_' + v.id);
+          if (hDot) hDot.style.transform = rot;
         });
       }
 
@@ -3385,26 +3380,29 @@
     setInterval(() => {
       const now = new Date();
       const t = now.toTimeString().slice(0, 8);
+      const pad = n => String(n).padStart(2, '0');
+      const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
       const clk = document.getElementById('demoClock');
       const osdT = document.getElementById('osdTime');
       if (clk) clk.textContent = `Trực tiếp • ${t}`;
-      if (osdT) osdT.textContent = now.toISOString().slice(0, 10) + ' ' + t;
+      if (osdT) osdT.textContent = `${dateStr} ${t}`;
 
       if (!simRunning) return;
 
       fleetVehicles.forEach(v => {
-        if (v.status !== 'stop') {
-          const delta = Math.floor(Math.random() * 3) - 1;
-          v.speed = Math.max(28, Math.min(79, v.speed + delta));
-        }
+        if (v.status === 'stop') return;
+        const delta = Math.floor(Math.random() * 3) - 1;
+        // Xe cảnh báo luôn giữ trên 70 km/h để đồng bộ trạng thái "Cảnh báo tốc độ"
+        const minSpd = v.status === 'alert' ? 71 : 28;
+        const maxSpd = v.status === 'alert' ? 79 : 62;
+        v.speed = Math.max(minSpd, Math.min(maxSpd, v.speed + delta));
       });
       renderFleetDemo();
     }, 1000);
 
     setInterval(() => {
       if (!simRunning) return;
-      const first = sampleAlerts.shift();
-      sampleAlerts.push(first);
+      sampleAlerts.push(sampleAlerts.shift());
       renderAlertFeed();
     }, 4500);
 
@@ -3644,7 +3642,7 @@
             <span class="prod-badge">${p.badge}</span>
             <span class="prod-std">${p.std}</span>
           </div>
-          <div class="prod-thumb" onclick="openProductModal('${p.id}')" style="cursor:pointer;" title="Bấm để xem chi tiết ${p.title}">
+          <div class="prod-thumb" onclick="openProductModal('${p.id}')" title="Bấm để xem chi tiết ${p.title}">
             <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'" />
           </div>
           <div class="prod-body">
@@ -3652,13 +3650,11 @@
             <h3 class="prod-title">${p.title}</h3>
             <p class="prod-desc">${p.shortDesc}</p>
             <div class="prod-price-row">
-              <span style="font-size:13px; font-weight:700; color:var(--cyan); background:var(--cyan-soft); border:1px solid rgba(56,189,248,0.28); padding:5px 10px; border-radius:6px; width:100%;">
-                ✓ Sản phẩm chính hãng • Tư vấn giải pháp theo loại xe
-              </span>
+              <span class="prod-genuine">✓ Sản phẩm chính hãng • Tư vấn giải pháp theo loại xe</span>
             </div>
             <div class="prod-actions">
               <button class="btn btn-line btn-sm" onclick="openProductModal('${p.id}')">Thông số &amp; Tài liệu</button>
-              <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="background:#0068ff;">Tư vấn Zalo</a>
+              <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-zalo btn-sm">Tư vấn Zalo</a>
             </div>
           </div>
         </article>
@@ -3673,11 +3669,13 @@
       document.getElementById('modBadge').textContent = p.std;
       document.getElementById('modTitle').textContent = p.title;
       document.getElementById('prodModal').classList.add('open');
+      document.body.classList.add('modal-open');
       renderModalTabContent();
     }
 
     function closeProductModal() {
       document.getElementById('prodModal').classList.remove('open');
+      document.body.classList.remove('modal-open');
     }
 
     function renderModalTabContent() {
@@ -3694,18 +3692,20 @@
               <div style="font-size:13px; color:var(--mute);">${p.maker}</div>
               <div style="font-size:15px; font-weight:800; color:var(--blue-deep);">Phân phối &amp; Lắp đặt: Tiến Phát Phú Yên (0358.771.234)</div>
             </div>
-            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="background:#0068ff;">💬 Nhắn Zalo tư vấn cấu hình</a>
+            <a href="https://zalo.me/0358771234" target="_blank" rel="noopener" class="btn btn-zalo btn-sm">💬 Nhắn Zalo tư vấn cấu hình</a>
           </div>
           ${p.detailHtml}
         `;
       } else if (currentModalTab === 'specs') {
         body.innerHTML = `
-          <table class="wire-table" style="margin-bottom:0;">
-            <thead><tr><th>Hạng mục</th><th>Thông số kỹ thuật chính hãng</th></tr></thead>
-            <tbody>
-              ${p.specs.map(r => `<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td></tr>`).join('')}
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="wire-table" style="margin-bottom:0;">
+              <thead><tr><th>Hạng mục</th><th>Thông số kỹ thuật chính hãng</th></tr></thead>
+              <tbody>
+                ${p.specs.map(r => `<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
         `;
       } else if (currentModalTab === 'acc') {
         body.innerHTML = `
@@ -3727,36 +3727,33 @@
       }
     }
 
-    function prefillQuote(prodName) {
-      const sel = document.getElementById('qProduct');
-      const note = document.getElementById('qNote');
-      if (note) note.value = `Cần tư vấn giải pháp: ${prodName}`;
-      if (sel) sel.focus();
-    }
-
     // =========================================================================
     // 3. HARDWARE LED & AUDIO BEEP DIAGNOSTIC SIMULATOR (WEB AUDIO API)
     // =========================================================================
     let audioCtx = null;
-    function playSingleTone(startTime, durationMs) {
+    function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playSingleTone(startTime, durationMs) {
+      const ctx = getAudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
       osc.type = 'square';
       osc.frequency.setValueAtTime(2450, startTime);
       gain.gain.setValueAtTime(0.12, startTime);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + durationMs / 1000);
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(ctx.destination);
       osc.start(startTime);
       osc.stop(startTime + durationMs / 1000);
     }
 
     function playVgpsBeep(mode) {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const now = audioCtx.currentTime;
+        const now = getAudioCtx().currentTime;
         if (mode === 3) {
           playSingleTone(now, 140);
           playSingleTone(now + 0.22, 140);
@@ -3764,9 +3761,7 @@
         } else if (mode === 1) {
           playSingleTone(now, 320);
         } else if (mode === 'continuous') {
-          for (let i = 0; i < 6; i++) {
-            playSingleTone(now + i * 0.18, 110);
-          }
+          for (let i = 0; i < 6; i++) playSingleTone(now + i * 0.18, 110);
         }
       } catch (e) {
         console.log('Audio preview requires user interaction:', e);
@@ -3868,9 +3863,62 @@
     }
 
     // =========================================================================
-    // 5. INITIALIZATION & EVENT LISTENERS
+    // 5. HEADER: MENU CANH GIỮA – MOBILE TOGGLE, ACTIVE THEO VỊ TRÍ CUỘN
+    // =========================================================================
+    function initHeaderNav() {
+      const header = document.getElementById('siteHeader');
+      const mobBtn = document.getElementById('mobileMenuBtn');
+      const navLinks = document.getElementById('navLinks');
+      const links = navLinks ? Array.from(navLinks.querySelectorAll('a')) : [];
+
+      const closeMenu = () => {
+        if (!navLinks) return;
+        navLinks.classList.remove('open');
+        if (mobBtn) {
+          mobBtn.setAttribute('aria-expanded', 'false');
+          mobBtn.setAttribute('aria-label', 'Mở menu');
+        }
+      };
+
+      if (mobBtn && navLinks) {
+        mobBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const isOpen = navLinks.classList.toggle('open');
+          mobBtn.setAttribute('aria-expanded', String(isOpen));
+          mobBtn.setAttribute('aria-label', isOpen ? 'Đóng menu' : 'Mở menu');
+        });
+        links.forEach(a => a.addEventListener('click', closeMenu));
+        document.addEventListener('click', (ev) => {
+          if (!header.contains(ev.target)) closeMenu();
+        });
+        window.addEventListener('resize', () => { if (window.innerWidth > 1120) closeMenu(); });
+      }
+
+      // Đổ bóng header khi cuộn
+      const onScroll = () => header && header.classList.toggle('scrolled', window.scrollY > 8);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Tô sáng mục menu tương ứng với section đang xem
+      if ('IntersectionObserver' in window) {
+        const sections = links
+          .map(a => document.querySelector(a.getAttribute('href')))
+          .filter(Boolean);
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(en => {
+            if (!en.isIntersecting) return;
+            links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        sections.forEach(s => io.observe(s));
+      }
+    }
+
+    // =========================================================================
+    // 6. INITIALIZATION & EVENT LISTENERS
     // =========================================================================
     document.addEventListener('DOMContentLoaded', () => {
+      initHeaderNav();
       initOsmOverlayPins();
       renderFleetDemo();
       renderAlertFeed();
@@ -3879,12 +3927,8 @@
       lastAnimTs = performance.now();
       requestAnimationFrame(animateFleet60Fps);
 
-      // Mobile Menu
-      const mobBtn = document.getElementById('mobileMenuBtn');
-      const navLinks = document.getElementById('navLinks');
-      if (mobBtn && navLinks) {
-        mobBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
-      }
+      const yearEl = document.getElementById('yearNow');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       // Demo Filter Buttons
       document.querySelectorAll('#demoFilterBar .filter-pill').forEach(btn => {
@@ -3892,6 +3936,12 @@
           document.querySelectorAll('#demoFilterBar .filter-pill').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentFilter = btn.dataset.filter;
+          // Tự chọn xe đầu tiên phù hợp bộ lọc
+          const firstMatch = fleetVehicles.find(v => currentFilter === 'all' || v.status === currentFilter);
+          const selected = fleetVehicles.find(v => v.id === selectedVehId);
+          if (firstMatch && selected && currentFilter !== 'all' && selected.status !== currentFilter) {
+            selectedVehId = firstMatch.id;
+          }
           renderFleetDemo();
         });
       });
@@ -3908,15 +3958,14 @@
       // Camera Tabs
       ['camTab1', 'camTab2'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-          el.addEventListener('click', () => {
-            document.getElementById('camTab1').classList.remove('active');
-            document.getElementById('camTab2').classList.remove('active');
-            el.classList.add('active');
-            currentCamTab = parseInt(el.dataset.cam, 10);
-            updateSelectedVehicleDetail();
-          });
-        }
+        if (!el) return;
+        el.addEventListener('click', () => {
+          document.getElementById('camTab1').classList.remove('active');
+          document.getElementById('camTab2').classList.remove('active');
+          el.classList.add('active');
+          currentCamTab = parseInt(el.dataset.cam, 10);
+          updateSelectedVehicleDetail();
+        });
       });
 
       // Product Category Filter
@@ -3935,6 +3984,11 @@
           currentModalTab = btn.dataset.tab;
           renderModalTabContent();
         });
+      });
+
+      // Đóng modal bằng phím ESC
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape') closeProductModal();
       });
 
       // Hardware Diagnostic Preset Buttons
