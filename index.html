@@ -1993,6 +1993,481 @@
       .modal-head, .modal-body { padding: 16px; }
       .modal-tabs { padding: 0 12px; }
     }
+
+    /* ==========================================================================
+       MOTION-DIRECTOR SERVICE INTRO VIDEO PLAYER (PURE FUNCTION OF TIME t, 60FPS)
+       ========================================================================== */
+    .md-video-sec {
+      padding: 68px 0;
+      position: relative;
+      z-index: 2;
+      border-bottom: 1px solid var(--line);
+      background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.10), transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.08), transparent 50%);
+    }
+    .md-player-shell {
+      background: rgba(6, 13, 28, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 28px 72px -18px rgba(0, 0, 0, 0.82), 0 0 36px rgba(14, 165, 233, 0.16);
+      color: #f8fafc;
+    }
+    .md-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 18px;
+      background: rgba(3, 9, 22, 0.94);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      font-size: 12.5px;
+    }
+    .md-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .md-rec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 99px;
+      background: rgba(237, 4, 51, 0.18);
+      border: 1px solid rgba(237, 4, 51, 0.55);
+      color: #fda4af;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .md-rec-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff2a55;
+      box-shadow: 0 0 8px #ff2a55;
+      animation: pulseDot 1.5s infinite;
+    }
+    .md-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .md-chip-btn {
+      background: rgba(15, 32, 68, 0.72);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.16s ease;
+    }
+    .md-chip-btn:hover { border-color: var(--cyan); color: #fff; }
+    .md-chip-btn.active {
+      background: linear-gradient(135deg, #f59e0b, #eab308);
+      color: #090d16;
+      border-color: #facc15;
+      font-weight: 800;
+    }
+    .md-viewport-wrap {
+      position: relative;
+      width: 100%;
+      background: #040b1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .md-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 640px;
+      background: #060d1f;
+      overflow: hidden;
+      user-select: none;
+    }
+    .md-viewport[data-aspect="9:16"] {
+      max-width: 390px;
+      aspect-ratio: 9 / 16;
+      max-height: 680px;
+      margin: 14px auto;
+      border-radius: 18px;
+      border: 2px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+    .md-scene {
+      position: absolute;
+      inset: 0;
+      padding: clamp(16px, 2.8vw, 38px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    .md-scene.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .md-scene-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      filter: brightness(0.95) contrast(1.05);
+      z-index: 0;
+      will-change: transform;
+    }
+    .md-viewport[data-aspect="9:16"] .md-scene-bg {
+      background-size: 168% auto;
+      background-position: 96% 58px;
+    }
+    .md-scene-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(6, 11, 24, 0.93) 0%, rgba(6, 11, 24, 0.82) 46%, rgba(6, 11, 24, 0.22) 70%, rgba(6, 11, 24, 0.05) 100%),
+                  linear-gradient(180deg, rgba(6, 11, 24, 0.65) 0%, transparent 18%, transparent 80%, rgba(6, 11, 24, 0.90) 100%);
+      z-index: 1;
+    }
+    .md-viewport[data-aspect="9:16"] .md-scene-overlay {
+      background: linear-gradient(180deg, rgba(7, 12, 26, 0.90) 0%, rgba(7, 12, 26, 0.10) 12%, rgba(7, 12, 26, 0.08) 44%, rgba(7, 12, 26, 0.93) 56%, rgba(7, 12, 26, 0.98) 100%);
+    }
+    .md-scene-top {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .md-brand-badge {
+      background: linear-gradient(135deg, #ed0433 0%, #b70226 100%);
+      padding: 7px 16px;
+      border-radius: 99px;
+      font-size: clamp(11px, 1.1vw, 14px);
+      font-weight: 800;
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 18px rgba(237, 4, 51, 0.4);
+    }
+    .md-BrandSub { color: #fde047; margin-left: 6px; font-weight: 700; }
+    .md-landmark-badge {
+      background: rgba(11, 25, 54, 0.86);
+      border: 1.5px solid #38bdf8;
+      color: #e0f2fe;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: clamp(10.5px, 1.05vw, 13.5px);
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.3);
+    }
+    .md-left-col {
+      position: relative;
+      z-index: 3;
+      max-width: 54%;
+      margin: auto 0;
+      padding-bottom: 34px;
+    }
+    .md-viewport[data-aspect="9:16"] .md-left-col {
+      max-width: 100%;
+      margin-top: auto;
+      margin-bottom: 42px;
+      padding-bottom: 0;
+    }
+    .md-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(90deg, #f59e0b, #eab308);
+      color: #090d16;
+      font-size: clamp(10px, 1vw, 12.5px);
+      font-weight: 900;
+      padding: 5px 12px;
+      border-radius: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .md-headline {
+      font-size: clamp(20px, 2.4vw, 34px);
+      font-weight: 900;
+      line-height: 1.18;
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
+    }
+    .md-headline span { color: #38bdf8; }
+    .md-headline em { color: #facc15; font-style: normal; }
+    .md-lead-box {
+      background: rgba(15, 23, 42, 0.86);
+      border-left: 5px solid #ed0433;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: clamp(12px, 1.15vw, 15px);
+      color: #f1f5f9;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .md-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+    .md-mini-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-left: 4px solid #10b981;
+      border-radius: 10px;
+      padding: 9px 12px;
+      backdrop-filter: blur(8px);
+    }
+    .md-mini-card small {
+      display: block;
+      font-size: 10.5px;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .md-mini-card b {
+      font-size: clamp(11.5px, 1.05vw, 14px);
+      color: #fff;
+      font-weight: 800;
+    }
+    .md-stack-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .md-stack-item {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-left: 5px solid #38bdf8;
+      border-radius: 10px;
+      padding: 8px 13px;
+    }
+    .md-stack-item h4 {
+      font-size: clamp(12px, 1.1vw, 14.5px);
+      color: #fde047;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .md-stack-item p {
+      font-size: clamp(11px, 0.98vw, 13px);
+      color: #e2e8f0;
+      line-height: 1.35;
+    }
+    .md-presenter-tag {
+      position: absolute;
+      right: 28px;
+      bottom: 64px;
+      z-index: 3;
+      background: rgba(11, 19, 38, 0.88);
+      border: 1.5px solid rgba(245, 158, 11, 0.75);
+      border-left: 4px solid #f59e0b;
+      padding: 8px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      text-align: left;
+    }
+    .md-viewport[data-aspect="9:16"] .md-presenter-tag {
+      top: 42%;
+      bottom: auto;
+      right: 14px;
+      padding: 6px 11px;
+    }
+    .md-presenter-tag strong {
+      display: block;
+      font-size: clamp(11.5px, 1.05vw, 14px);
+      color: #fde047;
+      font-weight: 800;
+    }
+    .md-presenter-tag span {
+      font-size: clamp(10px, 0.9vw, 12px);
+      color: #e2e8f0;
+    }
+    .md-caption-bar {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      width: min(94%, 920px);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .md-caption-pill {
+      display: inline-block;
+      background: rgba(3, 10, 24, 0.90);
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      color: #fff;
+      font-size: clamp(12px, 1.25vw, 15.5px);
+      font-weight: 700;
+      padding: 7px 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+      line-height: 1.4;
+    }
+    .md-caption-pill em {
+      font-style: normal;
+      color: #facc15;
+    }
+    .md-play-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      background: radial-gradient(circle at center, rgba(4, 12, 28, 0.38) 0%, rgba(4, 12, 28, 0.12) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: opacity 0.25s ease;
+    }
+    .md-play-overlay.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .md-big-play-btn {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ed0433, #f59e0b);
+      color: #fff;
+      border: 3px solid #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 36px rgba(237, 4, 51, 0.75);
+      transition: transform 0.2s ease;
+    }
+    .md-play-overlay:hover .md-big-play-btn { transform: scale(1.08); }
+    .md-play-hint {
+      background: rgba(6, 20, 46, 0.92);
+      border: 1px solid rgba(250, 204, 21, 0.6);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 7px 18px;
+      border-radius: 99px;
+      text-align: center;
+    }
+    .md-mp4-container {
+      display: none;
+      width: 100%;
+      background: #020611;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    .md-mp4-container.is-active {
+      display: flex;
+    }
+    .md-mp4-video {
+      width: 100%;
+      max-height: 640px;
+      border-radius: 12px;
+      background: #000;
+    }
+    .md-mp4-video.is-vertical {
+      max-width: 380px;
+      aspect-ratio: 9 / 16;
+    }
+    .md-controls {
+      background: rgba(3, 10, 24, 0.96);
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 12px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .md-timeline-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .md-play-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #f59e0b, #eab308);
+      color: #090d16;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-weight: 900;
+      flex: none;
+    }
+    .md-scrubber-wrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .md-scrubber {
+      width: 100%;
+      accent-color: #f59e0b;
+      cursor: pointer;
+      height: 6px;
+    }
+    .md-time-readout {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 700;
+      min-width: 100px;
+      text-align: right;
+    }
+    .md-chapters-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .md-chapter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .md-chap-btn {
+      background: rgba(15, 23, 42, 0.9);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 5px 11px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.16s ease;
+    }
+    .md-chap-btn:hover { color: #fff; border-color: #38bdf8; }
+    .md-chap-btn.active {
+      background: rgba(14, 165, 233, 0.22);
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+    @media (max-width: 860px) {
+      .md-left-col { max-width: 100%; }
+      .md-presenter-tag { display: none; }
+      .md-grid-2 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -2035,6 +2510,7 @@
 
       <nav class="site-nav" aria-label="Menu chính">
         <ul class="nav-links" id="navLinks">
+          <li><a href="#video-gioi-thieu" title="Video giới thiệu Tiến Phát Phú Yên">Video giới thiệu</a></li>
           <li><a href="#giai-phap" title="Giải pháp VGPS">Giải pháp</a></li>
           <li><a href="#demo" title="Mô phỏng giám sát trực tuyến">Demo giám sát</a></li>
           <li><a href="#san-pham" title="Sản phẩm VGPS">Sản phẩm</a></li>
@@ -2093,13 +2569,13 @@
               <svg width="18" height="18"><use href="#i-zalo"/></svg>
               Tư vấn qua Zalo: 0358.771.234
             </a>
-            <a href="#demo" class="btn btn-blue">
+            <a href="#video-gioi-thieu" class="btn btn-blue" onclick="setTimeout(function(){if(window.tpMotionPlay)window.tpMotionPlay(true)},350)">
+              <svg width="18" height="18"><use href="#i-cam"/></svg>
+              Xem Video Giới Thiệu (MC Minh Anh)
+            </a>
+            <a href="#demo" class="btn btn-line">
               <svg width="18" height="18"><use href="#i-truck"/></svg>
               Trải nghiệm màn hình giám sát
-            </a>
-            <a href="#huong-dan-ky-thuat" class="btn btn-line">
-              <svg width="18" height="18"><use href="#i-cpu"/></svg>
-              Mô phỏng Đèn LED &amp; Đấu nối VGPS-2CAM
             </a>
           </div>
         </div>
@@ -2157,6 +2633,222 @@
           <div>
             <div class="metric-num"><a href="tel:0358771234">0358.771.234</a></div>
             <div class="metric-lbl">Hotline Tiến Phát Phú Yên hỗ trợ 24/7</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOTION-DIRECTOR SERVICE INTRO VIDEO PLAYER (TIẾN PHÁT PHÚ YÊN & ĐỊA DANH PHÚ YÊN) -->
+  <section class="sec md-video-sec" id="video-gioi-thieu">
+    <div class="wrap">
+      <div class="sechead">
+        <span class="sec-tag">Motion Film 60FPS &bull; Giọng đọc AI Nữ &amp; Biểu tượng Phú Yên</span>
+        <h2>Video giới thiệu doanh nghiệp Tiến Phát Phú Yên &amp; Hệ sinh thái VGPS</h2>
+        <p class="lede">
+          Cùng chuyên viên <strong>Minh Anh</strong> khám phá trọn bộ giải pháp thiết bị giám sát xe hợp chuẩn <strong>QCVN 06:2024/BCA</strong> qua các địa danh biểu tượng của Phú Yên (<strong>Tháp Nghinh Phong</strong>, <strong>Tháp Nhạn – Cầu Đà Rằng</strong>, <strong>Mũi Điện – Vịnh Vũng Rô</strong>) và hệ thống 3 văn phòng/trạm bảo hành hỗ trợ 24/7.
+        </p>
+      </div>
+
+      <div class="md-player-shell" id="tpPlayerShell">
+        <div class="md-topbar">
+          <div class="md-title-group">
+            <span class="md-rec-pill">MOTION 60FPS &bull; MC MINH ANH</span>
+            <strong style="color:#fff;font-size:13px">TIẾN PHÁT PHÚ YÊN (MST: 4401095020) — Thiết bị giám sát xe VGPS</strong>
+          </div>
+          <div class="md-top-actions">
+            <button type="button" class="md-chip-btn active" id="tpModeMotion" onclick="window.tpSetPlayerMode('motion')">✨ Motion 60FPS</button>
+            <button type="button" class="md-chip-btn" id="tpModeMp4169" onclick="window.tpSetPlayerMode('mp4-169')">🎬 Video MP4 (16:9)</button>
+            <button type="button" class="md-chip-btn" id="tpModeMp4916" onclick="window.tpSetPlayerMode('mp4-916')">📱 Video TikTok (9:16)</button>
+            <button type="button" class="md-chip-btn active" id="tpAspect169" onclick="window.tpSetAspect('16:9')">16:9 Ngang</button>
+            <button type="button" class="md-chip-btn" id="tpAspect916" onclick="window.tpSetAspect('9:16')">9:16 Dọc</button>
+            <button type="button" class="md-chip-btn active" id="tpVoiceBtn" onclick="window.tpToggleVoice()">🔊 Giọng đọc AI Nữ: Bật</button>
+            <button type="button" class="md-chip-btn active" id="tpMusicBtn" onclick="window.tpToggleMusic()">🎵 Nhạc nền: Bật</button>
+            <button type="button" class="md-chip-btn active" id="tpCcBtn" onclick="window.tpToggleCc()">CC Phụ đề</button>
+            <button type="button" class="md-chip-btn" onclick="window.tpFullscreen()">⛶ Toàn màn hình</button>
+          </div>
+        </div>
+
+        <!-- Stage 1: Interactive 60FPS Motion-Director Stage -->
+        <div class="md-viewport-wrap" id="tpMotionWrap">
+          <div class="md-viewport" id="tpViewport" data-aspect="16:9">
+            <!-- SCENE 01 (0.00s - 19.80s): MỞ ĐẦU - THÁP NGHINH PHONG & GIẢI PHÁP TIẾN PHÁT PHÚ YÊN -->
+            <div class="md-scene is-active" id="tpScene0">
+              <div class="md-scene-bg" id="tpBg0" style="background-image:url('assets/tienphat_scene1.jpg'), url('tienphat_scene1.jpg');"></div>
+              <div class="md-scene-overlay"></div>
+              <div class="md-scene-top">
+                <div class="md-brand-badge">TIẾN PHÁT PHÚ YÊN <span class="md-BrandSub">| THIẾT BỊ GIÁM SÁT XE</span></div>
+                <div class="md-landmark-badge">📍 THÁP NGHINH PHONG &bull; TP. TUY HÒA, PHÚ YÊN</div>
+              </div>
+              <div class="md-left-col" id="tpCol0">
+                <div class="md-kicker">★ CÔNG TY TNHH TM &amp; DV TIẾN PHÁT PHÚ YÊN (MST: 4401095020)</div>
+                <h3 class="md-headline">Giải Pháp <span>Giám Sát Xe</span> &amp;<br>Camera AI <em>VGPS Chính Hãng</em></h3>
+                <div class="md-lead-box">
+                  Quản lý đội xe từ xa chính xác từng mét &bull; Kiểm soát từng lít nhiên liệu &bull; Hợp chuẩn <strong>QCVN 06:2024/BCA</strong> an tâm đăng kiểm!
+                </div>
+                <div class="md-grid-2">
+                  <div class="md-mini-card" id="tpS1C1">
+                    <small>Sản xuất Phần cứng</small>
+                    <b>VNTECH24H JSC</b>
+                  </div>
+                  <div class="md-mini-card" id="tpS1C2" style="border-left-color:#38bdf8">
+                    <small>Phần mềm Quản lý</small>
+                    <b>VMAKE (VGPS.VN)</b>
+                  </div>
+                </div>
+              </div>
+              <div class="md-presenter-tag">
+                <strong>👩‍💼 Chuyên viên Minh Anh</strong>
+                <span>Đại diện Tư vấn Giải pháp VGPS &bull; Tiến Phát Phú Yên</span>
+              </div>
+            </div>
+
+            <!-- SCENE 02 (19.80s - 42.31s): VGPS-2CAM & ĐẦU ĐỌC RFID 3 TIẾNG BÍP - THÁP NHẠN & CẦU ĐÀ RẰNG -->
+            <div class="md-scene" id="tpScene1">
+              <div class="md-scene-bg" id="tpBg1" style="background-image:url('assets/tienphat_scene2.jpg'), url('tienphat_scene2.jpg');"></div>
+              <div class="md-scene-overlay"></div>
+              <div class="md-scene-top">
+                <div class="md-brand-badge">SIÊU PHẨM VGPS-2CAM <span class="md-BrandSub">| MODEL: VGPS-03</span></div>
+                <div class="md-landmark-badge">📍 THÁP NHẠN &amp; CẦU ĐÀ RẰNG &bull; PHÚ YÊN</div>
+              </div>
+              <div class="md-left-col" id="tpCol1">
+                <div class="md-kicker" style="background:linear-gradient(90deg,#ed0433,#f59e0b);color:#fff">🔊 CẢNH BÁO AI &amp; ĐĂNG NHẬP THẺ RFID (3 TIẾNG BÍP)</div>
+                <h3 class="md-headline">Camera AI <span>DMS</span> &amp; Giám Sát Hành Trình <em>QCVN 06:2024/BCA</em></h3>
+                <div class="md-grid-2">
+                  <div class="md-mini-card" id="tpS2C1">
+                    <small>Công nghệ AI DMS</small>
+                    <b>Cảnh báo Buồn ngủ, Mất tập trung</b>
+                  </div>
+                  <div class="md-mini-card" id="tpS2C2" style="border-left-color:#38bdf8">
+                    <small>Camera Hồng Ngoại</small>
+                    <b>Ghi hình nét Ngày/Đêm + Live</b>
+                  </div>
+                  <div class="md-mini-card" id="tpS2C3" style="border-left-color:#f59e0b">
+                    <small>Đầu đọc VGPS-RFID</small>
+                    <b>Phát 3 tiếng Bíp khi quẹt thẻ</b>
+                  </div>
+                  <div class="md-mini-card" id="tpS2C4" style="border-left-color:#ed0433">
+                    <small>Cảnh báo Tức thời</small>
+                    <b>Quá tốc độ &amp; Quá 4h lái xe</b>
+                  </div>
+                </div>
+              </div>
+              <div class="md-presenter-tag">
+                <strong>🔊 Đầu đọc VGPS-RFID (3 tiếng Bíp)</strong>
+                <span>Tích hợp eSIM 4G &amp; Ổ cứng SSD chịu nhiệt 70°C</span>
+              </div>
+            </div>
+
+            <!-- SCENE 03 (42.31s - 68.06s): HỆ SINH THÁI TOÀN DIỆN - MŨI ĐIỆN ĐẠI LÃNH & VỊNH VŨNG RÔ -->
+            <div class="md-scene" id="tpScene2">
+              <div class="md-scene-bg" id="tpBg2" style="background-image:url('assets/tienphat_scene3.jpg'), url('tienphat_scene3.jpg');"></div>
+              <div class="md-scene-overlay"></div>
+              <div class="md-scene-top">
+                <div class="md-brand-badge">HỆ SINH THÁI VGPS.VN <span class="md-BrandSub">| 80.000+ THIẾT BỊ</span></div>
+                <div class="md-landmark-badge">📍 MŨI ĐIỆN – ĐẠI LÃNH &amp; VỊNH VŨNG RÔ</div>
+              </div>
+              <div class="md-left-col" id="tpCol2">
+                <div class="md-kicker">TRỌN BỘ GIẢI PHÁP CHO MỌI PHƯƠNG TIỆN</div>
+                <h3 class="md-headline">Quản Lý 100% Tiếng Việt Trên <span>VGPS.VN</span> Của <em>VMAKE</em></h3>
+                <div class="md-stack-list">
+                  <div class="md-stack-item" id="tpS3C1" style="border-left-color:#10b981">
+                    <h4>🚛 Định vị Hợp chuẩn 4G VGPS-CAR4G</h4>
+                    <p>Chuẩn QCVN 06:2024/BCA &bull; Giám sát lộ trình, tốc độ, báo cáo Bộ Công An &amp; Đăng kiểm</p>
+                  </div>
+                  <div class="md-stack-item" id="tpS3C2" style="border-left-color:#f59e0b">
+                    <h4>⛽ Cảm biến Nhiên liệu Ligo Pro (Chính xác 99,5%)</h4>
+                    <p>Chuẩn chống nước IP69K &bull; Biểu đồ dầu theo thời gian thực, chống rút trộm dầu tuyệt đối</p>
+                  </div>
+                  <div class="md-stack-item" id="tpS3C3" style="border-left-color:#38bdf8">
+                    <h4>🛵 Định vị Xe máy / Xe điện VGPS-MOTO PRO 4G &amp; Nam châm VGPS-MAG4G</h4>
+                    <p>Dải nguồn 9–100VDC có Rơ-le tắt máy từ xa &bull; Định vị pin 4.000mAh nam châm vĩnh cửu</p>
+                  </div>
+                </div>
+              </div>
+              <div class="md-presenter-tag">
+                <strong>📲 Nền tảng VGPS.VN (VMAKE)</strong>
+                <span>Web &amp; App iOS/Android &bull; Lưu trữ lộ trình 12 tháng</span>
+              </div>
+            </div>
+
+            <!-- SCENE 04 (68.06s - 93.76s): HỆ THỐNG 3 ĐỊA CHỈ LIÊN HỆ & BẢO HÀNH 24/7 -->
+            <div class="md-scene" id="tpScene3">
+              <div class="md-scene-bg" id="tpBg3" style="background-image:url('assets/tienphat_scene4.jpg'), url('tienphat_scene4.jpg');"></div>
+              <div class="md-scene-overlay"></div>
+              <div class="md-scene-top">
+                <div class="md-brand-badge">TIẾN PHÁT PHÚ YÊN <span class="md-BrandSub">| MST: 4401095020</span></div>
+                <div class="md-landmark-badge">📍 LẮP ĐẶT TẬN NƠI &bull; HỖ TRỢ KỸ THUẬT 24/7</div>
+              </div>
+              <div class="md-left-col" id="tpCol3">
+                <div class="md-kicker">HỆ THỐNG VĂN PHÒNG &amp; TRẠM BẢO HÀNH CHÍNH THỨC</div>
+                <h3 class="md-headline">Đồng Hành Cùng Vận Tải Việt &bull; <em>Hotline/Zalo: 0358.771.234</em></h3>
+                <div class="md-stack-list">
+                  <div class="md-stack-item" id="tpS4C1" style="border-left-color:#ed0433">
+                    <h4>🏢 Trụ sở chính (Phú Yên)</h4>
+                    <p>11/6 Phạm Hồng Thái, Phường 4, TP. Tuy Hoà, Tỉnh Phú Yên</p>
+                  </div>
+                  <div class="md-stack-item" id="tpS4C2" style="border-left-color:#38bdf8">
+                    <h4>📍 Văn phòng giao dịch (VPGD)</h4>
+                    <p>68 Nguyễn Thế Bảo, Phường Tuy Hoà, Tỉnh Đắk Lắk</p>
+                  </div>
+                  <div class="md-stack-item" id="tpS4C3" style="border-left-color:#10b981">
+                    <h4>🛠️ Trạm bảo hành Khánh Hòa</h4>
+                    <p>KĐT Mới Phước Long, Phường Nam Nha Trang, Khánh Hòa</p>
+                  </div>
+                </div>
+              </div>
+              <div class="md-presenter-tag">
+                <strong>🤝 Tiến Phát Phú Yên</strong>
+                <span>Vững tay lái trên mọi hành trình &bull; https://vgps.vn</span>
+              </div>
+            </div>
+
+            <!-- Live Subtitle / Caption Pill -->
+            <div class="md-caption-bar" id="tpCaptionBar">
+              <span class="md-caption-pill" id="tpCaptionText">Chào mừng quý đối tác và các bác tài đến với <em>Công ty TNHH Thương mại và Dịch vụ Tiến Phát Phú Yên</em> – Nhà phân phối chính thức hệ sinh thái thiết bị giám sát xe <em>VGPS</em>!</span>
+            </div>
+
+            <!-- Initial Play Overlay -->
+            <div class="md-play-overlay" id="tpPlayOverlay" onclick="window.tpMotionPlay(true)">
+              <div class="md-big-play-btn" aria-label="Phát video giới thiệu Tiến Phát Phú Yên">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </div>
+              <div class="md-play-hint">▶ Bấm để phát Video Giới Thiệu Tiến Phát Phú Yên (Giọng AI Nữ &amp; Địa danh Phú Yên · 1:33)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2: Native MP4 Video Player (16:9 FullHD & 9:16 TikTok/Reels) -->
+        <div class="md-mp4-container" id="tpMp4Wrap">
+          <video class="md-mp4-video" id="tpMp4Video" controls preload="metadata" poster="assets/tienphat_slide1_16x9.png">
+            <source id="tpMp4Source" src="TienPhatPhuYen_VGPS_FullHD_16x9.mp4" type="video/mp4" />
+            Trình duyệt của bạn không hỗ trợ thẻ video HTML5.
+          </video>
+        </div>
+
+        <!-- Bottom Scrubber & Scene Chapters -->
+        <div class="md-controls" id="tpControlsBar">
+          <div class="md-timeline-row">
+            <button type="button" class="md-play-btn" id="tpPlayToggleBtn" onclick="window.tpMotionPlay()" aria-label="Phát hoặc tạm dừng">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" id="tpPlayIcon"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+            </button>
+            <div class="md-scrubber-wrap">
+              <input type="range" class="md-scrubber" id="tpScrubber" min="0" max="93.76" step="0.05" value="0" aria-label="Thanh thời gian video" />
+            </div>
+            <div class="md-time-readout" id="tpTimeReadout">0:00 / 1:33</div>
+          </div>
+          <div class="md-chapters-row">
+            <div class="md-chapter-pills" role="tablist" aria-label="Các phân cảnh video">
+              <button type="button" class="md-chap-btn active" onclick="window.tpSeekTo(0)">01. Tháp Nghinh Phong &amp; Tiến Phát</button>
+              <button type="button" class="md-chap-btn" onclick="window.tpSeekTo(19.80)">02. VGPS-2CAM &amp; RFID (Tháp Nhạn)</button>
+              <button type="button" class="md-chap-btn" onclick="window.tpSeekTo(42.31)">03. Hệ sinh thái VGPS (Mũi Điện)</button>
+              <button type="button" class="md-chap-btn" onclick="window.tpSeekTo(68.06)">04. 3 Địa chỉ &amp; Hotline 0358.771.234</button>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;">
+              <a href="TienPhatPhuYen_VGPS_FullHD_16x9.mp4" download style="color:#38bdf8;font-weight:700;">⬇ Tải MP4 16:9 FullHD</a>
+              <span style="color:#475569">|</span>
+              <a href="TienPhatPhuYen_VGPS_TikTok_Reels_9x16.mp4" download style="color:#facc15;font-weight:700;">⬇ Tải MP4 9:16 TikTok</a>
+            </div>
           </div>
         </div>
       </div>
@@ -4019,6 +4711,381 @@
           document.getElementById('chkProgressBadge').textContent = `Đã hoàn thành ${done}/${chks.length}`;
         });
       });
+
+      // =========================================================================
+      // MOTION-DIRECTOR 60FPS FILM ENGINE (TIẾN PHÁT PHÚ YÊN & ĐỊA DANH PHÚ YÊN)
+      // =========================================================================
+      const TP_DURATION = 93.76;
+      const TP_SCENES = [
+        {
+          idx: 0, id: 'tp_s1', start: 0.00, end: 19.80, audioFile: 'voiceover_tienphat/scene1.mp3',
+          cues: [
+            { t0: 0.00, html: 'Chào mừng quý đối tác và các bác tài! Làm thế nào để <em>quản lý đội xe từ xa</em> chính xác từng mét,' },
+            { t0: 6.20, html: 'kiểm soát từng lít dầu và luôn an tâm <em>đúng chuẩn pháp lý khi đăng kiểm</em>?' },
+            { t0: 11.40, html: 'Câu trả lời trọn vẹn đã có tại <em>Công ty TNHH Thương mại &amp; Dịch vụ Tiến Phát Phú Yên</em> – Nhà phân phối chính thức hệ sinh thái <em>VGPS</em>!' }
+          ],
+          ttsText: 'Chào mừng quý đối tác và các bác tài! Làm thế nào để quản lý đội xe từ xa chính xác từng mét, kiểm soát từng lít dầu và luôn an tâm đúng chuẩn pháp lý khi đăng kiểm? Câu trả lời trọn vẹn đã có tại Công ty TNHH Thương mại và Dịch vụ Tiến Phát Phú Yên, nhà phân phối chính thức hệ sinh thái thiết bị giám sát xe VGPS!'
+        },
+        {
+          idx: 1, id: 'tp_s2', start: 19.80, end: 42.31, audioFile: 'voiceover_tienphat/scene2_full.mp3',
+          cues: [
+            { t0: 0.00, html: '🔊 <em>[Bíp - Bíp - Bíp]</em> Nổi bật nhất là siêu phẩm <em>VGPS-2CAM</em> do <em>VNTECH24H</em> sản xuất, đạt chuẩn <em>QCVN 06:2024/BCA</em>.' },
+            { t0: 8.20, html: 'Tích hợp <em>Camera hồng ngoại</em> sắc nét cùng công nghệ <em>AI DMS</em> cảnh báo khi tài xế buồn ngủ hay mất tập trung.' },
+            { t0: 14.80, html: 'Kết hợp đầu đọc thẻ <em>RFID phát 3 tiếng bíp</em> khi đăng nhập, và cảnh báo tức thì khi quá tốc độ hoặc quá 4 giờ lái xe liên tục.' }
+          ],
+          ttsText: 'Nổi bật nhất là siêu phẩm VGPS-2CAM do VNTECH24H sản xuất, đạt chuẩn QCVN 06:2024 của Bộ Công An. Thiết bị tích hợp Camera hồng ngoại sắc nét cùng công nghệ AI cảnh báo khi tài xế buồn ngủ hay mất tập trung. Kết hợp đầu đọc thẻ RFID phát 3 tiếng bíp khi đăng nhập, và cảnh báo tức thì khi xe chạy quá tốc độ hoặc quá 4 giờ lái xe liên tục.'
+        },
+        {
+          idx: 2, id: 'tp_s3', start: 42.31, end: 68.06, audioFile: 'voiceover_tienphat/scene3.mp3',
+          cues: [
+            { t0: 0.00, html: 'Tiến Phát Phú Yên cung cấp trọn bộ giải pháp: Định vị hợp chuẩn <em>VGPS-CAR4G</em> &amp; Cảm biến dầu <em>Ligo Pro chính xác 99,5%</em>;' },
+            { t0: 9.50, html: 'Định vị xe máy, xe điện <em>VGPS-MOTO PRO</em> có khóa nguồn từ xa và định vị nam châm không dây <em>VGPS-MAG4G</em>.' },
+            { t0: 17.20, html: 'Tất cả quản lý 100% tiếng Việt trên nền tảng <em>VGPS.VN của VMAKE</em> với hơn <em>80.000+ thiết bị</em> đang vận hành!' }
+          ],
+          ttsText: 'Không chỉ vậy, Tiến Phát Phú Yên còn cung cấp trọn bộ giải pháp cho mọi phương tiện: từ định vị hợp chuẩn VGPS-CAR4G, cảm biến nhiên liệu Ligo Pro độ chính xác tới 99,5% chống rút trộm dầu; cho đến định vị xe máy, xe điện VGPS-MOTO PRO có khóa nguồn từ xa và định vị không dây VGPS-MAG4G. Tất cả được quản lý 100% tiếng Việt trên nền tảng VGPS.VN của VMAKE với hơn 80.000 thiết bị đang vận hành!'
+        },
+        {
+          idx: 3, id: 'tp_s4', start: 68.06, end: 93.76, audioFile: 'voiceover_tienphat/scene4.mp3',
+          cues: [
+            { t0: 0.00, html: 'Trụ sở chính: <em>11/6 Phạm Hồng Thái, P.4, TP. Tuy Hoà, Phú Yên</em> &bull; VPGD: <em>68 Nguyễn Thế Bảo, P. Tuy Hoà, Đắk Lắk</em>' },
+            { t0: 9.80, html: 'Cùng Trạm bảo hành Khánh Hòa: <em>KĐT Mới Phước Long, Phường Nam Nha Trang, Khánh Hòa</em> — Lắp đặt tận nơi &amp; hỗ trợ 24/7.' },
+            { t0: 17.50, html: 'Gọi ngay Hotline hoặc nhắn Zalo <em>0358.771.234</em> để được tư vấn giải pháp tối ưu nhất nhé!' }
+          ],
+          ttsText: 'Với trụ sở chính tại 11/6 Phạm Hồng Thái, Phường 4, thành phố Tuy Hòa, Phú Yên; Văn phòng giao dịch tại 68 Nguyễn Thế Bảo, phường Tuy Hòa, tỉnh Đắk Lắk; cùng Trạm bảo hành tại Khu đô thị mới Phước Long, phường Nam Nha Trang, Khánh Hòa — Tiến Phát Phú Yên cam kết lắp đặt tận nơi và hỗ trợ kỹ thuật 24/7. Quý khách hãy gọi ngay Hotline hoặc nhắn Zalo 0358.771.234 để được tư vấn giải pháp tối ưu nhất nhé!'
+        }
+      ];
+
+      const clamp01 = x => (x < 0 ? 0 : x > 1 ? 1 : x);
+      const seg = (t, a, b) => clamp01((t - a) / (b - a));
+      const lerp = (a, b, p) => a + (b - a) * p;
+      const eo = p => 1 - Math.pow(1 - clamp01(p), 3);
+      const fmtTpTime = sec => {
+        sec = Math.max(0, Math.min(TP_DURATION, sec));
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' + s : s);
+      };
+
+      const tpSceneEls = [0, 1, 2, 3].map(i => document.getElementById('tpScene' + i));
+      const tpBgEls = [0, 1, 2, 3].map(i => document.getElementById('tpBg' + i));
+      const tpChapBtns = document.querySelectorAll('#tpControlsBar .md-chap-btn');
+      const tpCaptionText = document.getElementById('tpCaptionText');
+      const tpCaptionBar = document.getElementById('tpCaptionBar');
+      const tpScrubber = document.getElementById('tpScrubber');
+      const tpTimeReadout = document.getElementById('tpTimeReadout');
+      const tpPlayOverlay = document.getElementById('tpPlayOverlay');
+      const tpPlayIcon = document.getElementById('tpPlayIcon');
+
+      const tpAudioTakes = {};
+      TP_SCENES.forEach(sc => {
+        const a = new Audio();
+        a.preload = 'auto';
+        a.src = sc.audioFile;
+        a.addEventListener('error', function onAudioErr() {
+          const baseName = sc.audioFile.split('/').pop();
+          if (a.src.indexOf('voiceover_tienphat/') !== -1) {
+            a.removeEventListener('error', onAudioErr);
+            a.src = baseName;
+          }
+        });
+        tpAudioTakes[sc.id] = a;
+      });
+
+      let tpTime = 0;
+      let tpPlaying = false;
+      let tpRafId = null;
+      let tpLastTs = 0;
+      let tpVoiceOn = true;
+      let tpMusicOn = true;
+      let tpCcOn = true;
+      let tpActiveSceneId = null;
+      let tpAudioCtx = null;
+      let tpLastBeat = -1;
+
+      function ensureTpAudioCtx() {
+        if (!tpAudioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) tpAudioCtx = new AC();
+        }
+        if (tpAudioCtx && tpAudioCtx.state === 'suspended') tpAudioCtx.resume();
+      }
+
+      function playTpTone(freq, dur, type, gainVal) {
+        if (!tpMusicOn || !tpAudioCtx) return;
+        try {
+          const now = tpAudioCtx.currentTime;
+          const osc = tpAudioCtx.createOscillator();
+          const g = tpAudioCtx.createGain();
+          osc.type = type || 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          g.gain.setValueAtTime(0.001, now);
+          g.gain.exponentialRampToValueAtTime(gainVal || 0.03, now + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          osc.connect(g);
+          g.connect(tpAudioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        } catch (e) {}
+      }
+
+      function stopTpVoiceTakes() {
+        Object.keys(tpAudioTakes).forEach(k => {
+          const a = tpAudioTakes[k];
+          if (a && !a.paused) a.pause();
+        });
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+        tpActiveSceneId = null;
+      }
+
+      function syncTpVoiceAt(t, forceSync) {
+        if (!tpPlaying || !tpVoiceOn) {
+          stopTpVoiceTakes();
+          return;
+        }
+        let cur = TP_SCENES[0];
+        for (let i = 0; i < TP_SCENES.length; i++) {
+          if (t >= TP_SCENES[i].start && t < TP_SCENES[i].end) {
+            cur = TP_SCENES[i];
+            break;
+          }
+        }
+        const lt = t - cur.start;
+        if (tpActiveSceneId !== cur.id || forceSync) {
+          stopTpVoiceTakes();
+          tpActiveSceneId = cur.id;
+          const take = tpAudioTakes[cur.id];
+          const maxAudioDur = (cur.end - cur.start) - 0.5;
+          if (take && lt < maxAudioDur) {
+            try {
+              take.currentTime = Math.max(0, lt);
+              const pr = take.play();
+              if (pr && pr.catch) {
+                pr.catch(() => {
+                  if (window.speechSynthesis && lt < 1.5) {
+                    const u = new SpeechSynthesisUtterance(cur.ttsText);
+                    u.lang = 'vi-VN';
+                    u.rate = 1.05;
+                    window.speechSynthesis.speak(u);
+                  }
+                });
+              }
+            } catch (e) {}
+          }
+        }
+      }
+
+      function renderTpFilm(t) {
+        t = Math.max(0, Math.min(TP_DURATION, t));
+        let cur = TP_SCENES[0];
+        for (let i = 0; i < TP_SCENES.length; i++) {
+          if (t >= TP_SCENES[i].start && t <= TP_SCENES[i].end) {
+            cur = TP_SCENES[i];
+            break;
+          }
+        }
+        const lt = t - cur.start;
+        const sceneDur = cur.end - cur.start;
+
+        for (let s = 0; s < tpSceneEls.length; s++) {
+          if (tpSceneEls[s]) tpSceneEls[s].classList.toggle('is-active', s === cur.idx);
+          if (tpChapBtns[s]) tpChapBtns[s].classList.toggle('active', s === cur.idx);
+        }
+
+        // Subtle cinematic push-in on active scene background
+        if (tpBgEls[cur.idx]) {
+          const z = lerp(1.0, 1.045, clamp01(lt / sceneDur));
+          tpBgEls[cur.idx].style.transform = `scale(${z.toFixed(4)})`;
+        }
+
+        // Staggered card entrance choreography per scene
+        const cardGroups = [
+          ['tpS1C1', 'tpS1C2'],
+          ['tpS2C1', 'tpS2C2', 'tpS2C3', 'tpS2C4'],
+          ['tpS3C1', 'tpS3C2', 'tpS3C3'],
+          ['tpS4C1', 'tpS4C2', 'tpS4C3']
+        ];
+        const activeCards = cardGroups[cur.idx] || [];
+        activeCards.forEach((cid, idx) => {
+          const el = document.getElementById(cid);
+          if (!el) return;
+          const p = t === 0 ? 1 : eo(seg(lt, 0.15 + idx * 0.22, 0.75 + idx * 0.22));
+          el.style.opacity = p.toFixed(3);
+          el.style.transform = `translateY(${lerp(18, 0, p).toFixed(1)}px)`;
+        });
+
+        // Update Subtitle / Caption Bar
+        if (tpCaptionText) {
+          let activeCue = cur.cues[0];
+          for (let c = 0; c < cur.cues.length; c++) {
+            if (lt >= cur.cues[c].t0) activeCue = cur.cues[c];
+          }
+          tpCaptionText.innerHTML = activeCue.html;
+        }
+        if (tpCaptionBar) tpCaptionBar.style.display = tpCcOn ? 'block' : 'none';
+
+        if (tpScrubber && document.activeElement !== tpScrubber) {
+          tpScrubber.value = t.toFixed(2);
+        }
+        if (tpTimeReadout) {
+          tpTimeReadout.textContent = fmtTpTime(t) + ' / 1:33';
+        }
+      }
+
+      function tpStepLoop(ts) {
+        if (!tpPlaying) return;
+        if (!tpLastTs) tpLastTs = ts;
+        const dt = Math.min(0.1, (ts - tpLastTs) / 1000);
+        tpLastTs = ts;
+        tpTime += dt;
+
+        // Warm procedural ambient score on beat grid
+        const beatIdx = Math.floor(tpTime / 0.75);
+        if (beatIdx !== tpLastBeat) {
+          tpLastBeat = beatIdx;
+          const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 392.00];
+          playTpTone(notes[beatIdx % notes.length], 0.42, 'sine', 0.018);
+        }
+
+        if (tpTime >= TP_DURATION) {
+          tpTime = TP_DURATION;
+          renderTpFilm(tpTime);
+          window.tpMotionPlay(false);
+          return;
+        }
+
+        renderTpFilm(tpTime);
+        syncTpVoiceAt(tpTime, false);
+        tpRafId = requestAnimationFrame(tpStepLoop);
+      }
+
+      window.tpMotionPlay = function (forceState) {
+        ensureTpAudioCtx();
+        const next = typeof forceState === 'boolean' ? forceState : !tpPlaying;
+        if (next && tpTime >= TP_DURATION - 0.1) {
+          tpTime = 0;
+          tpLastBeat = -1;
+        }
+        tpPlaying = next;
+        if (tpPlayOverlay) tpPlayOverlay.classList.toggle('is-hidden', tpPlaying);
+        if (tpPlayIcon) {
+          tpPlayIcon.innerHTML = tpPlaying
+            ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+            : '<polygon points="6 4 20 12 6 20 6 4"/>';
+        }
+        if (tpPlaying) {
+          tpLastTs = performance.now();
+          syncTpVoiceAt(tpTime, true);
+          tpRafId = requestAnimationFrame(tpStepLoop);
+        } else {
+          if (tpRafId) cancelAnimationFrame(tpRafId);
+          stopTpVoiceTakes();
+        }
+      };
+
+      window.tpSeekTo = function (targetSec) {
+        window.tpSetPlayerMode('motion');
+        ensureTpAudioCtx();
+        tpTime = Math.max(0, Math.min(TP_DURATION, parseFloat(targetSec) || 0));
+        tpLastBeat = -1;
+        renderTpFilm(tpTime);
+        if (!tpPlaying) {
+          window.tpMotionPlay(true);
+        } else {
+          syncTpVoiceAt(tpTime, true);
+        }
+      };
+
+      window.tpSetAspect = function (ratio) {
+        window.tpSetPlayerMode('motion');
+        const vp = document.getElementById('tpViewport');
+        const b169 = document.getElementById('tpAspect169');
+        const b916 = document.getElementById('tpAspect916');
+        if (vp) vp.setAttribute('data-aspect', ratio);
+        if (b169) b169.classList.toggle('active', ratio === '16:9');
+        if (b916) b916.classList.toggle('active', ratio === '9:16');
+      };
+
+      window.tpSetPlayerMode = function (mode) {
+        const motionWrap = document.getElementById('tpMotionWrap');
+        const mp4Wrap = document.getElementById('tpMp4Wrap');
+        const mp4Vid = document.getElementById('tpMp4Video');
+        const mp4Src = document.getElementById('tpMp4Source');
+        const bMotion = document.getElementById('tpModeMotion');
+        const bMp4169 = document.getElementById('tpModeMp4169');
+        const bMp4916 = document.getElementById('tpModeMp4916');
+
+        if (bMotion) bMotion.classList.toggle('active', mode === 'motion');
+        if (bMp4169) bMp4169.classList.toggle('active', mode === 'mp4-169');
+        if (bMp4916) bMp4916.classList.toggle('active', mode === 'mp4-916');
+
+        if (mode === 'motion') {
+          if (mp4Vid && !mp4Vid.paused) mp4Vid.pause();
+          if (motionWrap) motionWrap.style.display = 'flex';
+          if (mp4Wrap) mp4Wrap.classList.remove('is-active');
+        } else {
+          if (tpPlaying) window.tpMotionPlay(false);
+          if (motionWrap) motionWrap.style.display = 'none';
+          if (mp4Wrap) mp4Wrap.classList.add('is-active');
+          if (mp4Vid && mp4Src) {
+            const isVert = mode === 'mp4-916';
+            mp4Vid.classList.toggle('is-vertical', isVert);
+            mp4Vid.poster = isVert ? 'assets/tienphat_slide1_9x16.png' : 'assets/tienphat_slide1_16x9.png';
+            const targetFile = isVert ? 'TienPhatPhuYen_VGPS_TikTok_Reels_9x16.mp4' : 'TienPhatPhuYen_VGPS_FullHD_16x9.mp4';
+            if (mp4Src.getAttribute('src') !== targetFile) {
+              mp4Src.setAttribute('src', targetFile);
+              mp4Vid.load();
+            }
+            mp4Vid.play().catch(() => {});
+          }
+        }
+      };
+
+      window.tpToggleVoice = function () {
+        tpVoiceOn = !tpVoiceOn;
+        const btn = document.getElementById('tpVoiceBtn');
+        if (btn) {
+          btn.classList.toggle('active', tpVoiceOn);
+          btn.textContent = tpVoiceOn ? '🔊 Giọng đọc AI Nữ: Bật' : '🔇 Giọng đọc AI Nữ: Tắt';
+        }
+        if (!tpVoiceOn) stopTpVoiceTakes();
+        else if (tpPlaying) syncTpVoiceAt(tpTime, true);
+      };
+
+      window.tpToggleMusic = function () {
+        tpMusicOn = !tpMusicOn;
+        const btn = document.getElementById('tpMusicBtn');
+        if (btn) {
+          btn.classList.toggle('active', tpMusicOn);
+          btn.textContent = tpMusicOn ? '🎵 Nhạc nền: Bật' : '🎵 Nhạc nền: Tắt';
+        }
+      };
+
+      window.tpToggleCc = function () {
+        tpCcOn = !tpCcOn;
+        const btn = document.getElementById('tpCcBtn');
+        if (btn) btn.classList.toggle('active', tpCcOn);
+        renderTpFilm(tpTime);
+      };
+
+      window.tpFullscreen = function () {
+        const shell = document.getElementById('tpPlayerShell');
+        if (!shell) return;
+        if (!document.fullscreenElement) {
+          if (shell.requestFullscreen) shell.requestFullscreen();
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen();
+        }
+      };
+
+      if (tpScrubber) {
+        tpScrubber.addEventListener('input', () => {
+          tpTime = parseFloat(tpScrubber.value) || 0;
+          renderTpFilm(tpTime);
+          if (tpPlaying) syncTpVoiceAt(tpTime, true);
+        });
+      }
+
+      renderTpFilm(0);
     });
   </script>
 </body>
